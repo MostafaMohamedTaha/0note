@@ -1,0 +1,4606 @@
+#region [1] product
+	#region [1] start str 1 update database
+		#region [1] project str
+			=>api core
+			#region [3] postman
+				add collection=>folder=>requests
+			#endregion
+
+			#region [2] str
+				r click console app
+				r click solution =>Add new project
+				r click on dependance => add project reference
+				ref api =>ref service =>ref repo =>ref core
+			#endregion
+		#endregion
+
+		#region [2] make entity in core 
+			folder entity [base entity,other entities]
+
+			#region [2] [brand | type |product]
+				#region [1] base
+					public class Base
+					{
+						public int Id { get; set; }
+					}
+				#endregion
+
+				#region [1] product
+					public string Name { get; set; }
+					public string Description { get; set; }
+					public string PictureUrl { get; set; }
+					public decimal Price { get; set; }
+					public int Quantity { get; set; }
+
+					
+					public int BrandId { get; set; }
+					public Brand Brand { get; set; }
+					
+					public int TypeId { get; set; }
+					public Type Type { get; set; }
+				#endregion
+
+				#region [1] brand
+					public class Brand:Base
+					{
+						public string Name { get; set; }
+					}
+				#endregion
+
+				#region [1] type
+					public class Type:Base
+					{
+						public string Name { get; set; }
+					}
+				#endregion
+			#endregion
+		#endregion
+
+		#region [3] migration make data folder
+			class AppContext :DbContext =>r click package [microsoft.entityFrameWorkCore.SqlServer]
+
+			#region [1] context
+				#region [1] context data
+
+					public class AppContext:DbContext 
+					{
+						public AppContext(DbContextOptions<AppContext> opt):base(opt)
+						{  
+						}
+					}
+				#endregion
+
+				#region [2] api pipeline
+					builder.Services.AddDbContext<AppContext1>(
+							x =>
+							{
+								x.UseSqlServer(builder.Configuration.GetConnectionString("con"));
+							}
+						);
+				#endregion
+
+				#region [3] appSetting.json 
+					"ConnectionStrings": {
+						"con": "Server=.;Database=AppContextDb;Trusted_Connection=true;MultiActiveResultSets=true;"
+					}
+				#endregion
+
+				#region [4] context DbSet
+					public DbSet<Product> Products { get; set; }
+					public DbSet<ProductType> ProductTypes { get; set; }
+					public DbSet<Brand> Brands{ get; set; }
+				#endregion
+
+				#region [5] custom configuration
+					internal class ProductConfig : IEntityTypeConfiguration<Product>
+					{
+						public void Configure(EntityTypeBuilder<Product> builder)
+						{
+							builder.Property(x => x.Price).HasColumnType("decimal(18,2)");
+							builder.HasOne(x => x.Brand).WithMany().HasForeignKey(x => x.BrandId);
+							builder.HasOne(x => x.ProductType).WithMany().HasForeignKey(x => x.TypeId);
+						}
+					}
+				#endregion
+
+				#region [1] context model config
+					protected override void OnModelCreating(ModelBuilder modelBuilder)
+					{
+						base.OnModelCreating(modelBuilder);
+
+						//modelBuilder.ApplyConfiguration(new ProductConfig()); //fluent api
+						modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
+					}
+				#endregion
+
+				#region [1] package manager console 
+					add-migration initialCreate -o Data/Migrations
+				#endregion
+
+				#region [1] VERSIONS OF PACKAGES
+					Microsoft.EntityFrameworkCore.Design =>APP.API
+					Microsoft.EntityFrameworkCore.tools =>repo
+					Microsoft.EntityFrameworkCore.SqlServer =>repo
+				#endregion
+			#endregion
+		#endregion
+
+		#region [4] update database	
+			#region [1] program cs under app
+				using var scope = app.Services.CreateScope();
+				var services= scope.ServiceProvider;
+				var loggerFactory= services.GetRequiredService<ILoggerFactory>(); //!show exception of dbContext
+				try
+				{
+					var dbContext= services.GetRequiredService<AppContext1>();
+					await dbContext.Database.MigrateAsync();
+				}
+				catch (Exception ex)
+				{
+
+					var logger = loggerFactory.CreateLogger<Program>();
+					logger.LogError(ex, "error occurred while migration");
+				}
+			#endregion
+		#endregion
+
+		#region [5] rename powershell
+			D:
+			cd D:\image\electronics
+			$files = Get-ChildItem
+			$counter = 1
+			foreach ($file in $files) {
+				$newName = '{0:D2}product.jpg' -f $counter
+				Rename-Item -Path $file.FullName -NewName $newName
+				$counter++
+			}
+		#endregion
+	#endregion
+
+	#region [1] seeding 2
+
+		#region [1] seeding class level of db class
+			public static class AppSeeding{
+				public static async Task SeedAsync(AppContext1 context){
+					if(!context.Brands.Any())
+					{
+						var brandsData = File.ReadAllText("../app.repo/Data/seeding/brands.json");
+						var brands=JsonSerializer.Deserialize<List<Brand>>(brandsData);
+						if (brands is not null && brands.Count>0)
+						{
+
+							foreach (var brand in brands)
+							{
+								await context.Set<Brand>().AddAsync(brand);
+							}
+							await context.SaveChangesAsync();
+						}
+					}
+				}
+			}
+		#endregion
+
+		#region [2] seeding at api programs inside migration scope
+			using var scope = app.Services.CreateScope();
+			var services = scope.ServiceProvider;
+			var loggerFactory = services.GetRequiredService<ILoggerFactory>(); //!show exception of dbContext
+			try
+			{
+				var dbContext = services.GetRequiredService<AppContext1>();
+				await dbContext.Database.MigrateAsync();
+				await AppSeeding.SeedAsync(dbContext);
+			}
+			catch (Exception ex)
+			{
+
+				var logger = loggerFactory.CreateLogger<Program>();
+				logger.LogError(ex, "error occurred while migration");
+			}
+		#endregion
+
+		#region [3] json file should have same names of entities core
+			{
+				"Name": "Double Caramel Frappuccino",
+				"Description": "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Maecenas porttitor congue massa. Fusce posuere, magna sed pulvinar ultricies, purus lectus malesuada libero, sit amet commodo magna eros quis urna.",
+				"Price": 200.0,
+				"PictureUrl": "images/products/sb-ang1.png",
+				"TypeId": 1,
+				"BrandId": 1,
+				"Quantity": 10
+			},
+
+			public string Name { get; set; }
+			public string Description { get; set; }
+			public string PictureUrl { get; set; }
+			public decimal Price { get; set; }
+			public int Quantity { get; set; }
+
+			public int BrandId { get; set; }
+			public Brand Brand { get; set; }
+			
+			public int TypeId { get; set; }
+			public ProductType ProductType { get; set; }
+		#endregion
+	#endregion
+
+	#region [1] generic repo 3
+		#region [1] core/repo/IGenericRepo
+			public interface IGenericRepo<T> where T : Base
+			{
+				Task<IEnumerable<T>> GetAllAsync();
+				Task<T> GetByIdAsync(int id);
+
+			}
+		#endregion
+
+		#region [2] generic class app.repo
+			public class GenericRepo<T> : IGenericRepo<T> where T : Base
+			{
+				private readonly AppContext1 _context;
+				public GenericRepo(AppContext1 dbContext)
+				{
+					this._context = dbContext;
+				}
+				public async Task<IEnumerable<T>> GetAllAsync()=>await _context.Set<T>().ToListAsync();
+
+				public async Task<T> GetByIdAsync(int id)
+				{
+					return await _context.Set<T>().FindAsync(id); //where(x=>x.id==id).FirstOrDefaultAsync();
+				}
+			}
+		#endregion
+	#endregion
+
+	#region [1] controller product 4
+		#region [1] api controller make Base | Product
+			[Route("api/[controller]")]
+			[ApiController]
+			public class BaseController : ControllerBase
+			{
+			}
+
+			public class ProductController : BaseController
+			{
+			}
+		#endregion
+
+		#region [2] add scope under service 
+			//builder.Services.AddScoped<IGenericRepo<Product>, GenericRepo<Product>>();
+			builder.Services.AddScoped(typeof(IGenericRepo<>), typeof(GenericRepo<>));
+		#endregion
+
+		#region [3] updateController to the scope 
+			public class ProductController : BaseController
+			{
+				private readonly IGenericRepo<Product> productRepo;
+
+				public ProductController(IGenericRepo<Product> productRepo)
+				{
+					this.productRepo = productRepo;
+				}
+			}
+		#endregion
+
+		#region [4] controller crud 
+			#region [1] get get all 
+				[HttpGet]
+				public async Task<ActionResult<IEnumerable<Product>>> GetProduct()
+				{
+					var products = await productRepo.GetAllAsync();
+					return Ok(products); //OkObjectResult
+				}
+			#endregion
+
+			#region [2] change app.repo/genericClass to show BrandId|TypeId
+				public async Task<IEnumerable<T>> GetAllAsync()
+				{
+					if (typeof(T) == typeof(Product))
+					{
+						return (IEnumerable<T>) await _context.Products.Include(x => x.Brand).Include(x => x.ProductType).ToListAsync();
+					}
+					else
+					{
+						return await _context.Set<T>().ToListAsync();
+					}
+				}
+			#endregion
+
+			#region [3] get by id
+				[HttpGet("{id}")]
+				public async Task<ActionResult<IEnumerable<Product>>> GetProductById()
+				{
+					var products = await productRepo.GetAllAsync();
+					return Ok(products); //OkObjectResult
+				}
+			#endregion
+
+			#region [4] make a variable by 2click on collection 
+				2click collection =>baseUrl =>value [ctrl+s]
+				value => {{baseUrl}}/api/product
+			#endregion
+		#endregion
+	#endregion
+
+	#region [1] specification 5
+		#region [6] arrange
+			ISpec=>BaseSpec<=>ProductTypeBrandSpec<=> [repo =>[SpecEval <=>IGenericRepo]] <=>[controller with spec]
+			controller=>[ProductTypeBrandSpec=>BaseSpec=>ProductTypeBrandSpec]=>[IGenericRepo=>specEval=>IGenericRepo]=>controller
+		#endregion
+		//make condition of generic repo
+		//return await _context.Products.Where(x => x.Id == Id).Include(x => x.Brand).Include(x => x.ProductType);
+		#region [1] app.core ISpec interface
+			public interface ISpec<T> where T : Base
+			{
+				public Expression<Func<T,bool>> criteria { get; set; } //where product|bool
+				public List<Expression<Func<T,object>>> Include { get; set; } //include product | brand object
+			}
+		#endregion
+
+		#region [2] app.core BaseSpec
+			public class BaseSpec<T> : ISpec<T> where T : Base
+			{
+				public Expression<Func<T, bool>> criteria { get; set; }
+				//public List<Expression<Func<T, object>>> Include { get; set; }
+				public List<Expression<Func<T, object>>> Include { get; set; } = new List<Expression<Func<T, object>>>() { };
+
+				public BaseSpec()
+				{
+					//Include=new List<Expression<Func<T, object>>>() { };
+				}
+				public BaseSpec(Expression<Func<T,bool>> exp)
+				{
+					criteria=exp;
+					//Include = new List<Expression<Func<T, object>>>() { };
+				}
+			}
+		#endregion
+
+		#region [3] app.repo class
+			#region [1] aggregate => add 
+				string[] names = { "a", "b", "c", "d" };
+				string message = "hello";
+				message = names.Aggregate(message, (current, name) => $"{current} {name}"); //hello a b c d
+			#endregion
+
+			#region [1] class specEval
+				public static class SpecEval<T> where T : Base
+				{
+					public static IQueryable<T> GetQuery(IQueryable<T> inputQ,ISpec<T> spec) 
+					{ 
+						var query = inputQ;
+						if(spec.criteria != null)
+						{
+							query = query.Where(spec.criteria);
+						}
+						query=spec.Include.Aggregate(query,(current,include) => current.Include(include));
+						return query;
+
+					}
+				}
+			#endregion
+		#endregion
+
+		#region [4] app.core/repo/IGenericRepo update
+			public interface IGenericRepo<T> where T : Base
+			{
+				Task<IEnumerable<T>> GetAllAsync();
+				Task<IEnumerable<T>> GetAllSpecAsync(ISpec<T> spec); //where().include()
+				Task<T> GetByIdAsync(int id);
+				Task<T> GetByIdSpecAsync(ISpec<T> spec); //where().include()
+
+			}
+		#endregion
+
+		#region [5] app.repo/GenericRepo update
+			public class GenericRepo<T> : IGenericRepo<T> where T : Base
+			{
+				private readonly AppContext1 _context;
+				public GenericRepo(AppContext1 dbContext)
+				{
+					this._context = dbContext;
+				}
+				public async Task<IEnumerable<T>> GetAllAsync()
+				{
+					if (typeof(T) == typeof(Product))
+					{
+						return (IEnumerable<T>)await _context.Products.Include(x => x.Brand).Include(x => x.ProductType).ToListAsync();
+					}
+					else
+					{
+						return await _context.Set<T>().ToListAsync();
+					}
+				}
+
+				public async Task<IEnumerable<T>> GetAllSpecAsync(ISpec<T> spec)
+				{
+					return await ApplySpec(spec).ToListAsync();
+				}
+
+				public async Task<T> GetByIdAsync(int Id)
+				{
+					//return await _context.Set<T>().Where(x => x.Id == id).FirstOrDefaultAsync();
+					//return await _context.Products.Where(x => x.Id == Id).Include(x => x.Brand).Include(x => x.ProductType);
+					return await _context.Set<T>().FindAsync(Id);
+				}
+
+				public async Task<T> GetByIdSpecAsync(ISpec<T> spec)
+				{
+					return await ApplySpec(spec).FirstOrDefaultAsync();
+				}
+
+				private IQueryable<T> ApplySpec(ISpec<T> spec)
+				{
+					return SpecEval<T>.GetQuery(_context.Set<T>(),spec);
+				}
+			}
+		#endregion
+
+		#region [6] app.core/spec/ProductWithBrandType to show product objects
+			public class ProductWithBrandTypeSpec : BaseSpec<Product>
+			{
+				//get all product brand and type connect be shown because it is object
+				public ProductWithBrandTypeSpec()
+				{
+					Include.Add(x => x.Brand);
+					Include.Add(x => x.ProductType);
+				}
+				public ProductWithBrandTypeSpec(int id) : base(x => x.Id == id)
+				{
+					Include.Add(x => x.Brand);
+					Include.Add(x => x.ProductType);
+				}
+
+			}
+		#endregion
+
+		#region [7] app.api/controller/productController update
+			public class ProductController : BaseController
+			{
+				private readonly IGenericRepo<Product> productRepo;
+
+				public ProductController(IGenericRepo<Product> productRepo)
+				{
+					this.productRepo = productRepo;
+				}
+				#region crud
+
+				[HttpGet]
+				public async Task<ActionResult<IEnumerable<Product>>> GetProduct()
+				{
+					//var products = await productRepo.GetAllAsync();
+					//var spec = new BaseSpec<Product>();
+					var spec = new ProductWithBrandTypeSpec();
+
+					var products = await productRepo.GetAllSpecAsync(spec);
+
+					return Ok(products); //OkObjectResult
+				}
+
+				[HttpGet("{id}")]
+				public async Task<ActionResult<Product>> GetProductById(int id)
+				{
+					//var product = await productRepo.GetByIdAsync(id);
+					var spec = new ProductWithBrandTypeSpec(id);
+					var product = await productRepo.GetByIdSpecAsync(spec);
+
+					return Ok(product); //OkObjectResult
+				}
+
+				#endregion
+			}
+		#endregion
+	#endregion
+
+	#region [1] dto 6
+		// dto object{name,id} object.name 
+		#region [1] app.core/dtos/ProductDto =>copy of app.core/product with string 
+			public class ProductDto
+			{
+				public string Name { get; set; }
+				public string Description { get; set; }
+				public string PictureUrl { get; set; }
+				public decimal Price { get; set; }
+				public int Quantity { get; set; }
+
+				public int BrandId { get; set; }
+				public string Brand { get; set; }
+
+				public int TypeId { get; set; }
+				public string ProductType { get; set; }
+			}
+		#endregion
+		
+		#region [2] auto mapper
+			AutoMapper.Extensions.Microsoft.DependencyInjection |install api nuget
+		#endregion
+
+		#region [3] controller update
+			public class ProductController : BaseController
+			{
+				private readonly IGenericRepo<Product> productRepo;
+				private readonly IMapper mapper; //mapper
+
+				public ProductController(IGenericRepo<Product> productRepo,IMapper mapper)
+				{
+					this.productRepo = productRepo;
+					this.mapper = mapper; //mapper assign
+				}
+				#region crud
+
+				[HttpGet]
+				public async Task<ActionResult<IEnumerable<Product>>> GetProduct()
+				{
+					//var products = await productRepo.GetAllAsync();
+					//var spec = new BaseSpec<Product>();
+					var spec = new ProductWithBrandTypeSpec();
+
+					var products = await productRepo.GetAllSpecAsync(spec);
+
+					return Ok(products); //OkObjectResult
+				}
+
+				[HttpGet("{id}")]
+				public async Task<ActionResult<Product>> GetProductById(int id)
+				{
+					//var product = await productRepo.GetByIdAsync(id);
+					var spec = new ProductWithBrandTypeSpec(id);
+					var product = await productRepo.GetByIdSpecAsync(spec);
+
+					return Ok(product); //OkObjectResult
+				}
+
+				#endregion
+			}
+		#endregion
+
+		#region [4] program pipeline update
+			builder.Services.AddAutoMapper(typeof(MappingProfile));
+		#endregion
+
+		#region [5] app.api/helper/MappingProfile
+			public class MappingProfile:Profile
+			{
+				public MappingProfile()
+				{
+					CreateMap<Product, ProductDto>()
+						.ForMember(x=>x.Brand,x=>x.MapFrom(x=>x.Brand.Name))
+						.ForMember(x=>x.ProductType,x=>x.MapFrom(x=>x.ProductType.Name));
+				}
+			}
+		#endregion
+
+		#region [6] update controller dto
+			public class ProductController : BaseController
+			{
+				private readonly IGenericRepo<Product> productRepo;
+				private readonly IMapper mapper; //mapper
+
+				public ProductController(IGenericRepo<Product> productRepo,IMapper mapper)
+				{
+					this.productRepo = productRepo;
+					this.mapper = mapper; //mapper assign
+				}
+				#region crud
+
+				[HttpGet]
+				public async Task<ActionResult<IEnumerable<ProductDto>>> GetProduct()
+				{
+					//var products = await productRepo.GetAllAsync();
+					//var spec = new BaseSpec<Product>();
+					var spec = new ProductWithBrandTypeSpec();
+
+					var products = await productRepo.GetAllSpecAsync(spec);
+
+					return Ok(mapper.Map<IEnumerable<Product>, IEnumerable<ProductDto>>(products)); //OkObjectResult
+				}
+
+				[HttpGet("{id}")]
+				public async Task<ActionResult<ProductDto>> GetProductById(int id)
+				{
+					//var product = await productRepo.GetByIdAsync(id);
+					var spec = new ProductWithBrandTypeSpec(id);
+					var product = await productRepo.GetByIdSpecAsync(spec);
+
+					return Ok(mapper.Map<Product, ProductDto>(product)); //OkObjectResult
+				}
+
+				#endregion
+			}
+		#endregion
+	#endregion
+
+	#region [1] imageResolver 7
+		#region [1] app.api/helper/imageResolver 
+			public class ImageUrlResolver : IValueResolver<Product, ProductDto, string>
+			{
+				private readonly IConfiguration config;
+
+				public ImageUrlResolver(IConfiguration config)
+				{
+					this.config = config;
+				}
+				public string Resolve(Product source, ProductDto destination, string destMember, ResolutionContext context)
+				{
+					if(!string.IsNullOrEmpty(source.PictureUrl)) {
+						return $"{config["BaseUrl"]}/{source.PictureUrl}";
+					}
+					return string.Empty ;
+				}
+			}
+		#endregion
+
+		#region [2] update app.api/appSetting.json  
+			"BaseUrl": "https://localhost:7089"
+		#endregion
+
+		#region [3] update mapper
+			public class MappingProfile : Profile
+			{
+				public MappingProfile()
+				{
+					CreateMap<Product, ProductDto>()
+						.ForMember(x => x.Brand, x => x.MapFrom(x => x.Brand.Name))
+						.ForMember(x => x.ProductType, x => x.MapFrom(x => x.ProductType.Name))
+						.ForMember(x => x.PictureUrl, x => x.MapFrom<ImageUrlResolver>());
+				}
+			}
+		#endregion
+
+		#region [4] make app.api/wwwroot/image/product 
+			=>put images in this path and edit it in json file =>delete migration and old data seeding
+			=>in pipeline
+			app.UseStaticFiles();
+		#endregion
+	#endregion
+
+	#region [1] brand type endpoint update
+		public class ProductController : BaseController
+		{
+			private readonly IGenericRepo<Product> productRepo;
+			private readonly IGenericRepo<Brand> brandRepo;
+			private readonly IGenericRepo<ProductType> productTypeRepo;
+			private readonly IMapper mapper; //mapper
+
+			public ProductController(
+				IGenericRepo<Product> productRepo,
+				IGenericRepo<Brand> BrandRepo,
+				IGenericRepo<ProductType> ProductTypeRepo,
+				IMapper mapper)
+			{
+				this.productRepo = productRepo;
+				brandRepo = BrandRepo;
+				productTypeRepo = ProductTypeRepo;
+				this.mapper = mapper; //mapper assign
+			}
+
+			[HttpGet]
+			public async Task<ActionResult<IEnumerable<ProductDto>>> GetProduct()
+			{
+				//var products = await productRepo.GetAllAsync();
+				//var spec = new BaseSpec<Product>();
+				var spec = new ProductWithBrandTypeSpec();
+
+				var products = await productRepo.GetAllSpecAsync(spec);
+
+				return Ok(mapper.Map<IEnumerable<Product>, IEnumerable<ProductDto>>(products)); //OkObjectResult
+			}
+
+			[HttpGet("{id}")]
+			public async Task<ActionResult<ProductDto>> GetProductById(int id)
+			{
+				//var product = await productRepo.GetByIdAsync(id);
+				var spec = new ProductWithBrandTypeSpec(id);
+				var product = await productRepo.GetByIdSpecAsync(spec);
+
+				return Ok(mapper.Map<Product, ProductDto>(product)); //OkObjectResult
+			}
+
+			[HttpGet("Brand")]
+			public async Task<ActionResult<IEnumerable<Brand>>> GetProductBrand()
+			{
+				var brands = await brandRepo.GetAllAsync();
+				return Ok(brands);
+			}
+			[HttpGet("ProductType")]
+			public async Task<ActionResult<IEnumerable<ProductType>>> GetProductType()
+			{
+				var productType = await productTypeRepo.GetAllAsync();
+				return Ok(productType);
+			}
+		}
+	#endregion
+
+	#region [1] IReadOnlyList sorting 8
+		#region [1] app.api/controller/product orderBy(x=>x.name)
+			#region [1] change in spec interface
+				public interface ISpec<T> where T : Base
+				{
+					//make condition of generic repo
+					public Expression<Func<T, bool>> criteria { get; set; }
+					public List<Expression<Func<T, object>>> Include { get; set; }
+					public Expression<Func<T, object>> OrderBy { get; set; }
+					public Expression<Func<T, object>> OrderByDesc { get; set; }
+
+				}
+			#endregion
+
+			#region [2] update base spec class
+				public class BaseSpec<T> : ISpec<T> where T : Base
+				{
+					public Expression<Func<T, bool>> criteria { get; set; }
+					//public List<Expression<Func<T, object>>> Include { get; set; }
+					public List<Expression<Func<T, object>>> Include { get; set; } = new List<Expression<Func<T, object>>>() { };
+					public Expression<Func<T, object>> OrderBy { get; set ; }
+					public Expression<Func<T, object>> OrderByDesc { get ; set ; }
+
+					public BaseSpec()
+					{
+						//Include.Add(x=>x.brand)//product
+						//Include=new List<Expression<Func<T, object>>>() { };
+					}
+					public BaseSpec(Expression<Func<T, bool>> exp)
+					{
+						criteria = exp;
+						//Include = new List<Expression<Func<T, object>>>() { };
+					}
+
+					public void AddOrderBy(Expression<Func<T, object>> exp)
+					{
+						OrderBy = exp;
+					}
+					public void AddOrderByDesc(Expression<Func<T, object>> exp)
+					{
+						OrderByDesc = exp;
+					}
+				}
+			#endregion
+
+			#region [3] update productBrandTypeSpec 
+				public class ProductWithBrandTypeSpec : BaseSpec<Product>
+				{
+					//get all product brand and type connect be shown because it is object
+					public ProductWithBrandTypeSpec(string sort)
+					{
+						Include.Add(x => x.Brand);
+						Include.Add(x => x.ProductType);
+						if (!string.IsNullOrEmpty(sort))
+						{
+							switch (sort)
+							{
+								case "priceAsc":
+									AddOrderBy(x => x.Price);
+									break;
+								case "priceDesc":
+									AddOrderByDesc(x => x.Price);
+									break;
+								default:
+									AddOrderBy(x => x.Name);
+									break;
+
+							}
+						}
+					}
+					public ProductWithBrandTypeSpec(int id) : base(x => x.Id == id)
+					{
+						Include.Add(x => x.Brand);
+						Include.Add(x => x.ProductType);
+					}
+				}
+			#endregion
+
+			#region [4] update SpecEval
+				public static class SpecEval<T> where T : Base
+				{
+					public static IQueryable<T> GetQuery(IQueryable<T> inputQ, ISpec<T> spec)
+					{
+						var query = inputQ;
+						if (spec.criteria != null)
+						{
+							query = query.Where(spec.criteria);
+						}
+						if (spec.OrderBy != null)
+						{
+							query = query.OrderBy(spec.OrderBy);
+						}
+						if (spec.OrderByDesc != null)
+						{
+							query = query.OrderByDescending(spec.OrderByDesc);
+						}
+						query = spec.Include.Aggregate(query, (current, include) => current.Include(include));
+						return query;
+
+					}
+				}
+			#endregion
+
+			#region [5] controller update
+				public class ProductController : BaseController
+				{
+					private readonly IGenericRepo<Product> productRepo;
+					private readonly IGenericRepo<Brand> brandRepo;
+					private readonly IGenericRepo<ProductType> productTypeRepo;
+					private readonly IMapper mapper; //mapper
+
+					public ProductController(
+						IGenericRepo<Product> productRepo,
+						IGenericRepo<Brand> BrandRepo,
+						IGenericRepo<ProductType> ProductTypeRepo,
+						IMapper mapper)
+					{
+						this.productRepo = productRepo;
+						brandRepo = BrandRepo;
+						productTypeRepo = ProductTypeRepo;
+						this.mapper = mapper; //mapper assign
+					}
+					
+
+					[HttpGet]
+					public async Task<ActionResult<IReadOnlyList<ProductDto>>> GetProduct(string sort)
+					{
+						//var products = await productRepo.GetAllAsync();
+						//var spec = new BaseSpec<Product>();
+						var spec = new ProductWithBrandTypeSpec(sort);
+
+						var products = await productRepo.GetAllSpecAsync(spec);
+
+						return Ok(mapper.Map<IReadOnlyList<Product>, IReadOnlyList<ProductDto>>(products)); //OkObjectResult
+					}
+
+					[HttpGet("{id}")]
+					public async Task<ActionResult<ProductDto>> GetProductById(int id)
+					{
+						//var product = await productRepo.GetByIdAsync(id);
+						var spec = new ProductWithBrandTypeSpec(id);
+						var product = await productRepo.GetByIdSpecAsync(spec);
+
+						return Ok(mapper.Map<Product, ProductDto>(product)); //OkObjectResult
+					}
+
+					
+
+					
+					[HttpGet("Brand")]
+					public async Task<ActionResult<IReadOnlyList<Brand>>> GetProductBrand()
+					{
+						var brands = await brandRepo.GetAllAsync();
+						return Ok(brands);
+					}
+					[HttpGet("ProductType")]
+					public async Task<ActionResult<IReadOnlyList<ProductType>>> GetProductType()
+					{
+						var productType = await productTypeRepo.GetAllAsync();
+						return Ok(productType);
+					}
+				}
+			#endregion
+		#endregion
+	#endregion
+
+	#region [1] filter 9
+		#region [1] productBrandTypeSpec
+			public class ProductWithBrandTypeSpec : BaseSpec<Product>
+			{
+				//get all product brand and type connect be shown because it is object
+				public ProductWithBrandTypeSpec(string? sort, int? brandId, int? typeId) : base(x =>
+				(!brandId.HasValue || x.TypeId == brandId.Value) && (!typeId.HasValue || x.TypeId == typeId.Value))
+				{
+					Include.Add(x => x.Brand);
+					Include.Add(x => x.ProductType);
+					if (!string.IsNullOrEmpty(sort))
+					{
+						switch (sort)
+						{
+							case "priceAsc":
+								AddOrderBy(x => x.Price);
+								break;
+							case "priceDesc":
+								AddOrderByDesc(x => x.Price);
+								break;
+							default:
+								AddOrderBy(x => x.Name);
+								break;
+
+						}
+					}
+				}
+				public ProductWithBrandTypeSpec(int id) : base(x => x.Id == id)
+				{
+					Include.Add(x => x.Brand);
+					Include.Add(x => x.ProductType);
+				}
+			}
+		#endregion
+
+		#region [2] update controller
+			public class ProductController : BaseController
+			{
+				private readonly IGenericRepo<Product> productRepo;
+				private readonly IGenericRepo<Brand> brandRepo;
+				private readonly IGenericRepo<ProductType> productTypeRepo;
+				private readonly IMapper mapper; //mapper
+
+				public ProductController(
+					IGenericRepo<Product> productRepo,
+					IGenericRepo<Brand> BrandRepo,
+					IGenericRepo<ProductType> ProductTypeRepo,
+					IMapper mapper)
+				{
+					this.productRepo = productRepo;
+					brandRepo = BrandRepo;
+					productTypeRepo = ProductTypeRepo;
+					this.mapper = mapper; //mapper assign
+				}
+				
+
+				[HttpGet]
+				public async Task<ActionResult<IReadOnlyList<ProductDto>>> GetProduct(string? sort,int? brandId,int? typeId)
+				{
+					//var products = await productRepo.GetAllAsync();
+					//var spec = new BaseSpec<Product>();
+					var spec = new ProductWithBrandTypeSpec(sort, brandId, typeId);
+
+					var products = await productRepo.GetAllSpecAsync(spec);
+
+					return Ok(mapper.Map<IReadOnlyList<Product>, IReadOnlyList<ProductDto>>(products)); //OkObjectResult
+				}
+
+				[HttpGet("{id}")]
+				public async Task<ActionResult<ProductDto>> GetProductById(int id)
+				{
+					//var product = await productRepo.GetByIdAsync(id);
+					var spec = new ProductWithBrandTypeSpec(id);
+					var product = await productRepo.GetByIdSpecAsync(spec);
+
+					return Ok(mapper.Map<Product, ProductDto>(product)); //OkObjectResult
+				}
+
+				
+
+				
+				[HttpGet("Brand")]
+				public async Task<ActionResult<IReadOnlyList<Brand>>> GetProductBrand()
+				{
+					var brands = await brandRepo.GetAllAsync();
+					return Ok(brands);
+				}
+				[HttpGet("ProductType")]
+				public async Task<ActionResult<IReadOnlyList<ProductType>>> GetProductType()
+				{
+					var productType = await productTypeRepo.GetAllAsync();
+					return Ok(productType);
+				}
+			}
+		#endregion
+	#endregion
+
+	#region [1] pagination 10
+		#region [1] spec params
+			#region [1] app.core/spec/ProductSpecParams 
+				public class ProductSpecParams
+				{
+					public string? Sort { get; set;}
+					public string? BrandId { get; set;}
+					public string? TypeId { get; set;}
+				}
+			#endregion
+
+			#region [2] app.core/spec/productBrandTypeSpec 
+				public class ProductWithBrandTypeSpec : BaseSpec<Product>
+				{
+					//get all product brand and type connect be shown because it is object
+					public ProductWithBrandTypeSpec(ProductSpecParams productParam) : base(x =>
+					(!productParam.BrandId.HasValue || x.TypeId == productParam.BrandId.Value)
+					&&
+					(!productParam.TypeId.HasValue || x.TypeId == productParam.TypeId.Value))
+					{
+						Include.Add(x => x.Brand);
+						Include.Add(x => x.ProductType);
+						if (!string.IsNullOrEmpty(productParam.Sort))
+						{
+							switch (productParam.Sort)
+							{
+								case "priceAsc":
+									AddOrderBy(x => x.Price);
+									break;
+								case "priceDesc":
+									AddOrderByDesc(x => x.Price);
+									break;
+								default:
+									AddOrderBy(x => x.Name);
+									break;
+
+							}
+						}
+					}
+					public ProductWithBrandTypeSpec(int id) : base(x => x.Id == id)
+					{
+						Include.Add(x => x.Brand);
+						Include.Add(x => x.ProductType);
+					}
+				}
+			#endregion
+
+			#region [3] update api/controller
+				public class ProductController : BaseController
+				{
+					private readonly IGenericRepo<Product> productRepo;
+					private readonly IGenericRepo<Brand> brandRepo;
+					private readonly IGenericRepo<ProductType> productTypeRepo;
+					private readonly IMapper mapper; //mapper
+
+					public ProductController(
+						IGenericRepo<Product> productRepo,
+						IGenericRepo<Brand> BrandRepo,
+						IGenericRepo<ProductType> ProductTypeRepo,
+						IMapper mapper)
+					{
+						this.productRepo = productRepo;
+						brandRepo = BrandRepo;
+						productTypeRepo = ProductTypeRepo;
+						this.mapper = mapper; //mapper assign
+					}
+					
+					[HttpGet]
+					public async Task<ActionResult<IReadOnlyList<ProductDto>>> GetProduct([FromQuery] ProductSpecParams productParam)
+					{
+						//var products = await productRepo.GetAllAsync();
+						//var spec = new BaseSpec<Product>();
+						var spec = new ProductWithBrandTypeSpec(productParam);
+
+						var products = await productRepo.GetAllSpecAsync(spec);
+
+						return Ok(mapper.Map<IReadOnlyList<Product>, IReadOnlyList<ProductDto>>(products)); //OkObjectResult
+					}
+
+					[HttpGet("{id}")]
+					public async Task<ActionResult<ProductDto>> GetProductById(int id)
+					{
+						//var product = await productRepo.GetByIdAsync(id);
+						var spec = new ProductWithBrandTypeSpec(id);
+						var product = await productRepo.GetByIdSpecAsync(spec);
+
+						return Ok(mapper.Map<Product, ProductDto>(product)); //OkObjectResult
+					}
+
+					[HttpGet("Brand")]
+					public async Task<ActionResult<IReadOnlyList<Brand>>> GetProductBrand()
+					{
+						var brands = await brandRepo.GetAllAsync();
+						return Ok(brands);
+					}
+					[HttpGet("ProductType")]
+					public async Task<ActionResult<IReadOnlyList<ProductType>>> GetProductType()
+					{
+						var productType = await productTypeRepo.GetAllAsync();
+						return Ok(productType);
+					}
+				}
+			#endregion
+		#endregion
+
+		#region [2] page size 
+			#region [1] core/spec/ISpec 
+				public interface ISpec<T> where T : Base
+				{
+					//make condition of generic repo
+					public Expression<Func<T, bool>> criteria { get; set; }
+					public List<Expression<Func<T, object>>> Include { get; set; }
+					public Expression<Func<T, object>> OrderBy { get; set; }
+					public Expression<Func<T, object>> OrderByDesc { get; set; }
+					public int Skip { get; set; }	
+					public int Take { get; set; }	
+					public bool IsPaginateEnable { get; set; }	
+				}
+			#endregion
+
+			#region [2] core/spec/BaseSpec
+				public class BaseSpec<T> : ISpec<T> where T : Base
+				{
+					public Expression<Func<T, bool>> criteria { get; set; }
+					//public List<Expression<Func<T, object>>> Include { get; set; }
+					public List<Expression<Func<T, object>>> Include { get; set; } = new List<Expression<Func<T, object>>>() { };
+					public Expression<Func<T, object>> OrderBy { get; set; }
+					public Expression<Func<T, object>> OrderByDesc { get; set; }
+					public int Skip { get ; set ; }
+					public int Take { get ; set ; }
+					public bool IsPaginateEnable { get ; set ; }
+
+					public BaseSpec()
+					{
+						//Include.Add(x=>x.brand)//product
+						//Include=new List<Expression<Func<T, object>>>() { };
+					}
+					public BaseSpec(Expression<Func<T, bool>> exp)
+					{
+						criteria = exp;
+						//Include = new List<Expression<Func<T, object>>>() { };
+					}
+
+					public void AddOrderBy(Expression<Func<T, object>> exp)
+					{
+						OrderBy = exp;
+					}
+					public void AddOrderByDesc(Expression<Func<T, object>> exp)
+					{
+						OrderByDesc = exp;
+					}
+
+					public void ApplyPaginate(int skip, int take)
+					{
+						IsPaginateEnable = true;
+						Take = take;
+						Skip = skip;
+					}
+				}
+			#endregion
+
+			#region [3] core/spec/productBrandTypeSpec 
+				public class ProductWithBrandTypeSpec : BaseSpec<Product>
+				{
+					//get all product brand and type connect be shown because it is object
+					public ProductWithBrandTypeSpec(ProductSpecParams productParam) : base(x =>
+					(!productParam.BrandId.HasValue || x.TypeId == productParam.BrandId.Value)
+					&&
+					(!productParam.TypeId.HasValue || x.TypeId == productParam.TypeId.Value))
+					{
+						Include.Add(x => x.Brand);
+						Include.Add(x => x.ProductType);
+						if (!string.IsNullOrEmpty(productParam.Sort))
+						{
+							switch (productParam.Sort)
+							{
+								case "priceAsc":
+									AddOrderBy(x => x.Price);
+									break;
+								case "priceDesc":
+									AddOrderByDesc(x => x.Price);
+									break;
+								default:
+									AddOrderBy(x => x.Name);
+									break;
+
+							}
+						}
+						ApplyPaginate(productParam.PageSize*(productParam.PageIndex-1), productParam.PageSize);
+					}
+					public ProductWithBrandTypeSpec(int id) : base(x => x.Id == id)
+					{
+						Include.Add(x => x.Brand);
+						Include.Add(x => x.ProductType);
+					}
+				}
+			#endregion
+
+			#region [4] repo/specEval 
+				public static class SpecEval<T> where T : Base
+				{
+					public static IQueryable<T> GetQuery(IQueryable<T> inputQ, ISpec<T> spec)
+					{
+						var query = inputQ;
+						if (spec.criteria != null)
+						{
+							query = query.Where(spec.criteria);
+						}
+						if (spec.OrderBy != null)
+						{
+							query = query.OrderBy(spec.OrderBy);
+						}
+						if (spec.OrderByDesc != null)
+						{
+							query = query.OrderByDescending(spec.OrderByDesc);
+						}
+						if (spec.IsPaginateEnable)
+						{
+							query = query.Skip(spec.Skip).Take(spec.Take);
+						}
+						query = spec.Include.Aggregate(query, (current, include) => current.Include(include));
+						return query;
+
+					}
+				}
+			#endregion
+
+			#region [5] api/helper/pagination
+				public class Pagination<T>
+				{
+					public Pagination(int pageIndex,int pageSize,IReadOnlyList<T> data)
+					{
+						PageIndex = pageIndex;
+						PageSize = pageSize;
+						Data = data;
+					}
+					public int PageSize { get; set; }
+					public int PageIndex { get; set; }
+					public int Count { get; set; }
+					public IReadOnlyList<T> Data { get; set; }
+				}
+			#endregion
+
+			#region [6] manage count 
+				#region [1] core/repo/IGenericRepo
+					public interface IGenericRepo<T> where T : Base
+					{
+						Task<IReadOnlyList<T>> GetAllAsync();
+						Task<IReadOnlyList<T>> GetAllSpecAsync(ISpec<T> spec); //where().include()
+						Task<T> GetByIdAsync(int id);
+						Task<T> GetByIdSpecAsync(ISpec<T> spec); //where().include()
+						Task<int> GetCountWithSpecAsync(ISpec<T> spec); 
+					}
+				#endregion
+
+				#region [2] core/spec/ProductCountFilterSpec 
+					public class ProductCountFilterSpec:BaseSpec<Product>
+					{
+						public ProductCountFilterSpec(ProductSpecParams productParam) : base(x =>
+						(!productParam.BrandId.HasValue || x.TypeId == productParam.BrandId.Value)
+						&&
+						(!productParam.TypeId.HasValue || x.TypeId == productParam.TypeId.Value))
+						{
+							
+						}
+					}
+				#endregion
+
+				#region [3] repo/GenericRepo
+					public class GenericRepo<T> : IGenericRepo<T> where T : Base
+					{
+						private readonly AppContext1 _context;
+						public GenericRepo(AppContext1 dbContext)
+						{
+							this._context = dbContext;
+						}
+						public async Task<IReadOnlyList<T>> GetAllAsync()
+						{
+							if (typeof(T) == typeof(Product))
+							{
+								return (IReadOnlyList<T>)await _context.Products.Include(x => x.Brand).Include(x => x.ProductType).ToListAsync();
+							}
+							else
+							{
+								return await _context.Set<T>().ToListAsync();
+							}
+						}
+
+						public async Task<IReadOnlyList<T>> GetAllSpecAsync(ISpec<T> spec)
+						{
+							return await ApplySpec(spec).ToListAsync();
+						}
+
+						public async Task<T> GetByIdAsync(int Id)
+						{
+							//return await _context.Set<T>().Where(x => x.Id == id).FirstOrDefaultAsync();
+							//return await _context.Products.Where(x => x.Id == Id).Include(x => x.Brand).Include(x => x.ProductType);
+							return await _context.Set<T>().FindAsync(Id);
+						}
+
+						public async Task<T> GetByIdSpecAsync(ISpec<T> spec)
+						{
+							return await ApplySpec(spec).FirstOrDefaultAsync();
+						}
+
+						public async Task<int> GetCountWithSpecAsync(ISpec<T> spec)
+						{
+							return await ApplySpec(spec).CountAsync();
+						}
+
+						private IQueryable<T> ApplySpec(ISpec<T> spec)
+						{
+							return SpecEval<T>.GetQuery(_context.Set<T>(), spec);
+						}
+					}
+				#endregion
+
+				#region [4] api/helper/pagination
+					public class Pagination<T>
+					{
+						public Pagination(int pageIndex, int pageSize,int count, IReadOnlyList<T> data)
+						{
+							PageIndex = pageIndex;
+							PageSize = pageSize;
+							Data = data;
+							Count = count;
+						}
+						public int PageSize { get; set; }
+						public int PageIndex { get; set; }
+						public int Count { get; set; }
+						public IReadOnlyList<T> Data { get; set; }
+					}
+				#endregion
+
+				#region [5] api/controller/product
+					public class ProductController : BaseController
+					{
+						private readonly IGenericRepo<Product> productRepo;
+						private readonly IGenericRepo<Brand> brandRepo;
+						private readonly IGenericRepo<ProductType> productTypeRepo;
+						private readonly IMapper mapper; //mapper
+
+						public ProductController(
+							IGenericRepo<Product> productRepo,
+							IGenericRepo<Brand> BrandRepo,
+							IGenericRepo<ProductType> ProductTypeRepo,
+							IMapper mapper)
+						{
+							this.productRepo = productRepo;
+							brandRepo = BrandRepo;
+							productTypeRepo = ProductTypeRepo;
+							this.mapper = mapper; //mapper assign
+						}
+
+						[HttpGet]
+						public async Task<ActionResult<Pagination<ProductDto>>> GetProduct([FromQuery] ProductSpecParams productParam)
+						{
+							//var products = await productRepo.GetAllAsync();
+							//var spec = new BaseSpec<Product>();
+							var spec = new ProductWithBrandTypeSpec(productParam);
+
+							var products = await productRepo.GetAllSpecAsync(spec);
+							var data = mapper.Map<IReadOnlyList<Product>, IReadOnlyList<ProductDto>>(products);
+							var countSpec = new ProductCountFilterSpec(productParam);
+							var count = await productRepo.GetCountWithSpecAsync(countSpec);
+
+							return Ok(new Pagination<ProductDto>(productParam.PageIndex, productParam.PageSize, count, data)); //OkObjectResult
+						}
+
+						[HttpGet("{id}")]
+						public async Task<ActionResult<ProductDto>> GetProductById(int id)
+						{
+							//var product = await productRepo.GetByIdAsync(id);
+							var spec = new ProductWithBrandTypeSpec(id);
+							var product = await productRepo.GetByIdSpecAsync(spec);
+
+							return Ok(mapper.Map<Product, ProductDto>(product)); //OkObjectResult
+						}
+
+						[HttpGet("Brand")]
+						public async Task<ActionResult<IReadOnlyList<Brand>>> GetProductBrand()
+						{
+							var brands = await brandRepo.GetAllAsync();
+							return Ok(brands);
+						}
+						[HttpGet("ProductType")]
+						public async Task<ActionResult<IReadOnlyList<ProductType>>> GetProductType()
+						{
+							var productType = await productTypeRepo.GetAllAsync();
+							return Ok(productType);
+						}
+					}
+				#endregion
+			#endregion
+		#endregion
+	#endregion
+
+	#region [1] search 11
+		#region [1] core/spec/ProductSpecParams 
+			public class ProductSpecParams
+			{
+				private const int MaxSize = 8;
+				public int PageIndex { get; set; } = 1;
+				private int pageSize = 8;
+
+				public int PageSize
+				{
+					get { return pageSize; }
+					set { pageSize = value > MaxSize ? MaxSize : value; }
+				}
+				private string search;
+
+				public string Search
+				{
+					get { return search; }
+					set { search = value; }
+				}
+
+				public string? Sort { get; set; }
+				public int? BrandId { get; set; }
+				public int? TypeId { get; set; }
+			}
+		#endregion
+
+		#region [2] core/spec/productBrandTypeSpec 
+			public class ProductWithBrandTypeSpec : BaseSpec<Product>
+			{
+				//get all product brand and type connect be shown because it is object
+				public ProductWithBrandTypeSpec(ProductSpecParams productParam) : base(x =>
+				(string.IsNullOrEmpty(productParam.Search)||x.Name.ToLower().Contains(productParam.Search))&&
+				(!productParam.BrandId.HasValue || x.TypeId == productParam.BrandId.Value)
+				&&
+				(!productParam.TypeId.HasValue || x.TypeId == productParam.TypeId.Value))
+				{
+					Include.Add(x => x.Brand);
+					Include.Add(x => x.ProductType);
+					if (!string.IsNullOrEmpty(productParam.Sort))
+					{
+						switch (productParam.Sort)
+						{
+							case "priceAsc":
+								AddOrderBy(x => x.Price);
+								break;
+							case "priceDesc":
+								AddOrderByDesc(x => x.Price);
+								break;
+							default:
+								AddOrderBy(x => x.Name);
+								break;
+
+						}
+					}
+					ApplyPaginate(productParam.PageSize * (productParam.PageIndex - 1), productParam.PageSize);
+				}
+				public ProductWithBrandTypeSpec(int id) : base(x => x.Id == id)
+				{
+					Include.Add(x => x.Brand);
+					Include.Add(x => x.ProductType);
+				}
+			}
+		#endregion
+	#endregion
+#endregion
+
+#region [1] basket
+
+	#region [1] redis [remote dictionary server] =>cache |database |chat|queue
+		#region [1] download
+			https://github.com/microsoftarchive/redis/releases
+			sql server is running service
+			download zip 
+			server to run |cli to ping pong
+		#endregion
+
+		#region [2] add server to environment
+			advanced system setting =>environment variables=>path=>edit=>add new path =>server path
+		#endregion
+	#endregion
+
+	#region [1] basket 12 
+		#region [1] core/entity/basketItem
+			public class BasketItem:Base
+			{
+				public string Name { get; set; }
+				public string Description { get; set; }
+				public decimal Price { get; set; }
+				public int Quantity { get; set; }
+				public int Rating { get; set; }
+				public string PictureUrl { get; set; }
+				public string Brand { get; set; }
+				public string Type { get; set; }
+			}
+		#endregion
+
+		#region [2] core/entity/basket 
+			public class Basket
+			{
+				public string Id { get; set; }
+				public List<BasketItem> Items { get; set; } = new List<BasketItem>();
+				public Basket(string id)
+				{
+					Id= id;
+				}
+			}
+		#endregion
+
+		#region [3] core/repo/IBasketRepo 
+			public interface IBasketRepo
+			{
+				Task<Basket> GetBasketAsync(string id);
+				Task<Basket> UpdateBasketAsync(Basket basket);
+				Task<bool> DeleteBasketAsync(string id);
+			}
+		#endregion
+
+		#region [4] add redis
+			#region [1] install redis core/nuget
+				StackExchange.Redis
+			#endregion
+
+			#region [2] repo/basketRepo 
+				public class BasketRepo : IBasketRepo
+				{
+					public BasketRepo(IConnectionMultiplexer redis)
+					{
+						
+					}
+					public Task<bool> DeleteBasketAsync(string id)
+					{
+						throw new NotImplementedException();
+					}
+
+					public Task<Basket> GetBasketAsync(string id)
+					{
+						throw new NotImplementedException();
+					}
+
+					public Task<Basket> UpdateBasketAsync(Basket basket)
+					{
+						throw new NotImplementedException();
+					}
+				}
+			#endregion
+
+			#region [3] api/appSetting.json 
+				"ConnectionStrings": {
+					"con": "server=.;database=AppDbRoute;trusted_connection=true;multipleActiveresultsets=true;",
+					"redis": "localhost"
+				},
+			#endregion
+
+			#region [4] api/program
+				builder.Services.AddDbContext<AppContext1>(x =>
+				{
+					x.UseSqlServer(builder.Configuration.GetConnectionString("con"));
+				}
+				);
+
+				builder.Services.AddSingleton<IConnectionMultiplexer>(x =>
+				{
+					var con=builder.Configuration.GetConnectionString("redis");
+					return ConnectionMultiplexer.Connect(con);
+				}
+				);
+			#endregion
+		#endregion
+
+		#region [5] repo/BasketRepo
+			public class BasketRepo : IBasketRepo
+			{
+				private readonly IDatabase _database;
+
+				public BasketRepo(IConnectionMultiplexer redis)
+				{
+					_database=redis.GetDatabase();
+				}
+				public async Task<bool> DeleteBasketAsync(string id)
+				{
+					return await _database.KeyDeleteAsync(id);
+				}
+
+				public async Task<Basket?> GetBasketAsync(string id)
+				{
+					var basket=await _database.StringGetAsync(id);
+					return basket.IsNull ? null : JsonSerializer.Deserialize<Basket?>(basket);
+				}
+
+				public async Task<Basket> UpdateBasketAsync(Basket basket)
+				{
+					var basketCreatedOrUpdate = await _database.StringSetAsync(basket.Id, JsonSerializer.Serialize(basket), TimeSpan.FromDays(1));
+					if (basketCreatedOrUpdate is false) return null;
+					return await GetBasketAsync(basket.Id);
+				}
+			}
+		#endregion
+
+		#region [6] api/controller/BasketController 
+			#region [1] api/Extension/AddAppService	
+				public static class AddAppService
+				{
+					public static IServiceCollection addAppServices(this IServiceCollection services)
+					{
+						services.AddScoped(typeof(IGenericRepo<>), typeof(GenericRepo<>));
+						services.AddScoped(typeof(IBasketRepo), typeof(BasketRepo));
+						services.AddAutoMapper(typeof(MappingProfile));
+						return services;
+					}
+				}
+			#endregion
+
+			#region [2] api/program 
+				builder.Services.AddControllers();
+
+				builder.Services.AddEndpointsApiExplorer();
+				builder.Services.AddSwaggerGen();
+
+				builder.Services.addAppServices();
+			#endregion
+
+			#region [3] api/controller/BasketController
+				public class BasketController : BaseController
+				{
+					private readonly IBasketRepo _basket;
+
+					public BasketController(IBasketRepo basket)
+					{
+						_basket = basket;
+					}
+					[HttpGet]
+					public async Task<ActionResult<Basket>> GetBasket(string id)
+					{
+						var basket = await _basket.GetBasketAsync(id);
+						return basket ?? new Basket(id);
+					}
+					[HttpPost]
+					public async Task<ActionResult<Basket>> UpdateBasket(Basket basket)
+					{
+						var createOrUpdateBasket = await _basket.UpdateBasketAsync(basket);
+						if (createOrUpdateBasket is null) return BadRequest();
+						return createOrUpdateBasket;
+					}
+					[HttpDelete]
+					public async Task<ActionResult<bool>> DeleteBasket(string basketId)
+					{
+						return await _basket.DeleteBasketAsync(basketId);
+					}
+				}
+			#endregion
+
+			#region [4] use redily
+				run server =>add collection =>use the connection 4th tab =>run object
+			#endregion
+		#endregion
+	#endregion
+
+	#region [1] relations
+		#region [1] one to many 
+			public class AppUser:IdentityUser //parent
+			{
+				public string DisplayName { get; set; }
+				public Address Address { get; set; } //collection 
+			}
+
+			public class Address //children
+			{
+				public int Id { get; set; }
+				public string FirstName { get; set; }
+				public string LastName { get; set; }
+				public string Street { get; set; }
+				public string City { get; set; }
+				public string Country { get; set; }
+				public string AppUserId { get; set; } //foreign key
+				public AppUser User { get; set; } //object
+			}
+		#endregion
+
+		#region [2] many to many
+			public class AppUser
+			{
+				public string Id { get; set; }
+				// other properties of AppUser
+				public List<UserAddress> UserAddresses { get; set; }
+			}
+
+			public class Address
+			{
+				public int Id { get; set; }
+				public string FirstName { get; set; }
+				public string LastName { get; set; }
+				public string Street { get; set; }
+				public string City { get; set; }
+				public string Country { get; set; }
+				
+				public List<UserAddress> UserAddresses { get; set; }
+			}
+
+			public class UserAddress
+			{
+				public string AppUserId { get; set; }
+				public AppUser AppUser { get; set; }
+				
+				public int AddressId { get; set; }
+				public Address Address { get; set; }
+			}
+		#endregion
+		
+		#region [3] one to one
+			public class AppUser
+			{
+				public string Id { get; set; }
+				// Other properties of AppUser
+
+				public Address Address { get; set; } // One-to-one relationship object
+			}
+
+			public class Address
+			{
+				public int Id { get; set; }
+				public string FirstName { get; set; }
+				public string LastName { get; set; }
+				public string Street { get; set; }
+				public string City { get; set; }
+				public string Country { get; set; }
+
+				public string AppUserId { get; set; } // Foreign key
+
+				public AppUser AppUser { get; set; } // One-to-one relationship object
+			}
+		#endregion
+	#endregion
+#endregion
+
+#region [1] identity  +basket validation
+	#region [1] install|entity|migrate
+		#region [1] core	
+			#region [1] core/nuget
+				Microsoft.AspNet.Identity.EntityFramework
+			#endregion
+
+			#region [2] core/entity/identity/appUser user=>address
+				public class AppUser:IdentityUser
+				{
+					public string DisplayName { get; set; }
+					public Address Address { get; set; }
+				}
+			#endregion
+
+			#region [3] core/entity/identity/Address  address<=user
+				public class Address
+				{
+					public int Id { get; set; }
+					public string FirstName { get; set; }
+					public string LastName { get; set; }
+					public string Street { get; set; }
+					public string City { get; set; }
+					public string Country { get; set; }
+					public string AppUserId { get; set; } //foreign key
+					public AppUser User { get; set; }
+				}
+			#endregion
+		#endregion
+
+		#region [2] repo/identity/RepoIdentityDbContext 
+			public class RepoIdentityDbContext:IdentityDbContext<AppUser>
+			{
+				public RepoIdentityDbContext(DbContextOptions<RepoIdentityDbContext>opt):base(opt) { }
+			}
+		#endregion
+
+		#region [3] api/program |api/appSetting.json |migration
+			#region [1] ConnectionStrings 
+
+				"ConnectionStrings": {
+					"con": "server=.;database=AppDbRoute;trusted_connection=true;multipleActiveresultsets=true;",
+					"identity": "server=.;database=identityDbRoute;trusted_connection=true;multipleActiveresultsets=true;",
+					"redis": "localhost"
+				},
+			#endregion
+
+			#region [2] program 
+
+				builder.Services.AddDbContext<RepoIdentityDbContext>(x =>
+					{
+						x.UseSqlServer(builder.Configuration.GetConnectionString("identity"));
+					}
+				);
+
+				#region [1] auto migrate 
+					using var scope = app.Services.CreateScope();
+					var services = scope.ServiceProvider;
+					var loggerFactory = services.GetRequiredService<ILoggerFactory>(); //!show exception of dbContext
+					try
+					{
+						var dbContext = services.GetRequiredService<AppContext1>();
+						await dbContext.Database.MigrateAsync();
+						await AppSeeding.SeedAsync(dbContext);
+						var identityDbContext = services.GetRequiredService<RepoIdentityDbContext>();
+						await identityDbContext.Database.MigrateAsync();
+					}
+					catch (Exception ex)
+					{
+
+						var logger = loggerFactory.CreateLogger<Program>();
+						logger.LogError(ex, "error occurred while migration");
+					}
+				#endregion
+			#endregion
+
+			#region [3] migration default project repo
+				add-migration initIdentity -context RepoIdentityDbContext -o identity/migration
+			#endregion
+		#endregion
+	#endregion
+
+	#region [2] seeding
+		#region [1] repo/identity/IdentitySeeding 
+			public static class IdentitySeeding
+			{
+				public static async Task SeedUsersAsync(UserManager<AppUser> manager)
+				{
+					if(!manager.Users.Any()) {
+						var user = new AppUser()
+						{
+							DisplayName = "mo",
+							Email = "mo@gmail.com",
+							UserName = "mo.t",
+							PhoneNumber = "01023100100"
+						};
+						await manager.CreateAsync(user,"P@ssw0rd");
+					};
+				}
+			}
+		#endregion
+
+		#region [2] api/program seeding update 
+			#region [1] migration scope
+				using var scope = app.Services.CreateScope();
+				var services = scope.ServiceProvider;
+				var loggerFactory = services.GetRequiredService<ILoggerFactory>(); //!show exception of dbContext
+				try
+				{
+					var dbContext = services.GetRequiredService<AppContext1>();
+					await dbContext.Database.MigrateAsync();
+					await AppSeeding.SeedAsync(dbContext);
+					var identityDbContext = services.GetRequiredService<RepoIdentityDbContext>(); //todo edit here
+					await identityDbContext.Database.MigrateAsync();
+
+					var userManager=services.GetRequiredService<UserManager<AppUser>>();
+					await IdentitySeeding.SeedUsersAsync(userManager);
+				}
+				catch (Exception ex)
+				{
+
+					var logger = loggerFactory.CreateLogger<Program>();
+					logger.LogError(ex, "error occurred while migration");
+				}
+			#endregion
+
+			#region [2] api/Extension/IdentityServiceExtension
+				public static class IdentityServiceExtension
+				{
+					public static IServiceCollection addIdentityServices(this IServiceCollection services) //todo edit here dep
+					{
+						services.AddIdentity<AppUser, IdentityRole>().AddEntityFrameworkStores<RepoIdentityDbContext>();
+						services.AddAuthentication();
+						return services;
+					}
+				}
+			#endregion
+
+			#region [3]  builder.Services
+				builder.Services.AddControllers();
+
+				builder.Services.AddEndpointsApiExplorer();
+				builder.Services.AddSwaggerGen();
+
+				builder.Services.addAppServices();
+				builder.Services.addIdentityServices(); //todo edit here dep
+			#endregion
+		#endregion
+	#endregion
+
+	#region [3] login|register
+		#region [1] login 
+			#region [1] api/dto/userDto
+				public class UserDto
+				{
+					public string DisplayName { get; set; }
+					public string Email { get; set; }
+					public string Token { get; set; }
+				}
+			#endregion
+
+			#region [2] api/dto/login
+				public class LoginDto
+				{
+					[Required]
+					[EmailAddress]
+					public string Email { get; set; }
+					[Required]
+					//[DataType(DataType.Password)]
+					public string Password { get; set; }
+				}
+			#endregion
+
+			#region [3] api/controller/AccountsController //TODO EDIT HERE DEP
+				public class AccountsController : BaseController 
+				{
+					private readonly UserManager<AppUser> _manager;
+					private readonly SignInManager<AppUser> _signInManager;
+
+					public AccountsController(UserManager<AppUser> manager,SignInManager<AppUser> signInManager)
+					{
+						_manager = manager;
+						_signInManager = signInManager;
+					}
+					[HttpPost("login")]
+					public async Task<ActionResult<UserDto>> Login(LoginDto model)
+					{
+						var user=await _manager.FindByEmailAsync(model.Email);
+						if (user == null)
+						{
+							return Unauthorized();	
+						}
+						var result=await _signInManager.CheckPasswordSignInAsync(user,model.Password,false);
+						if (!result.Succeeded)
+						{
+							return Unauthorized();
+						}
+						return Ok(new UserDto()
+						{
+							DisplayName = user.Email,
+							Email=user.Email,
+							Token = "token here"
+						});
+					}
+				}
+			#endregion
+		#endregion
+
+		#region [2] register 
+			#region [1] api/dto/RegisterDto
+				public class RegisterDto
+				{
+					[Required]
+					public string DisplayName { get; set; }
+					[Required]
+					[EmailAddress]
+					public string Email { get; set; }
+					[Required]
+					[RegularExpression("(?=^.{6,10}$)(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-z])(?=.*[!@#$%^&amp;*()_+}{@quot;:;'?/&gt;.&lt;,])(?!.*\\s).*$", ErrorMessage = "Password must 1 uppercase 1 lowercase 1 number non alpha at least 6 charts")]
+					public string Password { get; set; }
+					[Required]
+					[Phone]
+					public string PhoneNumber { get; set; }
+				}
+			#endregion
+
+			#region [2] api/controller/AccountsController //TODO EDIT HERE DEP
+				public class AccountsController : BaseController
+				{
+					private readonly UserManager<AppUser> _manager;
+					private readonly SignInManager<AppUser> _signInManager;
+
+					public AccountsController(UserManager<AppUser> manager, SignInManager<AppUser> signInManager)
+					{
+						_manager = manager;
+						_signInManager = signInManager;
+					}
+					[HttpPost("login")]
+					public async Task<ActionResult<UserDto>> Login(LoginDto model)
+					{
+						var user = await _manager.FindByEmailAsync(model.Email);
+						if (user == null)
+						{
+							return Unauthorized();
+						}
+						var result = await _signInManager.CheckPasswordSignInAsync(user, model.Password, false);
+						if (!result.Succeeded)
+						{
+							return Unauthorized();
+						}
+						return Ok(new UserDto()
+						{
+							DisplayName = user.Email,
+							Email = user.Email,
+							Token = "token here" //todo edit here dep
+						});
+					}
+					[HttpPost("register")] //todo edit here
+					public async Task<ActionResult<UserDto>>Register(RegisterDto model)
+					{
+						var user = new AppUser() //todo edit here dep check if exist
+						{
+							DisplayName = model.Email,
+							Email = model.Email,
+							PhoneNumber = model.PhoneNumber,
+							UserName = model.Email.Split('@')[0]
+						};
+						var result = await _manager.CreateAsync(user, model.Password);
+						if (!result.Succeeded)
+						{
+							return BadRequest();
+						}
+						return Ok(new UserDto()
+						{
+							DisplayName = model.Email,
+							Email = model.Email,
+							Token = "this.is token" //todo edit here dep
+						});
+					}
+				}
+			#endregion
+		#endregion
+	#endregion
+
+	#region [4] jwt
+		#region [1] install package service/nuget
+			Microsoft.AspNetCore.Authentication.JwtBearer
+		#endregion
+
+		#region [2] core/service/ITokenService
+			public interface ITokenService
+			{
+				Task<string> CreateUserAsync(AppUser user, UserManager<AppUser> manager);
+			}
+		#endregion
+
+		#region [3] service/TokenService
+			public class TokenService : ITokenService
+			{
+				private readonly IConfiguration _config;
+
+				public TokenService(IConfiguration config)
+				{
+					_config = config;
+				}
+				public async Task<string> CreateUserAsync(AppUser user, UserManager<AppUser> manager)
+				{
+
+					var authClaim = new List<Claim>()
+					{
+						new Claim(ClaimTypes.GivenName,user.DisplayName),
+						new Claim(ClaimTypes.Email,user.Email),
+
+					};
+					var userRoles = await manager.GetRolesAsync(user);
+					foreach (var role in userRoles)
+					{
+						authClaim.Add(new Claim(ClaimTypes.Role, role));
+					}
+					var authKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["JWT:Key"])); //todo edit here crk
+					var token = new JwtSecurityToken(
+							issuer: _config["JWT:ValidIssuer"],
+							audience: _config["JWT:ValidAudience"],
+							expires: DateTime.Now.AddDays(double.Parse(_config["JWT:DurationInDays"])),
+							claims: authClaim,
+							signingCredentials: new SigningCredentials(authKey, SecurityAlgorithms.HmacSha256Signature)
+						);
+					return new JwtSecurityTokenHandler().WriteToken(token);
+				}
+			}
+		#endregion
+
+		#region [4] api/appSetting.json
+			"ConnectionStrings": {
+				"con": "server=.;database=AppDbRoute;trusted_connection=true;multipleActiveresultsets=true;",
+				"identity": "server=.;database=identityDbRoute;trusted_connection=true;multipleActiveresultsets=true;",
+				"redis": "localhost"
+			},
+			"JWT": {
+				"key": "StrONGKAutHENTICATIONKEy",
+				"ValidIssuer": "https://localhost:7089",
+				"ValidAudience": "MySecuredApiUsers",
+				"DurationInDays": "30"
+			},
+			"BaseUrl": "https://localhost:7089"
+		#endregion
+
+		#region [5] api/Extension/identity
+			public static class IdentityServiceExtension
+			{
+				public static IServiceCollection addIdentityServices(this IServiceCollection services)
+				{
+					services.AddScoped<ITokenService, TokenService>();
+					services.AddIdentity<AppUser, IdentityRole>().AddEntityFrameworkStores<RepoIdentityDbContext>();
+					services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(); //ugly edit here dep
+					return services;
+				}
+			}
+		#endregion
+
+		#region [6] api/controller/AccountsController
+			public class AccountsController : BaseController
+			{
+				private readonly UserManager<AppUser> _manager;
+				private readonly SignInManager<AppUser> _signInManager;
+				private readonly ITokenService _config;
+
+				public AccountsController(UserManager<AppUser> manager, SignInManager<AppUser> signInManager,ITokenService config)
+				{
+					_manager = manager;
+					_signInManager = signInManager;
+					_config = config;
+				}
+				[HttpPost("login")]
+				public async Task<ActionResult<UserDto>> Login(LoginDto model)
+				{
+					var user = await _manager.FindByEmailAsync(model.Email);
+					if (user == null)
+					{
+						return Unauthorized();
+					}
+					var result = await _signInManager.CheckPasswordSignInAsync(user, model.Password, false);
+					if (!result.Succeeded)
+					{
+						return Unauthorized();
+					}
+					return Ok(new UserDto()
+					{
+						DisplayName = user.Email,
+						Email = user.Email,
+						Token = await _config.CreateUserAsync(user, _manager)
+					}) ;
+				}
+				[HttpPost("register")] //todo edit here
+				public async Task<ActionResult<UserDto>> Register(RegisterDto model)
+				{
+					var user = new AppUser()
+					{
+						DisplayName = model.Email,
+						Email = model.Email,
+						UserName = model.Email.Split('@')[0],
+						PhoneNumber = model.PhoneNumber,
+					};
+					var result = await _manager.CreateAsync(user, model.Password);
+					if (!result.Succeeded)
+					{
+						return BadRequest();
+					}
+					return Ok(new UserDto()
+					{
+						DisplayName = model.Email,
+						Email = model.Email,
+						Token = await _config.CreateUserAsync(user, _manager)
+					});
+				}
+			}
+		#endregion
+	#endregion
+
+	#region [5] auth 
+		#region [1] api/program[services|pipeline]
+			#region [1] services
+				builder.Services.AddControllers();
+
+				builder.Services.AddEndpointsApiExplorer();
+				builder.Services.AddSwaggerGen();
+
+				builder.Services.addAppServices();
+				builder.Services.addIdentityServices(builder.Configuration);//todo edit here
+			#endregion
+
+			#region [2] pipeline
+				app.UseStatusCodePagesWithReExecute("/errors/{0}");//todo edit here
+				app.UseHttpsRedirection();
+
+				app.UseStaticFiles();
+				app.UseAuthentication();//todo edit here
+				app.UseAuthorization();  //todo edit here
+
+				app.MapControllers(); 
+			#endregion
+		#endregion
+
+		#region [2] api/controller/product
+			public class ProductController : BaseController
+			{
+				private readonly IGenericRepo<Product> productRepo;
+				private readonly IGenericRepo<Brand> brandRepo;
+				private readonly IGenericRepo<ProductType> productTypeRepo;
+				private readonly IMapper mapper; //mapper
+
+				public ProductController(
+					IGenericRepo<Product> productRepo,
+					IGenericRepo<Brand> BrandRepo,
+					IGenericRepo<ProductType> ProductTypeRepo,
+					IMapper mapper)
+				{
+					this.productRepo = productRepo;
+					brandRepo = BrandRepo;
+					productTypeRepo = ProductTypeRepo;
+					this.mapper = mapper; //mapper assign
+				}
+				[Authorize] //todo edit here for test
+				[HttpGet]
+				public async Task<ActionResult<Pagination<ProductDto>>> GetProduct([FromQuery] ProductSpecParams productParam)
+				{
+					//var products = await productRepo.GetAllAsync();
+					//var spec = new BaseSpec<Product>();
+					var spec = new ProductWithBrandTypeSpec(productParam);
+
+					var products = await productRepo.GetAllSpecAsync(spec);
+					var data = mapper.Map<IReadOnlyList<Product>, IReadOnlyList<ProductDto>>(products);
+					var countSpec = new ProductCountFilterSpec(productParam);
+					var count = await productRepo.GetCountWithSpecAsync(countSpec);
+
+					return Ok(new Pagination<ProductDto>(productParam.PageIndex, productParam.PageSize, count, data)); //OkObjectResult
+				}
+
+				[HttpGet("{id}")]
+				public async Task<ActionResult<ProductDto>> GetProductById(int id)
+				{
+					//var product = await productRepo.GetByIdAsync(id);
+					var spec = new ProductWithBrandTypeSpec(id);
+					var product = await productRepo.GetByIdSpecAsync(spec);
+
+					return Ok(mapper.Map<Product, ProductDto>(product)); //OkObjectResult
+				}
+
+				[HttpGet("Brand")]
+				public async Task<ActionResult<IReadOnlyList<Brand>>> GetProductBrand()
+				{
+					var brands = await brandRepo.GetAllAsync();
+					return Ok(brands);
+				}
+				[HttpGet("ProductType")]
+				public async Task<ActionResult<IReadOnlyList<ProductType>>> GetProductType()
+				{
+					var productType = await productTypeRepo.GetAllAsync();
+					return Ok(productType);
+				}
+			}
+		#endregion
+
+		#region [3] api/Extension/identity
+			public static class IdentityServiceExtension
+			{
+				public static IServiceCollection addIdentityServices(this IServiceCollection services,IConfiguration config)
+				{
+					services.AddScoped<ITokenService, TokenService>();
+					services.AddIdentity<AppUser, IdentityRole>().AddEntityFrameworkStores<RepoIdentityDbContext>();
+					//todo edit here
+					services.AddAuthentication(opt =>
+						{
+							opt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+							opt.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+						}
+					).AddJwtBearer(
+						opt =>
+						{
+							opt.TokenValidationParameters = new TokenValidationParameters()
+							{
+								ValidateIssuer = true,
+								ValidIssuer = config["JWT:ValidIssuer"],
+								ValidateAudience=true,
+								ValidAudience = config["JWT:ValidAudience"],
+								ValidateLifetime = true,
+								ValidateIssuerSigningKey = true,
+								IssuerSigningKey=new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["JWT:Key"]))
+							};
+						});
+					return services;
+				}
+			}
+		#endregion
+
+		#region [4] api/appSetting.json
+			"AllowedHosts": "*",
+			"ConnectionStrings": {
+				"con": "server=.;database=AppDbRoute;trusted_connection=true;multipleActiveresultsets=true;",
+				"identity": "server=.;database=identityDbRoute;trusted_connection=true;multipleActiveresultsets=true;",
+				"redis": "localhost"
+			},
+			"JWT": {
+				"Key": "StrONGKAutHENTICATIONKEy",
+				"ValidIssuer": "https://localhost:7089",
+				"ValidAudience": "MySecuredApiUsers",
+				"DurationInDays": "30"
+			},
+			"BaseUrl": "https://localhost:7089"
+		#endregion
+	#endregion
+
+	#region [6] api/controller/account update current user
+		public class AccountsController : BaseController
+		{
+			private readonly UserManager<AppUser> _manager;
+			private readonly SignInManager<AppUser> _signInManager;
+			private readonly ITokenService _config;
+
+			public AccountsController(UserManager<AppUser> manager, SignInManager<AppUser> signInManager, ITokenService config)
+			{
+				_manager = manager;
+				_signInManager = signInManager;
+				_config = config;
+			}
+			[HttpPost("login")]
+			public async Task<ActionResult<UserDto>> Login(LoginDto model)
+			{
+				var user = await _manager.FindByEmailAsync(model.Email);
+				if (user == null)
+				{
+					return Unauthorized();
+				}
+				var result = await _signInManager.CheckPasswordSignInAsync(user, model.Password, false);
+				if (!result.Succeeded)
+				{
+					return Unauthorized();
+				}
+				return Ok(new UserDto()
+				{
+					DisplayName = user.Email,
+					Email = user.Email,
+					Token = await _config.CreateUserAsync(user, _manager)
+				});
+			}
+			[HttpPost("register")]
+			public async Task<ActionResult<UserDto>> Register(RegisterDto model)
+			{
+				var user = new AppUser()
+				{
+					DisplayName = model.Email,
+					Email = model.Email,
+					UserName = model.Email.Split('@')[0],
+					PhoneNumber = model.PhoneNumber,
+				};
+				var result = await _manager.CreateAsync(user, model.Password);
+				if (!result.Succeeded)
+				{
+					return BadRequest();
+				}
+				return Ok(new UserDto()
+				{
+					DisplayName = model.Email,
+					Email = model.Email,
+					Token = "this.is token"
+				});
+			}
+			[Authorize] //todo edit here
+			[HttpGet]
+			public async Task<ActionResult<UserDto>> GetCurrentUser()
+			{
+				var email = User.FindFirstValue(ClaimTypes.Email);
+				var user = await _manager.FindByEmailAsync(email);
+				return Ok(new UserDto()
+				{
+					DisplayName = user.Email,
+					Email = user.Email,
+					Token = await _config.CreateUserAsync(user, _manager)
+				});
+			}
+		}
+	#endregion
+
+	#region [7] address
+		#region [1] make address
+
+			#region [1] make address in database
+				1	mostafa	mohamed	nasr	cairo	egypt	1bc9215e-14dc-4320-8462-c02c79b34798
+				2	mo	taha	fayoum	fayoum	egypt	2c3964b4-e865-4cb1-903b-2a3dfe338934
+			#endregion
+
+			#region [2] api/dto/address
+				public class AddressDto
+				{
+					public int Id { get; set; }
+					public string FirstName { get; set; }
+					public string LastName { get; set; }
+					public string Street { get; set; }
+					public string City { get; set; }
+					public string Country { get; set; }
+				}
+			#endregion
+
+			#region [3] api/Extension/addressExtension 
+				public static class UserManagerExtension
+				{
+					public static async Task<AppUser?> FindUserAddressAsync(this UserManager<AppUser> userManager, ClaimsPrincipal userClaim)
+					{
+						var email = userClaim.FindFirstValue(ClaimTypes.Email);
+						var user = await userManager.Users.Include(u => u.Address).FirstOrDefaultAsync(u => u.Email == email);
+						return user;
+					}
+				}
+			#endregion
+
+			#region [4] api/helpers/mapper
+				public class MappingProfile : Profile
+				{
+					public MappingProfile()
+					{
+						CreateMap<Product, ProductDto>()
+							.ForMember(x => x.Brand, x => x.MapFrom(x => x.Brand.Name))
+							.ForMember(x => x.ProductType, x => x.MapFrom(x => x.ProductType.Name))
+							.ForMember(x => x.PictureUrl, x => x.MapFrom<ImageUrlResolver>());
+						CreateMap<Address, AddressDto>(); //todo edit here
+					}
+				}
+			#endregion
+
+			#region [5] api/controller/account
+				public class AccountsController : BaseController
+				{
+					private readonly UserManager<AppUser> _manager;
+					private readonly SignInManager<AppUser> _signInManager;
+					private readonly ITokenService _config;
+					private readonly IMapper _mapper; //ugly edit here
+
+					public AccountsController(UserManager<AppUser> manager, SignInManager<AppUser> signInManager, ITokenService config, IMapper mapper)
+					{
+						_manager = manager;
+						_signInManager = signInManager;
+						_config = config;
+						_mapper = mapper;
+					}
+					[HttpPost("login")]
+					public async Task<ActionResult<UserDto>> Login(LoginDto model)
+					{
+						var user = await _manager.FindByEmailAsync(model.Email);
+						if (user == null)
+						{
+							return Unauthorized();
+						}
+						var result = await _signInManager.CheckPasswordSignInAsync(user, model.Password, false);
+						if (!result.Succeeded)
+						{
+							return Unauthorized();
+						}
+						return Ok(new UserDto()
+						{
+							DisplayName = user.Email,
+							Email = user.Email,
+							Token = await _config.CreateUserAsync(user, _manager)
+						});
+					}
+					[HttpPost("register")]
+					public async Task<ActionResult<UserDto>> Register(RegisterDto model)
+					{
+						var user = new AppUser()
+						{
+							DisplayName = model.Email,
+							Email = model.Email,
+							UserName = model.Email.Split('@')[0],
+							PhoneNumber = model.PhoneNumber,
+						};
+						var result = await _manager.CreateAsync(user, model.Password);
+						if (!result.Succeeded)
+						{
+							return BadRequest();
+						}
+						return Ok(new UserDto()
+						{
+							DisplayName = model.Email,
+							Email = model.Email,
+							Token = "this.is token"
+						});
+					}
+					[Authorize] 
+					[HttpGet]
+					public async Task<ActionResult<UserDto>> GetCurrentUser()
+					{
+						var email = User.FindFirstValue(ClaimTypes.Email);
+						var user = await _manager.FindByEmailAsync(email);
+						return Ok(new UserDto()
+						{
+							DisplayName = user.Email,
+							Email = user.Email,
+							Token = await _config.CreateUserAsync(user, _manager)
+						});
+					}
+					[Authorize] //ugly edit here
+					[HttpGet("address")]
+					public async Task<ActionResult<AddressDto>> GetUserAddress()
+					{
+						//var email = User.FindFirstValue(ClaimTypes.Email);
+						//var user = await _manager.FindByEmailAsync(email);
+						var user = await _manager.FindUserAddressAsync(User);
+						var address = _mapper.Map<Address, AddressDto>(user.Address);
+						return Ok(address);
+					}
+				}
+			#endregion
+		#endregion
+
+		#region [2] update address
+			#region [1] api/dto/address
+				public class AddressDto
+				{
+					//public int Id { get; set; } //todo edit here remove
+					[Required] //todo edit here
+					public string FirstName { get; set; }
+					[Required]
+					public string LastName { get; set; }
+					[Required]
+					public string Street { get; set; }
+					[Required]
+					public string City { get; set; }
+					[Required]
+					public string Country { get; set; }
+				}
+			#endregion
+
+			#region [2] api/helper/MappingProfile
+				public class MappingProfile : Profile
+				{
+					public MappingProfile()
+					{
+						CreateMap<Product, ProductDto>()
+							.ForMember(x => x.Brand, x => x.MapFrom(x => x.Brand.Name))
+							.ForMember(x => x.ProductType, x => x.MapFrom(x => x.ProductType.Name))
+							.ForMember(x => x.PictureUrl, x => x.MapFrom<ImageUrlResolver>());
+						CreateMap<Address, AddressDto>().ReverseMap(); //todo edit here
+					}
+				}
+			#endregion
+
+			#region [3] controller
+				public class AccountsController : BaseController
+				{
+					private readonly UserManager<AppUser> _manager;
+					private readonly SignInManager<AppUser> _signInManager;
+					private readonly ITokenService _config;
+					private readonly IMapper _mapper;
+
+					public AccountsController(UserManager<AppUser> manager, SignInManager<AppUser> signInManager, ITokenService config, IMapper mapper)
+					{
+						_manager = manager;
+						_signInManager = signInManager;
+						_config = config;
+						_mapper = mapper;
+					}
+					[HttpPost("login")]
+					public async Task<ActionResult<UserDto>> Login(LoginDto model)
+					{
+						var user = await _manager.FindByEmailAsync(model.Email);
+						if (user == null)
+						{
+							return Unauthorized();
+						}
+						var result = await _signInManager.CheckPasswordSignInAsync(user, model.Password, false);
+						if (!result.Succeeded)
+						{
+							return Unauthorized();
+						}
+						return Ok(new UserDto()
+						{
+							DisplayName = user.Email,
+							Email = user.Email,
+							Token = await _config.CreateUserAsync(user, _manager)
+						});
+					}
+					[HttpPost("register")]
+					public async Task<ActionResult<UserDto>> Register(RegisterDto model)
+					{
+						var user = new AppUser()
+						{
+							DisplayName = model.Email,
+							Email = model.Email,
+							UserName = model.Email.Split('@')[0],
+							PhoneNumber = model.PhoneNumber,
+						};
+						var result = await _manager.CreateAsync(user, model.Password);
+						if (!result.Succeeded)
+						{
+							return BadRequest();
+						}
+						return Ok(new UserDto()
+						{
+							DisplayName = model.Email,
+							Email = model.Email,
+							Token = "this.is token"
+						});
+					}
+					[Authorize]
+					[HttpGet]
+					public async Task<ActionResult<UserDto>> GetCurrentUser()
+					{
+						var email = User.FindFirstValue(ClaimTypes.Email);
+						var user = await _manager.FindByEmailAsync(email);
+						return Ok(new UserDto()
+						{
+							DisplayName = user.Email,
+							Email = user.Email,
+							Token = await _config.CreateUserAsync(user, _manager)
+						});
+					}
+					[Authorize]
+					[HttpGet("address")]
+					public async Task<ActionResult<AddressDto>> GetUserAddress()
+					{
+						//var email = User.FindFirstValue(ClaimTypes.Email);
+						//var user = await _manager.FindByEmailAsync(email);
+						var user = await _manager.FindUserAddressAsync(User);
+						var address = _mapper.Map<Address, AddressDto>(user.Address);
+						return Ok(address);
+					}
+
+					[Authorize] //todo edit here
+					[HttpPut("address")]
+					public async Task<ActionResult<AddressDto>> GetUserAddressUpdate(AddressDto addressUpdated)
+					{
+						var email = User.FindFirstValue(ClaimTypes.Email);
+						var user = await _manager.FindUserAddressAsync(User);
+						var address=_mapper.Map<AddressDto, Address>(addressUpdated); //todo edit here reversed here
+						user.Address = address;
+						address.Id=user.Address.Id;
+						var result = await _manager.UpdateAsync(user);
+						if (!result.Succeeded)
+						{
+							return BadRequest();
+						}
+						return Ok(addressUpdated);
+					}
+				}
+			#endregion
+		#endregion
+	#endregion
+
+	#region [8] check email exist 
+		public class AccountsController : BaseController
+		{
+			private readonly UserManager<AppUser> _manager;
+			private readonly SignInManager<AppUser> _signInManager;
+			private readonly ITokenService _config;
+			private readonly IMapper _mapper;
+
+			public AccountsController(UserManager<AppUser> manager, SignInManager<AppUser> signInManager, ITokenService config, IMapper mapper)
+			{
+				_manager = manager;
+				_signInManager = signInManager;
+				_config = config;
+				_mapper = mapper;
+			}
+			[HttpPost("login")]
+			public async Task<ActionResult<UserDto>> Login(LoginDto model)
+			{
+				var user = await _manager.FindByEmailAsync(model.Email);
+				if (user == null)
+				{
+					return Unauthorized();
+				}
+				var result = await _signInManager.CheckPasswordSignInAsync(user, model.Password, false);
+				if (!result.Succeeded)
+				{
+					return Unauthorized();
+				}
+				return Ok(new UserDto()
+				{
+					DisplayName = user.Email,
+					Email = user.Email,
+					Token = await _config.CreateUserAsync(user, _manager)
+				});
+			}
+			[HttpPost("register")]
+			public async Task<ActionResult<UserDto>> Register(RegisterDto model)
+			{
+				if (CheckEmailExist(model.Email).Result.Value) //todo edit here
+				{
+					return BadRequest("this email is already exists");
+				}
+				var user = new AppUser()
+				{
+					DisplayName = model.Email,
+					Email = model.Email,
+					UserName = model.Email.Split('@')[0],
+					PhoneNumber = model.PhoneNumber,
+				};
+				var result = await _manager.CreateAsync(user, model.Password);
+				if (!result.Succeeded)
+				{
+					return BadRequest();
+				}
+				return Ok(new UserDto()
+				{
+					DisplayName = model.Email,
+					Email = model.Email,
+					Token = await _config.CreateUserAsync(user, _manager)
+				});
+			}
+			[Authorize]
+			[HttpGet]
+			public async Task<ActionResult<UserDto>> GetCurrentUser()
+			{
+				var email = User.FindFirstValue(ClaimTypes.Email);
+				var user = await _manager.FindByEmailAsync(email);
+				return Ok(new UserDto()
+				{
+					DisplayName = user.Email,
+					Email = user.Email,
+					Token = await _config.CreateUserAsync(user, _manager)
+				});
+			}
+			[Authorize]
+			[HttpGet("address")]
+			public async Task<ActionResult<AddressDto>> GetUserAddress()
+			{
+				//var email = User.FindFirstValue(ClaimTypes.Email);
+				//var user = await _manager.FindByEmailAsync(email);
+				var user = await _manager.FindUserAddressAsync(User);
+				var address = _mapper.Map<Address, AddressDto>(user.Address);
+				return Ok(address);
+			}
+
+			[Authorize]
+			[HttpPut("address")]
+			public async Task<ActionResult<AddressDto>> GetUserAddressUpdate(AddressDto addressUpdated)
+			{
+				var email = User.FindFirstValue(ClaimTypes.Email);
+				var user = await _manager.FindUserAddressAsync(User);
+				var address = _mapper.Map<AddressDto, Address>(addressUpdated);
+				user.Address = address;
+				address.Id = user.Address.Id;
+				var result = await _manager.UpdateAsync(user);
+				if (!result.Succeeded)
+				{
+					return BadRequest();
+				}
+				return Ok(addressUpdated);
+			}
+
+			[HttpGet("emailExists")] //todo edit here
+			public async Task<ActionResult<bool>> CheckEmailExist(string email)
+			{
+				return await _manager.FindByEmailAsync(email) is not null;
+			}
+		}
+	#endregion
+
+	#region [9] validate basket 
+		#region [1] api/dto/basketDto 
+			public class BasketDto
+			{
+				public string Id { get; set; }
+				public List<BasketItemDto>  Items { get; set; }
+			}
+		#endregion
+
+		#region [2] api/dto/basketItemDto
+			public class BasketItemDto
+			{
+				[Required]
+				public int Id { get; set; } //todo edit here
+				[Required]
+				public string Name { get; set; }
+				[Required]
+				public string Description { get; set; }
+				[Required]
+				[Range(0.1, (double)decimal.MaxValue,ErrorMessage ="price must me more than 0")]
+				public decimal Price { get; set; }
+				[Required]
+				[Range(1, int.MaxValue,ErrorMessage ="Quantity Must Be More Than 0")]
+				public int Quantity { get; set; }
+				[Required]
+				public int Rating { get; set; }
+
+				[Required]
+				public string PictureUrl { get; set; }
+				[Required]
+				public string Brand { get; set; }
+				[Required]
+				public string Type { get; set; }
+			}
+		#endregion
+
+		#region [3] api/helper/autoMapper
+			public class MappingProfile : Profile
+			{
+				public MappingProfile()
+				{
+					CreateMap<Product, ProductDto>()
+						.ForMember(x => x.Brand, x => x.MapFrom(x => x.Brand.Name))
+						.ForMember(x => x.ProductType, x => x.MapFrom(x => x.ProductType.Name))
+						.ForMember(x => x.PictureUrl, x => x.MapFrom<ImageUrlResolver>());
+					CreateMap<Address, AddressDto>().ReverseMap();
+					CreateMap<BasketItemDto, BasketItem>(); //todo edit here
+					CreateMap<BasketDto, Basket>(); //todo edit here
+				}
+			}
+		#endregion
+
+		#region [4] api/controller/basketController
+			public class BasketController : BaseController
+			{
+				private readonly IBasketRepo _basket;
+				private readonly IMapper _mapper;
+
+				public BasketController(IBasketRepo basket,IMapper mapper)
+				{
+					_basket = basket;
+					_mapper = mapper; //todo edit here
+				}
+				[HttpGet]
+				public async Task<ActionResult<Basket>> GetBasket(string id)
+				{
+					var basket = await _basket.GetBasketAsync(id);
+					return basket ?? new Basket(id);
+				}
+				[HttpPost]
+				public async Task<ActionResult<Basket>> UpdateBasket(BasketDto basket)//todo edit here
+				{
+					var mapper= _mapper.Map<BasketDto,Basket>(basket);
+					var createOrUpdateBasket = await _basket.UpdateBasketAsync(mapper);
+					if (createOrUpdateBasket is null) return BadRequest();
+					return createOrUpdateBasket;
+				}
+				[HttpDelete]
+				public async Task<ActionResult<bool>> DeleteBasket(string basketId)
+				{
+					return await _basket.DeleteBasketAsync(basketId);
+				}
+			}
+		#endregion
+	#endregion
+#endregion
+
+#region [1] order + order unit of work + postman variable
+	#region [1] order entities //todo order[address|status|DeliveryMethod|Item[productItem]] dep
+		#region [1] core/entities/order/Address
+			public class Address
+			{
+				public string FirstName { get; set; }
+				public string LastName { get; set; }
+				public string Street { get; set; }
+				public string City { get; set; }
+				public string Country { get; set; }
+			}
+		#endregion
+
+		#region [2] core/entities/order/DeliveryMethod
+			public class DeliveryMethod:Base
+			{
+				public string ShortName { get; set; }
+				public string Description { get; set; }
+				public decimal Cost { get; set; }
+				public string DeliveryTime { get; set; }
+			}
+		#endregion
+
+		#region [3] core/entities/order/productItemOrder
+			public class ProductItemOrder
+			{
+				public int ProductId { get; set; }
+				public string ProductName { get; set; }
+				public string PictureUrl { get; set; }
+			}
+		#endregion
+
+		#region [4] core/entities/order/OrderItem
+			public class OrderItem:Base
+			{
+				public ProductItemOrder Product { get; set; }
+				public decimal Price { get; set; }
+				public int Quantity { get; set; }
+				
+			}
+		#endregion
+
+		#region [5] core/entities/order/orderStatus
+			public enum OrderStatus
+			{
+				[EnumMember(Value ="Pending")]
+				Pending,
+				[EnumMember(Value = "Payment Received")]
+				PaymentReceived,
+				[EnumMember(Value = "Payment Failed")]
+				PaymentFailed	
+			}
+		#endregion
+
+		#region [6] core/entities/order/order 
+			public class Order:Base
+			{
+				public OrderStatus Status { get; set; } = OrderStatus.Pending; //todo edit here status
+				public Address ShippingAddress { get; set; } //todo edit here address
+				//public int DeliveryMethodId { get; set; } 
+				public DeliveryMethod DeliveryMethod { get; set; } //todo edit here DeliveryMethod
+				public ICollection<OrderItem> Items { get; set; } = new HashSet<OrderItem>(); //todo edit here item
+				public string BuyerEmail { get; set; }
+				public DateTimeOffset OrderDate { get; set; } = DateTimeOffset.Now;
+				public decimal SubTotal { get; set; }
+				//[NotMapped]
+				//public decimal Total => SubTotal+DeliveryMethod.Cost;
+				public decimal Total()=> SubTotal + DeliveryMethod.Cost;
+				public string PaymentIntentId { get; set; } = string.Empty; //ugly edit here stripe
+			}
+		#endregion
+	#endregion
+
+	#region [2] order repo 
+		#region [1] config dep
+			#region [1] repo/data/config/...
+				#region [1] repo/data/config/OrderConfig
+					public class OrderConfig : IEntityTypeConfiguration<Order>
+					{
+						public void Configure(EntityTypeBuilder<Order> builder)
+						{
+							builder.OwnsOne(x => x.ShippingAddress, x => x.WithOwner());
+							builder.Property(x => x.Status).HasConversion(
+								x => x.ToString(),
+								x=> (OrderStatus) Enum.Parse(typeof(OrderStatus), x)
+								) ;
+							builder.Property(x => x.SubTotal).HasColumnType("decimal(18,2)");
+						}
+					}
+				#endregion
+
+				#region [2] repo/data/config/OrderItemConfig 
+					public class OrderItemConfig : IEntityTypeConfiguration<OrderItem>
+					{
+						public void Configure(EntityTypeBuilder<OrderItem> builder)
+						{
+							builder.OwnsOne(x => x.Product, x => x.WithOwner());
+							builder.Property(x => x.Price).HasColumnType("decimal(18,2)");
+						}
+					}
+				#endregion
+
+				#region [3] repo/data/config/DeliveryMethodConfig 
+					public class DeliveryMethodConfig : IEntityTypeConfiguration<DeliveryMethod>
+					{
+						public void Configure(EntityTypeBuilder<DeliveryMethod> builder)
+						{
+							builder.Property(x => x.Cost).HasColumnType("decimal(18,2)");
+						}
+					}
+				#endregion
+				#region [4] repo/data/config/ProductBrandConfig
+					public class ProductBrandConfig : IEntityTypeConfiguration<Brand>
+					{
+						public void Configure(EntityTypeBuilder<Brand> builder)
+						{
+							builder.Property(x => x.Id).HasColumnType("int");
+							builder.Property(x=>x.Name).HasColumnType("string");
+						}
+					}
+				#endregion
+
+				#region [5] repo/data/config/ProductTypeConfig
+					public class ProductTypeConfig : IEntityTypeConfiguration<ProductType>
+					{
+						public void Configure(EntityTypeBuilder<ProductType> builder)
+						{
+							builder.Property(x => x.Id).HasColumnType("int");
+							builder.Property(x => x.Name).HasColumnType("string");
+						}
+					}
+				#endregion
+
+				#region [6] repo/data/config/ProductConfig
+					public class ProductConfig : IEntityTypeConfiguration<Product>
+					{
+						public void Configure(EntityTypeBuilder<Product> builder)
+						{
+							builder.Property(x => x.Price).HasColumnType("decimal(18,2)");
+							builder.Property(x => x.BrandId).HasColumnType("int");
+							builder.Property(x => x.TypeId).HasColumnType("int");
+							builder.HasOne(x => x.Brand).WithMany().HasForeignKey(x => x.BrandId);
+							builder.HasOne(x => x.ProductType).WithMany().HasForeignKey(x => x.TypeId);
+						}
+					}
+				#endregion
+			#endregion
+
+			#region [2] repo/AppContext1
+				public class AppContext1 : DbContext
+				{
+					public AppContext1(DbContextOptions<AppContext1> opt) : base(opt)
+					{
+					}
+
+					protected override void OnModelCreating(ModelBuilder modelBuilder)
+					{
+						base.OnModelCreating(modelBuilder);
+
+						//modelBuilder.ApplyConfiguration(new ProductConfig()); //fluent api
+						modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly()); 
+						modelBuilder.ApplyConfiguration(new ProductConfig()); //todo edit here dep
+						modelBuilder.ApplyConfiguration(new OrderConfig());
+						modelBuilder.ApplyConfiguration(new DeliveryMethodConfig());
+						modelBuilder.ApplyConfiguration(new OrderItemConfig());
+						modelBuilder.ApplyConfiguration(new ProductBrandConfig());
+						modelBuilder.ApplyConfiguration(new ProductTypeConfig());
+					}
+					public DbSet<Product> Products { get; set; }
+					public DbSet<ProductType> ProductTypes { get; set; }
+					public DbSet<Brand> Brands { get; set; }
+				}
+			#endregion
+		#endregion
+
+		#region [2] config 
+			#region [1] core/entities/order/...
+				#region [1] address //todo edit here generate ctor
+					public class Address
+					{
+						public Address()
+						{
+							
+						}
+						public Address(string firstName, string lastName, string street, string city, string country)
+						{
+							FirstName = firstName;
+							LastName = lastName;
+							Street = street;
+							City = city;
+							Country = country;
+						}
+
+						public string FirstName { get; set; }
+						public string LastName { get; set; }
+						public string Street { get; set; }
+						public string City { get; set; }
+						public string Country { get; set; }
+					}
+				#endregion
+
+				#region [2] DeliveryMethod 
+					public class DeliveryMethod : Base
+					{
+						public DeliveryMethod()
+						{
+							
+						}
+
+						public DeliveryMethod(string shortName, string description, decimal cost, string deliveryTime)
+						{
+							ShortName = shortName;
+							Description = description;
+							Cost = cost;
+							DeliveryTime = deliveryTime;
+						}
+
+						public string ShortName { get; set; }
+						public string Description { get; set; }
+						public decimal Cost { get; set; }
+						public string DeliveryTime { get; set; }
+					}
+				#endregion
+
+				#region [3] productItemOrder
+					public class ProductItemOrder
+					{
+						public ProductItemOrder()
+						{
+							
+						}
+
+						public ProductItemOrder(int productId, string productName, string pictureUrl)
+						{
+							ProductId = productId;
+							ProductName = productName;
+							PictureUrl = pictureUrl;
+						}
+
+						public int ProductId { get; set; }
+						public string ProductName { get; set; }
+						public string PictureUrl { get; set; }
+					}
+				#endregion
+
+				#region [4] OrderItem
+					public class OrderItem : Base
+					{
+						public OrderItem()
+						{
+							
+						}
+
+						public OrderItem(ProductItemOrder product, decimal price, int quantity)
+						{
+							Product = product;
+							Price = price;
+							Quantity = quantity;
+						}
+
+						public ProductItemOrder Product { get; set; }
+						public decimal Price { get; set; }
+						public int Quantity { get; set; }
+					}
+				#endregion
+
+				#region [5] order
+					public class Order : Base
+					{
+						public order(){}
+						public Order(string buyerEmail, Address shippingAddress, DeliveryMethod deliveryMethod, ICollection<OrderItem> items, decimal subTotal)
+						{
+							BuyerEmail = buyerEmail;
+							ShippingAddress = shippingAddress;
+							DeliveryMethod = deliveryMethod;
+							Items = items;
+							SubTotal = subTotal;
+						}
+
+						public string BuyerEmail { get; set; }
+						public DateTimeOffset OrderDate { get; set; } = DateTimeOffset.Now;
+						public OrderStatus Status { get; set; } = OrderStatus.Pending;
+						public Address ShippingAddress { get; set; }
+						//public int DeliveryMethodId { get; set; }
+						public DeliveryMethod DeliveryMethod { get; set; }
+						public ICollection<OrderItem> Items { get; set; } = new HashSet<OrderItem>();
+						public decimal SubTotal { get; set; }
+						//[NotMapped]
+						//public decimal Total => SubTotal+DeliveryMethod.Cost;
+						public decimal Total() => SubTotal + DeliveryMethod.Cost;
+						public string PaymentIntentId { get; set; } = string.Empty;
+					}
+				#endregion
+			#endregion
+
+			#region [2] migrate 
+				#region [1] repo/AppContext1 
+					public class AppContext1 : DbContext
+					{
+						public AppContext1(DbContextOptions<AppContext1> opt) : base(opt)
+						{
+						}
+
+						protected override void OnModelCreating(ModelBuilder modelBuilder)
+						{
+							base.OnModelCreating(modelBuilder);
+
+							//modelBuilder.ApplyConfiguration(new ProductConfig()); //fluent api
+							modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
+						}
+						public DbSet<Product> Products { get; set; }
+						public DbSet<ProductType> ProductTypes { get; set; }
+						public DbSet<Brand> Brands { get; set; }
+						public DbSet<Order> Orders { get; set; } //todo edit here order
+						public DbSet<OrderItem> OrderItems { get; set; }
+						public DbSet<DeliveryMethod> DeliveryMethods { get; set; }
+					}
+				#endregion
+
+				#region [2] package manager migrate 
+					add-migration orderEntities -context AppContext1 
+				#endregion
+				
+				#region [1] for test remove migrate
+					remove-migration -context AppContext1 
+					add-migration orderEntities -context AppContext1 
+				#endregion
+
+				#region [3] repo/data/migrate/orderEntities
+					protected override void Up(MigrationBuilder migrationBuilder)
+					{
+						migrationBuilder.AlterColumn<string>(
+							name: "Name",
+							table: "ProductTypes",
+							type: "string",
+							nullable: false,
+							oldClrType: typeof(string),
+							oldType: "nvarchar(max)");
+
+						migrationBuilder.AlterColumn<string>(
+							name: "Name",
+							table: "Brands",
+							type: "string",
+							nullable: false,
+							oldClrType: typeof(string),
+							oldType: "nvarchar(max)");
+
+						migrationBuilder.CreateTable(
+							name: "DeliveryMethods",
+							columns: table => new
+							{
+								Id = table.Column<int>(type: "int", nullable: false)
+									.Annotation("SqlServer:Identity", "1, 1"),
+								ShortName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+								Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
+								Cost = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+								DeliveryTime = table.Column<string>(type: "nvarchar(max)", nullable: false)
+							},
+							constraints: table =>
+							{
+								table.PrimaryKey("PK_DeliveryMethods", x => x.Id);
+							});
+
+						migrationBuilder.CreateTable(
+							name: "Orders",
+							columns: table => new
+							{
+								Id = table.Column<int>(type: "int", nullable: false)
+									.Annotation("SqlServer:Identity", "1, 1"),
+								BuyerEmail = table.Column<string>(type: "nvarchar(max)", nullable: false),
+								OrderDate = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
+								Status = table.Column<string>(type: "nvarchar(max)", nullable: false),
+								ShippingAddress_FirstName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+								ShippingAddress_LastName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+								ShippingAddress_Street = table.Column<string>(type: "nvarchar(max)", nullable: false),
+								ShippingAddress_City = table.Column<string>(type: "nvarchar(max)", nullable: false),
+								ShippingAddress_Country = table.Column<string>(type: "nvarchar(max)", nullable: false),
+								DeliveryMethodId = table.Column<int>(type: "int", nullable: true), //todo edit here
+								SubTotal = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+								PaymentIntentId = table.Column<string>(type: "nvarchar(max)", nullable: false)
+							},
+							constraints: table =>
+							{
+								table.PrimaryKey("PK_Orders", x => x.Id);
+								table.ForeignKey(
+									name: "FK_Orders_DeliveryMethods_DeliveryMethodId",
+									column: x => x.DeliveryMethodId,
+									principalTable: "DeliveryMethods",
+									principalColumn: "Id",
+									onDelete: ReferentialAction.SetNull); //todo edit here
+							});
+
+						migrationBuilder.CreateTable(
+							name: "OrderItems",
+							columns: table => new
+							{
+								Id = table.Column<int>(type: "int", nullable: false)
+									.Annotation("SqlServer:Identity", "1, 1"),
+								Product_ProductId = table.Column<int>(type: "int", nullable: false),
+								Product_ProductName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+								Product_PictureUrl = table.Column<string>(type: "nvarchar(max)", nullable: false),
+								Price = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+								Quantity = table.Column<int>(type: "int", nullable: false),
+								OrderId = table.Column<int>(type: "int", nullable: true)
+							},
+							constraints: table =>
+							{
+								table.PrimaryKey("PK_OrderItems", x => x.Id);
+								table.ForeignKey(
+									name: "FK_OrderItems_Orders_OrderId",
+									column: x => x.OrderId,
+									principalTable: "Orders",
+									principalColumn: "Id");
+							});
+
+						migrationBuilder.CreateIndex(
+							name: "IX_OrderItems_OrderId",
+							table: "OrderItems",
+							column: "OrderId");
+
+						migrationBuilder.CreateIndex(
+							name: "IX_Orders_DeliveryMethodId",
+							table: "Orders",
+							column: "DeliveryMethodId");
+					}
+				#endregion
+
+				#region [4] repo/data/migrate/AppContext1.snapshot=>buildModel=>order
+					modelBuilder.Entity("app.core.entities.Order.Order", b =>
+					{
+						b.Property<int>("Id")
+							.ValueGeneratedOnAdd()
+							.HasColumnType("int");
+
+						SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+						b.Property<string>("BuyerEmail")
+							.IsRequired()
+							.HasColumnType("nvarchar(max)");
+
+						b.Property<int>("DeliveryMethodId") 
+							.HasColumnType("int?"); //todo edit here
+
+						b.Property<DateTimeOffset>("OrderDate")
+							.HasColumnType("datetimeoffset");
+
+						b.Property<string>("PaymentIntentId")
+							.IsRequired()
+							.HasColumnType("nvarchar(max)");
+
+						b.Property<string>("Status")
+							.IsRequired()
+							.HasColumnType("nvarchar(max)");
+
+						b.Property<decimal>("SubTotal")
+							.HasColumnType("decimal(18,2)");
+
+						b.HasKey("Id");
+
+						b.HasIndex("DeliveryMethodId");
+
+						b.ToTable("Orders");
+					});
+				#endregion
+			#endregion
+		#endregion
+
+		#region [3] seeding repo/AppSeeding
+			if (!context.DeliveryMethods.Any())
+			{
+				var DeliveryMethodData = File.ReadAllText("../app.repo/Data/seeding/delivery.json");
+				var DeliveryMethods = JsonSerializer.Deserialize<List<DeliveryMethod>>(DeliveryMethodData);
+				if (DeliveryMethods is not null && DeliveryMethods.Count > 0)
+				{
+
+					foreach (var item in DeliveryMethods)
+					{
+						await context.Set<DeliveryMethod>().AddAsync(item);
+					}
+					await context.SaveChangesAsync();
+				}
+			}   
+		#endregion
+	#endregion
+
+	#region [3] service
+			#region [1] core/service/IOrderService
+				public interface IOrderService
+				{
+					Task<Order> CreateOrderAsync(string buyerEmail, string basketId, int deliveryMethodId, Address shippingAddress);
+					Task<IReadOnlyList<Order>> CreateOrderUserEmailAsync(string buyerEmail);
+					Task<Order> GetOrderByUserEmailIdAsync(int orderId,string buyerEmail);
+				}
+			#endregion
+
+			#region [2] core/repo/IGenericRepo
+				public interface IGenericRepo<T> where T : Base
+				{
+					Task<IReadOnlyList<T>> GetAllAsync();
+					Task<IReadOnlyList<T>> GetAllSpecAsync(ISpec<T> spec); //where().include()
+					Task<T> GetByIdAsync(int id);
+					Task<T> GetByIdSpecAsync(ISpec<T> spec); //where().include()
+					Task<int> GetCountWithSpecAsync(ISpec<T> spec);
+					Task Add(T entity); //todo edit here add crud
+					Task Update(T entity);
+					Task Delete(T entity);
+				}
+			#endregion
+
+			#region [3] repo/GenericRepo 
+				public class GenericRepo<T> : IGenericRepo<T> where T : Base
+				{
+					private readonly AppContext1 _context;
+					public GenericRepo(AppContext1 dbContext)
+					{
+						this._context = dbContext;
+					}
+
+					public async Task<IReadOnlyList<T>> GetAllAsync()
+					{
+						if (typeof(T) == typeof(Product))
+						{
+							return (IReadOnlyList<T>)await _context.Products.Include(x => x.Brand).Include(x => x.ProductType).ToListAsync();
+						}
+						else
+						{
+							return await _context.Set<T>().ToListAsync();
+						}
+					}
+
+					public async Task<IReadOnlyList<T>> GetAllSpecAsync(ISpec<T> spec)
+					{
+						return await ApplySpec(spec).ToListAsync();
+					}
+
+					public async Task<T> GetByIdAsync(int Id)
+					{
+						//return await _context.Set<T>().Where(x => x.Id == id).FirstOrDefaultAsync();
+						//return await _context.Products.Where(x => x.Id == Id).Include(x => x.Brand).Include(x => x.ProductType);
+						return await _context.Set<T>().FindAsync(Id);
+					}
+
+					public async Task<T> GetByIdSpecAsync(ISpec<T> spec)
+					{
+						return await ApplySpec(spec).FirstOrDefaultAsync();
+					}
+
+					public async Task<int> GetCountWithSpecAsync(ISpec<T> spec)
+					{
+						return await ApplySpec(spec).CountAsync();
+					}
+
+					public async Task Add(T entity) //todo edit here add update delete
+					{
+						await _context.Set<T>().AddAsync(entity);
+					}
+					public void Update(T entity)
+					{
+						//_context.Entry(entity).State=EntityState.Modified;
+						_context.Set<T>().Update(entity);
+					}
+
+					public void Delete(T entity)
+					{
+						_context.Set<T>().Remove(entity);
+					}
+					private IQueryable<T> ApplySpec(ISpec<T> spec)
+					{
+						return SpecEval<T>.GetQuery(_context.Set<T>(), spec);
+					}
+				}
+			#endregion
+			
+			#region [4] unit of work  
+				#region [1] core/IUnitOfWork 
+					public interface IUnitOfWork : IAsyncDisposable 
+					{
+						//public IGenericRepo<Product> ProductRepo { get; set; }
+						//public IGenericRepo<Brand> BrandRepo { get; set; }
+						//public IGenericRepo<ProductType> TypeRepo { get; set; }
+						//public IGenericRepo<DeliveryMethod> DeliveryMethodRepo { get; set; }
+						//public IGenericRepo<OrderItem> OrderItemRepo { get; set; }
+						//public IGenericRepo<Order> OrderRepo { get; set; }
+
+						IGenericRepo<T> Repository<T>() where T : Base;
+						Task<int> Complete();
+					}
+				#endregion
+
+				#region [2] repo/UnitOfWork
+					public class UnitOfWork : IUnitOfWork
+					{
+						private readonly AppContext1 _context;
+						//private Dictionary<string, GenericRepo<Base>> _repo;
+						private Hashtable _repo; //todo edit here make repo as object key,value
+
+						//public IGenericRepo<Product> ProductRepo { get; set; }
+						//public IGenericRepo<Brand> BrandRepo { get; set; }
+						//public IGenericRepo<ProductType> TypeRepo { get; set; }
+						//public IGenericRepo<DeliveryMethod> DeliveryMethodRepo { get; set; }
+						//public IGenericRepo<OrderItem> OrderItemRepo { get; set; }
+						//public IGenericRepo<Order> OrderRepo { get; set; }
+
+						public UnitOfWork(AppContext1 context)
+						{
+							_context = context;
+							//_repo = new Dictionary<string, GenericRepo<Base>>();
+							_repo = new Hashtable();
+							//ProductRepo=new GenericRepo<Product>(_context);
+							//BrandRepo = new GenericRepo<Brand>(_context);
+							//TypeRepo = new GenericRepo<ProductType>(_context);
+							//DeliveryMethodRepo = new GenericRepo<DeliveryMethod>(_context);
+							//OrderItemRepo = new GenericRepo<OrderItem>(_context);
+							//OrderRepo = new GenericRepo<Order>(_context);
+						}
+						public async Task<int> Complete()
+						{
+							return await _context.SaveChangesAsync();
+						}
+						public async ValueTask DisposeAsync()
+						{
+							await _context.DisposeAsync();
+						}
+						public IGenericRepo<T> Repository<T>() where T : Base
+						{
+							var type= typeof(T).Name;
+							if (!_repo.ContainsKey(type))
+							{
+								//var repo= new GenericRepo<T>(_context) as GenericRepo<Base>;
+								var repo= new GenericRepo<T>(_context);
+								_repo.Add(type, repo);
+							}
+							return _repo[type] as IGenericRepo<T>;
+						}
+					}
+				#endregion
+
+				#region [3] service/order
+					#region [1] before unit of work
+						public class OrderService : IOrderService
+						{
+							private readonly IBasketRepo _basketRepo;
+							private readonly IGenericRepo<Product> _productRepo; //todo edit here make for every node
+							private readonly IGenericRepo<DeliveryMethod> _deliveryRepo;
+							private readonly IGenericRepo<Order> _orderRepo;
+							public OrderService(IBasketRepo basketRepo, IGenericRepo<Product> productRepo, IGenericRepo<DeliveryMethod> deliveryRepo, IGenericRepo<Order> orderRepo)
+							{
+								_basketRepo = basketRepo;
+								_productRepo = productRepo;  //todo edit here make for every node
+								_deliveryRepo = deliveryRepo;
+								_orderRepo = orderRepo;
+							}
+
+							public async Task<Order> CreateOrderAsync(string buyerEmail, string basketId, int deliveryMethodId, Address shippingAddress)
+							{
+								var basket = await _basketRepo.GetBasketAsync(basketId);
+								var orderItems = new List<OrderItem>();
+								if (basket?.Items?.Count > 0)
+								{
+									foreach (var item in basket.Items)
+									{
+										var product = await _productRepo.GetByIdAsync(item.Id);
+										var productItemOrdered = new ProductItemOrder(product.Id, product.Name, product.PictureUrl);
+										var orderItem = new OrderItem(productItemOrdered, product.Price, product.Quantity);
+										orderItems.Add(orderItem);
+									}
+								}
+								var subTotal = orderItems.Sum(x => x.Quantity * x.Price);
+								var deliveryMethod = await _deliveryRepo.GetByIdAsync(deliveryMethodId);
+								var order = new Order(buyerEmail, shippingAddress, deliveryMethod, orderItems, subTotal);
+								await _orderRepo.Add(order);
+								return order;
+							}
+							public Task<IReadOnlyList<Order>> CreateOrderUserEmailAsync(string buyerEmail)
+							{
+								throw new NotImplementedException();
+							}
+							public Task<Order> GetOrderByUserEmailIdAsync(int orderId, string buyerEmail)
+							{
+								throw new NotImplementedException();
+							}
+						}
+					#endregion
+
+					#region [2] after unit of work
+						public class OrderService : IOrderService
+						{
+							private readonly IBasketRepo _basketRepo;
+							private readonly IUnitOfWork _unitOfWork;
+							//private readonly IGenericRepo<Product> _productRepo;
+							//private readonly IGenericRepo<DeliveryMethod> _deliveryRepo;
+							//private readonly IGenericRepo<Order> _orderRepo;
+							public OrderService(IBasketRepo basketRepo, IUnitOfWork unitOfWork
+								//IGenericRepo<Product> productRepo, IGenericRepo<DeliveryMethod> deliveryRepo, IGenericRepo<Order> orderRepo
+								)
+							{
+								_basketRepo = basketRepo;
+								_unitOfWork= unitOfWork;
+								//_productRepo = productRepo;
+								//_deliveryRepo = deliveryRepo;
+								//_orderRepo = orderRepo;
+							}
+
+							public async Task<Order?> CreateOrderAsync(string buyerEmail, string basketId, int deliveryMethodId, Address shippingAddress)
+							{
+								var basket = await _basketRepo.GetBasketAsync(basketId);
+								var orderItems = new List<OrderItem>();
+								if (basket?.Items?.Count > 0)
+								{
+									foreach (var item in basket.Items)
+									{
+										var product = await _unitOfWork.Repository<Product>().GetByIdAsync(item.Id);
+										var productItemOrdered = new ProductItemOrder(product.Id, product.Name, product.PictureUrl);
+										var orderItem = new OrderItem(productItemOrdered, product.Price, product.Quantity);
+										orderItems.Add(orderItem);
+									}
+								}
+								var subTotal = orderItems.Sum(x => x.Quantity * x.Price);
+								var deliveryMethod = await _unitOfWork.Repository<DeliveryMethod>().GetByIdAsync(deliveryMethodId);
+								var order = new Order(buyerEmail, shippingAddress, deliveryMethod, orderItems, subTotal);
+								await _unitOfWork.Repository<Order>().Add(order);
+								var result=await _unitOfWork.Complete();
+								if (result <= 0) return null;
+								return order;
+							}
+							public Task<IReadOnlyList<Order>> CreateOrderUserEmailAsync(string buyerEmail)
+							{
+								throw new NotImplementedException();
+							}
+							public Task<Order> GetOrderByUserEmailIdAsync(int orderId, string buyerEmail)
+							{
+								throw new NotImplementedException();
+							}
+						}
+					#endregion
+				#endregion
+
+				#region [4] api/Extension/AddAppService
+					public static class AddAppService
+					{
+						public static IServiceCollection addAppServices(this IServiceCollection services)
+						{
+							services.AddScoped<IUnitOfWork, UnitOfWork>(); //idea edit here
+							services.AddScoped<IBasketRepo, BasketRepo>();
+							//services.AddScoped(typeof(IGenericRepo<>), typeof(GenericRepo<>)); //todo edit here dep unit of work
+							services.AddAutoMapper(typeof(MappingProfile));
+							return services;
+						}
+					}
+				#endregion
+			#endregion
+
+			#region [5] add order //fix order example //idea edit here [basket|orderItems|mapOrderItem|deliveryMethod|SubTotal]=>[order]=>[orderRepo] without unit of work
+				public async Task<Order> CreateOrderAsync(string buyerEmail, string basketId, int deliveryMethodId, Address shippingAddress)
+				{
+					var basket = await _basketRepo.GetBasketAsync(basketId);
+					var orderItems = new List<OrderItem>();
+					if(basket?.Items?.Count > 0)
+					{
+						foreach (var item in basket.Items)
+						{
+							var product=await _productRepo.GetByIdAsync(item.Id);
+							var productItemOrdered = new ProductItemOrder(product.Id, product.Name, product.PictureUrl);
+							var orderItem = new OrderItem(productItemOrdered,product.Price,product.Quantity);
+							orderItems.Add(orderItem);
+						}
+					}
+					var deliveryMethod=await _deliveryRepo.GetByIdAsync(deliveryMethodId);
+					var subTotal = orderItems.Sum(x=>x.Quantity*x.Price);
+					var order=new Order(buyerEmail,shippingAddress,deliveryMethod,orderItems,subTotal);
+					await _orderRepo.Add(order);
+				}
+			#endregion
+	#endregion
+
+	#region [4] api/controller/OrderController
+		#region [1] create order
+
+			#region [1] api/Extension/addAppServices
+				public static class AddAppService
+				{
+					public static IServiceCollection addAppServices(this IServiceCollection services)
+					{
+						services.AddScoped<IUnitOfWork, UnitOfWork>();
+						services.AddScoped<IOrderService, OrderService>();
+						services.AddScoped<IBasketRepo, BasketRepo>();
+						//services.AddScoped(typeof(IGenericRepo<>), typeof(GenericRepo<>)); //todo edit here dep unit of work
+						services.AddAutoMapper(typeof(MappingProfile));
+						return services;
+					}
+				}
+			#endregion
+
+			#region [2] api/dto/OrderDto 
+				public class OrderDto
+				{
+					[Required]
+					public string BasketId { get; set; }
+					public int DeliveryMethodId { get; set; }
+					public AddressDto ShippingAddress { get; set; }
+				}
+			#endregion
+
+			#region [3] api/helper/MappingProfile 
+				public class MappingProfile : Profile
+				{
+					public MappingProfile()
+					{
+						CreateMap<Product, ProductDto>()
+							.ForMember(x => x.Brand, x => x.MapFrom(x => x.Brand.Name))
+							.ForMember(x => x.ProductType, x => x.MapFrom(x => x.ProductType.Name))
+							.ForMember(x => x.PictureUrl, x => x.MapFrom<ImageUrlResolver>());
+						CreateMap<app.core.entities.identity.Address, AddressDto>().ReverseMap();
+						CreateMap<AddressDto, app.core.entities.Order.Address>(); //todo edit here
+						CreateMap<BasketItemDto, BasketItem>(); //todo edit here
+						CreateMap<BasketDto, Basket>(); //todo edit here
+					}
+				}
+			#endregion
+
+			#region [4] controller
+				#region [1] post
+					public class OrderController : BaseController
+					{
+						private readonly IOrderService _orderService;
+						private readonly IMapper _mapper;
+
+						public OrderController(IOrderService orderService,IMapper mapper)
+						{
+							_orderService = orderService;
+							_mapper = mapper;
+						}
+						[HttpPost]
+						public async Task<ActionResult<Order>> CreateOrder(OrderDto order)
+						{
+							var BuyerEmail = User.FindFirstValue(ClaimValueTypes.Email);
+							var address = _mapper.Map<AddressDto, Address>(order.ShippingAddress);
+							var Order=await _orderService.CreateOrderAsync(BuyerEmail, order.BasketId, order.DeliveryMethodId, address);
+							if (Order is null) return BadRequest();
+							return Ok(Order);
+						}
+					}
+				#endregion
+			#endregion
+
+			#region [5] check order with redis | redily |postman
+				#region [1] postman
+					login=>copy token=> make post method order=>paste bearer token
+					#region [1] post basket =>login with jwt bearer
+						{
+								"id": "order2",
+								"items": [
+										{
+												"id": 1,
+												"name": "Double Caramel Frappuccino",
+												"description": "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Maecenas porttitor congue massa. Fusce posuere, magna sed pulvinar ultricies, purus lectus malesuada libero, sit amet commodo magna eros quis urna.",
+												"price": 200.0,
+												"quantity": 1,
+												"rating": 3,
+												"pictureUrl": "image/product/01product.jpg",
+												"brand": "Starbucks",
+												"type": "Frappuccino"
+										},
+														{
+												"id": 1,
+												"name": "Double Caramel Frappuccino",
+												"description": "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Maecenas porttitor congue massa. Fusce posuere, magna sed pulvinar ultricies, purus lectus malesuada libero, sit amet commodo magna eros quis urna.",
+												"price": 200.0,
+												"quantity": 1,
+												"rating": 3,
+												"pictureUrl": "image/product/01product.jpg",
+												"brand": "Starbucks",
+												"type": "Frappuccino"
+										}
+								]
+						}
+					#endregion
+
+					#region [2] order post 
+						{
+						"basketId": "order1",
+						"deliveryMethodId": 1,
+							"shippingAddress": {
+								"firstName": "mo",
+								"lastName": "taha",
+								"street": "s1",
+								"city": "c1",
+								"country": "cnt1"
+							}
+						}
+					#endregion
+
+					#region [3] response
+						{
+							"buyerEmail": "mo@gmail.com",
+							"orderDate": "2024-04-15T22:34:49.0116111+02:00",
+							"status": 0,
+							"shippingAddress": {
+								"firstName": "mo",
+								"lastName": "taha",
+								"street": "s1",
+								"city": "c1",
+								"country": "cnt1"
+							},
+							"deliveryMethod": {
+								"shortName": "Delivery 1",
+								"description": "Fastest way",
+								"cost": 10.00,
+								"deliveryTime": "1-2 Days",
+								"id": 1
+							},
+							"items": [],
+							"subTotal": 0,
+							"paymentIntentId": "",
+							"id": 2
+						}
+					#endregion
+
+					#region [4] cmd=>redis-cli =>get order1
+						(nil)
+					#endregion
+				#endregion
+			#endregion
+		#endregion
+
+		#region [2] get order for user
+			#region [1] core/spec/orderSpec
+					public class OrderSpec:BaseSpec<Order>
+					{
+								public OrderSpec(string email) : base(x=>x.BuyerEmail==email) { 
+												Include.Add(x => x.DeliveryMethod);
+												Include.Add(x => x.Items);
+												AddOrderByDesc(x => x.OrderDate);
+									} //todo edit here see baseSpec have <T,bool>
+					}
+			#endregion
+
+			#region [2] service/orderService
+
+				public class OrderService : IOrderService
+				{
+					private readonly IBasketRepo _basketRepo;
+					private readonly IUnitOfWork _unitOfWork;
+					//private readonly IGenericRepo<Product> _productRepo;
+					//private readonly IGenericRepo<DeliveryMethod> _deliveryRepo;
+					//private readonly IGenericRepo<Order> _orderRepo;
+					public OrderService(IBasketRepo basketRepo, IUnitOfWork unitOfWork
+						//IGenericRepo<Product> productRepo, IGenericRepo<DeliveryMethod> deliveryRepo, IGenericRepo<Order> orderRepo
+						)
+					{
+						_basketRepo = basketRepo;
+						_unitOfWork = unitOfWork;
+						//_productRepo = productRepo;
+						//_deliveryRepo = deliveryRepo;
+						//_orderRepo = orderRepo;
+					}
+
+					public async Task<Order?> CreateOrderAsync(string buyerEmail, string basketId, int deliveryMethodId, Address shippingAddress)
+					{
+						var basket = await _basketRepo.GetBasketAsync(basketId);
+						var orderItems = new List<OrderItem>();
+						if (basket?.Items?.Count > 0)
+						{
+							foreach (var item in basket.Items)
+							{
+								var product = await _unitOfWork.Repository<Product>().GetByIdAsync(item.Id);
+								var productItemOrdered = new ProductItemOrder(product.Id, product.Name, product.PictureUrl);
+								var orderItem = new OrderItem(productItemOrdered, product.Price, product.Quantity);
+								orderItems.Add(orderItem);
+							}
+						}
+						var subTotal = orderItems.Sum(x => x.Quantity * x.Price);
+						var deliveryMethod = await _unitOfWork.Repository<DeliveryMethod>().GetByIdAsync(deliveryMethodId);
+						var order = new Order(buyerEmail, shippingAddress, deliveryMethod, orderItems, subTotal);
+						await _unitOfWork.Repository<Order>().Add(order);
+						var result = await _unitOfWork.Complete();
+						if (result <= 0) return null;
+						return order;
+					}
+					public async Task<IReadOnlyList<Order>> GetOrdersForUserAsync(string buyerEmail)  //todo edit here
+					{
+						var spec=new OrderSpec(buyerEmail);
+						var orders= await _unitOfWork.Repository<Order>().GetAllSpecAsync(spec);
+						return orders;
+					}
+					public Task<Order> GetOrderByUserEmailIdAsync(int orderId, string buyerEmail)
+					{
+						throw new NotImplementedException();
+					}
+				}
+			#endregion
+
+			#region [3] api/controller/OrderController
+				public class OrderController : BaseController
+				{
+					private readonly IOrderService _orderService;
+					private readonly IMapper _mapper;
+
+					public OrderController(IOrderService orderService, IMapper mapper)
+					{
+						_orderService = orderService;
+						_mapper = mapper;
+					}
+					[HttpPost]
+					public async Task<ActionResult<Order>> CreateOrder(OrderDto order)
+					{
+						var BuyerEmail = User.FindFirstValue(ClaimValueTypes.Email);
+						var address = _mapper.Map<AddressDto, Address>(order.ShippingAddress);
+						var Order = await _orderService.CreateOrderAsync(BuyerEmail, order.BasketId, order.DeliveryMethodId, address);
+						if (Order is null) return BadRequest();
+						return Ok(Order);
+					}
+
+					[HttpGet]
+					public async Task<ActionResult<IReadOnlyList<Order>>> GetOrdersForUser()
+					{
+						var BuyerEmail = User.FindFirstValue(ClaimValueTypes.Email);
+						var order = await _orderService.GetOrdersForUserAsync(BuyerEmail);
+						return Ok(order);
+					}
+				}
+			#endregion
+		#endregion
+
+		#region [3] get order for user id 
+				#region [1] core/spec/order/OrderSpec
+					public class OrderSpec : BaseSpec<Order>
+					{
+						public OrderSpec(string email) : base(x => x.BuyerEmail == email)
+						{
+							Include.Add(x => x.DeliveryMethod);
+							Include.Add(x => x.Items);
+							AddOrderByDesc(x => x.OrderDate);
+						}
+						public OrderSpec(int id,string email) : base(x => x.BuyerEmail == email && x.Id==id)
+						{
+							Include.Add(x => x.DeliveryMethod);
+							Include.Add(x => x.Items);
+						}
+					}
+				#endregion
+
+				#region [2] service/orderService
+					public class OrderService : IOrderService
+					{
+						private readonly IBasketRepo _basketRepo;
+						private readonly IUnitOfWork _unitOfWork;
+						//private readonly IGenericRepo<Product> _productRepo;
+						//private readonly IGenericRepo<DeliveryMethod> _deliveryRepo;
+						//private readonly IGenericRepo<Order> _orderRepo;
+						public OrderService(IBasketRepo basketRepo, IUnitOfWork unitOfWork
+							//IGenericRepo<Product> productRepo, IGenericRepo<DeliveryMethod> deliveryRepo, IGenericRepo<Order> orderRepo
+							)
+						{
+							_basketRepo = basketRepo;
+							_unitOfWork = unitOfWork;
+							//_productRepo = productRepo;
+							//_deliveryRepo = deliveryRepo;
+							//_orderRepo = orderRepo;
+						}
+
+						public async Task<Order?> CreateOrderAsync(string buyerEmail, string basketId, int deliveryMethodId, Address shippingAddress)
+						{
+							var basket = await _basketRepo.GetBasketAsync(basketId);
+							var orderItems = new List<OrderItem>();
+							if (basket?.Items?.Count > 0)
+							{
+								foreach (var item in basket.Items)
+								{
+									var product = await _unitOfWork.Repository<Product>().GetByIdAsync(item.Id);
+									var productItemOrdered = new ProductItemOrder(product.Id, product.Name, product.PictureUrl);
+									var orderItem = new OrderItem(productItemOrdered, product.Price, product.Quantity);
+									orderItems.Add(orderItem);
+								}
+							}
+							var subTotal = orderItems.Sum(x => x.Quantity * x.Price);
+							var deliveryMethod = await _unitOfWork.Repository<DeliveryMethod>().GetByIdAsync(deliveryMethodId);
+							var order = new Order(buyerEmail, shippingAddress, deliveryMethod, orderItems, subTotal);
+							await _unitOfWork.Repository<Order>().Add(order);
+							var result = await _unitOfWork.Complete();
+							if (result <= 0) return null;
+							return order;
+						}
+						public async Task<IReadOnlyList<Order>> GetOrdersForUserAsync(string buyerEmail)
+						{
+							var spec = new OrderSpec(buyerEmail);
+							var orders = await _unitOfWork.Repository<Order>().GetAllSpecAsync(spec);
+							return orders;
+						}
+						public async Task<Order> GetOrderByUserEmailIdAsync(int orderId, string buyerEmail) //todo edit here
+						{
+							var spec = new OrderSpec(orderId, buyerEmail);
+							var orders = await _unitOfWork.Repository<Order>().GetByIdSpecAsync(spec);
+							return orders;
+						}
+					}
+				#endregion
+
+				#region [3] api/controller/OrderController
+					public class OrderController : BaseController
+					{
+						private readonly IOrderService _orderService;
+						private readonly IMapper _mapper;
+
+						public OrderController(IOrderService orderService, IMapper mapper)
+						{
+							_orderService = orderService;
+							_mapper = mapper;
+						}
+						[HttpPost]
+						public async Task<ActionResult<Order>> CreateOrder(OrderDto order)
+						{
+							var BuyerEmail = User.FindFirstValue(ClaimValueTypes.Email);
+							var address = _mapper.Map<AddressDto, Address>(order.ShippingAddress);
+							var Order = await _orderService.CreateOrderAsync(BuyerEmail, order.BasketId, order.DeliveryMethodId, address);
+							if (Order is null) return BadRequest();
+							return Ok(Order);
+						}
+
+						[HttpGet]
+						public async Task<ActionResult<IReadOnlyList<Order>>> GetOrdersForUser()
+						{
+							var BuyerEmail = User.FindFirstValue(ClaimValueTypes.Email);
+							var order = await _orderService.GetOrdersForUserAsync(BuyerEmail);
+							if (order is null) return BadRequest();
+							return Ok(order);
+						}
+						[HttpGet("{id}")] //todo edit here
+						public async Task<ActionResult<IReadOnlyList<Order>>> GetOrdersForUser(int id)
+						{
+							var BuyerEmail = User.FindFirstValue(ClaimTypes.Email);
+							var order = await _orderService.GetOrderByUserEmailIdAsync(id,BuyerEmail);
+							if (order is null) return BadRequest();
+							return Ok(order);
+						}
+					}
+				#endregion
+
+				#region [1] run postman {{baseUrl}}/api/Order/3
+					bearer token +
+				#endregion
+		#endregion
+
+		#region [4] deliveryMethod 
+			#region [1] core/service/IOrderService
+				public interface IOrderService
+				{
+					Task<Order> CreateOrderAsync(string buyerEmail, string basketId, int deliveryMethodId, Address shippingAddress);
+					Task<IReadOnlyList<Order>> GetOrdersForUserAsync(string buyerEmail);
+					Task<IReadOnlyList<DeliveryMethod>> GetOrdersDeliveryMethodAsync(); //todo edit here
+					Task<Order> GetOrderByUserEmailIdAsync(int orderId, string buyerEmail);
+				}
+			#endregion
+
+			#region [2] service/orderService
+				public class OrderService : IOrderService
+				{
+					private readonly IBasketRepo _basketRepo;
+					private readonly IUnitOfWork _unitOfWork;
+					//private readonly IGenericRepo<Product> _productRepo;
+					//private readonly IGenericRepo<DeliveryMethod> _deliveryRepo;
+					//private readonly IGenericRepo<Order> _orderRepo;
+					public OrderService(IBasketRepo basketRepo, IUnitOfWork unitOfWork
+						//IGenericRepo<Product> productRepo, IGenericRepo<DeliveryMethod> deliveryRepo, IGenericRepo<Order> orderRepo
+						)
+					{
+						_basketRepo = basketRepo;
+						_unitOfWork = unitOfWork;
+						//_productRepo = productRepo;
+						//_deliveryRepo = deliveryRepo;
+						//_orderRepo = orderRepo;
+					}
+
+					public async Task<Order?> CreateOrderAsync(string buyerEmail, string basketId, int deliveryMethodId, Address shippingAddress)
+					{
+						var basket = await _basketRepo.GetBasketAsync(basketId);
+						var orderItems = new List<OrderItem>();
+						if (basket?.Items?.Count > 0)
+						{
+							foreach (var item in basket.Items)
+							{
+								var product = await _unitOfWork.Repository<Product>().GetByIdAsync(item.Id);
+								var productItemOrdered = new ProductItemOrder(product.Id, product.Name, product.PictureUrl);
+								var orderItem = new OrderItem(productItemOrdered, product.Price, product.Quantity);
+								orderItems.Add(orderItem);
+							}
+						}
+						var subTotal = orderItems.Sum(x => x.Quantity * x.Price);
+						var deliveryMethod = await _unitOfWork.Repository<DeliveryMethod>().GetByIdAsync(deliveryMethodId);
+						var order = new Order(buyerEmail, shippingAddress, deliveryMethod, orderItems, subTotal);
+						await _unitOfWork.Repository<Order>().Add(order);
+						var result = await _unitOfWork.Complete();
+						if (result <= 0) return null;
+						return order;
+					}
+					public async Task<IReadOnlyList<Order>> GetOrdersForUserAsync(string buyerEmail)
+					{
+						var spec = new OrderSpec(buyerEmail);
+						var orders = await _unitOfWork.Repository<Order>().GetAllSpecAsync(spec);
+						return orders;
+					}
+					public async Task<Order> GetOrderByUserEmailIdAsync(int orderId, string buyerEmail)
+					{
+						var spec = new OrderSpec(orderId, buyerEmail);
+						var orders = await _unitOfWork.Repository<Order>().GetByIdSpecAsync(spec);
+						return orders;
+					}
+					public async Task<IReadOnlyList<DeliveryMethod>> GetOrdersDeliveryMethodAsync() //todo edit here
+					{
+						var deliveryMethod = await _unitOfWork.Repository<DeliveryMethod>().GetAllAsync();
+						return deliveryMethod;
+					}
+				}
+			#endregion
+
+			#region [3] api/controller/OrderController
+				public class OrderController : BaseController
+				{
+					private readonly IOrderService _orderService;
+					private readonly IMapper _mapper;
+
+					public OrderController(IOrderService orderService, IMapper mapper)
+					{
+						_orderService = orderService;
+						_mapper = mapper;
+					}
+					[HttpPost]
+					public async Task<ActionResult<Order>> CreateOrder(OrderDto order)
+					{
+						var BuyerEmail = User.FindFirstValue(ClaimValueTypes.Email);
+						var address = _mapper.Map<AddressDto, Address>(order.ShippingAddress);
+						var Order = await _orderService.CreateOrderAsync(BuyerEmail, order.BasketId, order.DeliveryMethodId, address);
+						if (Order is null) return BadRequest();
+						return Ok(Order);
+					}
+
+					[HttpGet]
+					public async Task<ActionResult<IReadOnlyList<Order>>> GetOrdersForUser()
+					{
+						var BuyerEmail = User.FindFirstValue(ClaimValueTypes.Email);
+						var order = await _orderService.GetOrdersForUserAsync(BuyerEmail);
+						if (order is null) return BadRequest();
+						return Ok(order);
+					}
+					[HttpGet("{id}")]
+					public async Task<ActionResult<Order>> GetOrderForUser(int id)
+					{
+						var BuyerEmail = User.FindFirstValue(ClaimTypes.Email);
+						var order = await _orderService.GetOrderByUserEmailIdAsync(id, BuyerEmail);
+						if (order is null) return BadRequest();
+						return Ok(order);
+					}
+					[HttpGet("deliveryMethods")] //todo edit here
+					public async Task<ActionResult<IReadOnlyList<DeliveryMethod>>> GetDeliveryMethods()
+					{
+						var delivery = await _orderService.GetOrdersDeliveryMethodAsync();
+						return Ok(delivery);
+					}
+				}
+			#endregion
+		#endregion
+
+		#region [5] order dto
+			#region [1] api/helper/dto/OrderItemDto
+				public class OrderItemDto
+				{
+					public int Id { get; set; }
+					public int ProductId { get; set; }
+					public string ProductName { get; set; }
+					public string PictureUrl { get; set; }
+					public decimal Price { get; set; }
+					public int Quantity { get; set; }
+				}
+			#endregion
+
+			#region [2] api/helper/dto/OrderToReturnDto
+				public class OrderToReturnDto
+				{
+					public int Id { get; set; }
+					public string BuyerEmail { get; set; }
+					public DateTimeOffset OrderDate { get; set; }
+					public string Status { get; set; } //todo edit here
+					public Address ShippingAddress { get; set; }
+					//public int DeliveryMethodId { get; set; }
+					//public DeliveryMethod DeliveryMethod { get; set; }
+					public string DeliveryMethod { get; set; } //todo edit here
+					public decimal DeliveryMethodCost { get; set; }//todo edit here
+					public ICollection<OrderItemDto> Items { get; set; }
+					public decimal SubTotal { get; set; }
+					//[NotMapped]
+					//public decimal Total => SubTotal+DeliveryMethod.Cost;
+					//public decimal Total() => SubTotal + DeliveryMethodCost; //todo edit here
+					public string PaymentIntentId { get; set; }  //todo edit here
+					public decimal Total { get; set; }  //todo edit here
+				}
+			#endregion
+
+			#region [3] api/helpers/MappingProfile
+				public MappingProfile()
+				{
+					CreateMap<Product, ProductDto>()
+						.ForMember(x => x.Brand, x => x.MapFrom(x => x.Brand.Name))
+						.ForMember(x => x.ProductType, x => x.MapFrom(x => x.ProductType.Name))
+						.ForMember(x => x.PictureUrl, x => x.MapFrom<ImageUrlResolver>());
+					CreateMap<app.core.entities.identity.Address, AddressDto>().ReverseMap();
+					CreateMap<BasketItemDto, BasketItem>();
+					CreateMap<BasketDto, Basket>();
+					CreateMap<AddressDto, app.core.entities.Order.Address>();
+					CreateMap<Order, OrderToReturnDto>() //todo edit here
+						.ForMember(x => x.DeliveryMethod, x => x.MapFrom(x => x.DeliveryMethod.ShortName))
+						.ForMember(x => x.DeliveryMethodCost, x => x.MapFrom(x => x.DeliveryMethod.Cost))
+						.ForMember(x => x.DeliveryMethod, x => x.MapFrom(x => x.DeliveryMethod.ShortName));
+					CreateMap<OrderItem, OrderItemDto>() //todo edit here
+						.ForMember(x => x.ProductId, x => x.MapFrom(x => x.Product.ProductId))
+						.ForMember(x => x.ProductName, x => x.MapFrom(x => x.Product.ProductName))
+						.ForMember(x => x.PictureUrl, x => x.MapFrom(x => x.Product.PictureUrl));
+				}
+			#endregion
+
+			#region [4] api/controller/OrderController
+				public class OrderController : BaseController
+				{
+					private readonly IOrderService _orderService;
+					private readonly IMapper _mapper;
+
+					public OrderController(IOrderService orderService, IMapper mapper)
+					{
+						_orderService = orderService;
+						_mapper = mapper;
+					}
+					[HttpPost]
+					public async Task<ActionResult<OrderToReturnDto>> CreateOrder(OrderDto order) //todo edit here
+					{
+						var BuyerEmail = User.FindFirstValue(ClaimValueTypes.Email);
+						var address = _mapper.Map<AddressDto, Address>(order.ShippingAddress);
+						var Order = await _orderService.CreateOrderAsync(BuyerEmail, order.BasketId, order.DeliveryMethodId, address);
+						if (Order is null) return BadRequest();
+						//return Ok(Order);
+						return Ok(_mapper.Map<Order,OrderToReturnDto>(Order)); //todo edit here
+					}
+
+					[HttpGet]
+					public async Task<ActionResult<IReadOnlyList<OrderToReturnDto>>> GetOrdersForUser() //todo edit here
+					{
+						var BuyerEmail = User.FindFirstValue(ClaimValueTypes.Email);
+						var Order = await _orderService.GetOrdersForUserAsync(BuyerEmail);
+						if (Order is null) return BadRequest();
+						//return Ok(order);
+						return Ok(_mapper.Map<IReadOnlyList <Order>, IReadOnlyList <OrderToReturnDto> >(Order)); //todo edit here
+					}
+					[HttpGet("{id}")]
+					public async Task<ActionResult<OrderToReturnDto>> GetOrderForUser(int id) //todo edit here
+					{
+						var BuyerEmail = User.FindFirstValue(ClaimTypes.Email);
+						var Order = await _orderService.GetOrderByUserEmailIdAsync(id, BuyerEmail);
+						if (Order is null) return BadRequest();
+						//return Ok(order);
+						return Ok(_mapper.Map<Order, OrderToReturnDto>(Order)); //todo edit here
+					}
+					[HttpGet("deliveryMethods")]
+					public async Task<ActionResult<IReadOnlyList<DeliveryMethod>>> GetDeliveryMethods()
+					{
+						var delivery = await _orderService.GetOrdersDeliveryMethodAsync();
+						return Ok(delivery);
+					}
+				}
+			#endregion
+		#endregion
+
+		#region [6] picture dto
+			#region [1] api/helper/ItemOrderPictureUrlResolver
+				public class ItemOrderPictureUrlResolver : IValueResolver<OrderItem, OrderItemDto, string>
+				{
+											public ItemOrderPictureUrlResolver(IConfiguration config)
+											{
+						Config = config;
+					}
+
+					public IConfiguration Config { get; }
+
+
+					public string Resolve(OrderItem source, OrderItemDto destination, string destMember, ResolutionContext context)
+					{
+						if (!string.IsNullOrEmpty(source.Product.PictureUrl))
+						{
+							return $"{Config["BaseUrl"]}/{source.Product.PictureUrl}";
+						}
+						return string.Empty;
+					}
+				}
+			#endregion
+
+			#region [2] api/helpers/MappingProfile
+				public MappingProfile()
+				{
+						CreateMap<Product, ProductDto>()
+							.ForMember(x => x.Brand, x => x.MapFrom(x => x.Brand.Name))
+							.ForMember(x => x.ProductType, x => x.MapFrom(x => x.ProductType.Name))
+							.ForMember(x => x.PictureUrl, x => x.MapFrom<ImageUrlResolver>());
+						CreateMap<app.core.entities.identity.Address, AddressDto>().ReverseMap();
+						CreateMap<BasketItemDto, BasketItem>();
+						CreateMap<BasketDto, Basket>();
+						CreateMap<AddressDto, app.core.entities.Order.Address>();
+						CreateMap<Order, OrderToReturnDto>()
+							.ForMember(x => x.DeliveryMethod, x => x.MapFrom(x => x.DeliveryMethod.ShortName))
+							.ForMember(x => x.DeliveryMethodCost, x => x.MapFrom(x => x.DeliveryMethod.Cost))
+							.ForMember(x => x.DeliveryMethod, x => x.MapFrom(x => x.DeliveryMethod.ShortName));
+						CreateMap<OrderItem, OrderItemDto>()
+							.ForMember(x => x.ProductId, x => x.MapFrom(x => x.Product.ProductId))
+							.ForMember(x => x.ProductName, x => x.MapFrom(x => x.Product.ProductName))
+							.ForMember(x => x.PictureUrl, x => x.MapFrom<ItemOrderPictureUrlResolver>()) //todo edit here
+							.ForMember(x => x.PictureUrl, x => x.MapFrom(x => x.Product.PictureUrl));
+				}
+			#endregion
+		#endregion
+	#endregion
+
+	#region [5] order unit of work
+		public class ProductController : BaseController
+		{
+			private readonly IUnitOfWork _unitOfWork; //fix edit here
+
+			//private readonly IGenericRepo<Product> productRepo;
+			//private readonly IGenericRepo<Brand> brandRepo;
+			//private readonly IGenericRepo<ProductType> productTypeRepo;
+			private readonly IMapper mapper; //mapper
+
+			public ProductController(
+				//IGenericRepo<Product> productRepo,
+				//IGenericRepo<Brand> BrandRepo,
+				//IGenericRepo<ProductType> ProductTypeRepo,
+				IUnitOfWork unitOfWork, //fix edit here
+				IMapper mapper)
+			{
+				_unitOfWork = unitOfWork; //fix edit here
+				//this.productRepo = productRepo;
+				//brandRepo = BrandRepo;
+				//productTypeRepo = ProductTypeRepo;
+				this.mapper = mapper; //mapper assign
+			}
+			//[Authorize]
+			[HttpGet]
+			public async Task<ActionResult<Pagination<ProductDto>>> GetProduct([FromQuery] ProductSpecParams productParam)
+			{
+				//var products = await productRepo.GetAllAsync();
+				//var spec = new BaseSpec<Product>();
+				var spec = new ProductWithBrandTypeSpec(productParam);
+
+				var products = await _unitOfWork.Repository<Product>().GetAllSpecAsync(spec); //fix edit here
+				var data = mapper.Map<IReadOnlyList<Product>, IReadOnlyList<ProductDto>>(products);
+				var countSpec = new ProductCountFilterSpec(productParam);
+				var count = await _unitOfWork.Repository<Product>().GetCountWithSpecAsync(countSpec); //fix edit here
+
+				return Ok(new Pagination<ProductDto>(productParam.PageIndex, productParam.PageSize, count, data)); //OkObjectResult
+			}
+
+			[HttpGet("{id}")]
+			public async Task<ActionResult<ProductDto>> GetProductById(int id)
+			{
+				//var product = await productRepo.GetByIdAsync(id);
+				var spec = new ProductWithBrandTypeSpec(id);
+				var product = await _unitOfWork.Repository<Product>().GetByIdSpecAsync(spec); //fix edit here
+
+				return Ok(mapper.Map<Product, ProductDto>(product)); //OkObjectResult
+			}
+
+			[HttpGet("Brand")]
+			public async Task<ActionResult<IReadOnlyList<Brand>>> GetProductBrand()
+			{
+				var brands = await _unitOfWork.Repository<Brand>().GetAllAsync(); //fix edit here
+				return Ok(brands);
+			}
+			[HttpGet("ProductType")]
+			public async Task<ActionResult<IReadOnlyList<ProductType>>> GetProductType()
+			{
+				var productType = await _unitOfWork.Repository<ProductType>().GetAllAsync(); //fix edit here
+				return Ok(productType);
+			}
+		}
+	#endregion
+
+	#region [6] postman variable 
+		#region [1] collection=>variable take login bearer token
+			value apiToken=>token bearer token
+		#endregion
+
+		#region [2] login post method =>tests
+				const user=pm.response.json();
+				pm.test("Has properties",function(){
+								pm.expect(user).to.have.property('displayName');
+								pm.expect(user).to.have.property('email');
+								pm.expect(user).to.have.property('token');
+				});
+
+				if(pm.test("Has properties")){
+								pm.collectionVariables.set('apiToken',user.token)
+				}
+		#endregion
+
+		#region [3] use variable
+			#region [1] Authentication
+				token {{apiToken}}
+			#endregion
+
+			#region [1] header
+				Content-Type => application/json
+				Authorization => Bearer {{apiToken}}
+			#endregion
+		#endregion
+	#endregion
+#endregion
+
+#region [1] stripe
+	#region [1] steps
+		#region [1] install stripe local server
+			1. Open PowerShell
+			2. May be need to run this command [if asked]
+				--> Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
+			3. Install Scoop Package Manager
+				--> iwr -useb get.scoop.sh | iex 
+
+			4. in case Step.3 Executed, Repeat the Executing of Step.2
+			5. Add Stripe
+				-->  scoop bucket add stripe https://github.com/stripe/scoop-stripe-cli.git
+			6. Install Stripe
+				-->  scoop install stripe
+			7. Login to Your Stripe Account [Will Open Window at Your Browser To Verify Login]
+				--> stripe login
+			8. Listen to Stripe in order to track payment_intent events
+				--> stripe listen -f https://localhost:port/api/payments/webhook -e payment_intent.succeeded,payment_intent.payment_failed
+		#endregion
+
+		#region [2] payment module and stripe docs
+			Payment Module Has 2 Approaches:-
+				1. Create Payment Gateway
+
+			Payment Gateway Requirements :-
+			=> You Will Need a Network Infrastructure with the 
+						appropriate firewalls and hight security to protect all of 
+						the infrastructure itself.
+			=> So We're going to offload the response to a 
+						Payment Processor
+
+				2. Integrate With Existing Payment Gateway [Stripe, PayMob, PayFort, PayPal, E-Finance]
+					-- There 3 Ways For Integrating with Payment Gateway
+
+
+			=> Stripe is a Infrastructure for PCI (Payment Card Industry)
+						and DSS (Data Security Standards)
+
+			=> Stripe is a Payment Gateway like (Stripe,Paypal, Payfort, Paymob, E-Finance) //todo edit
+					
+			=> Stripe With Strong Customer Authentication (SCA)
+
+			Setting Up Stripe Account 
+			1. Sign Up
+			2. Activate Profile
+			3. Create The Account
+			4. Check on Publishable Key and Secret Key
+		#endregion
+	#endregion
+	
+	#region [2] stripe 
+		#region [1] payment steps
+			//idea [user init=>api init => stripe] //idea [stripe client secret =>api client secret =>client] 
+			//mo [client order =>api order] //mo [api send=>client] 
+			//tsc on succeeded [client =>stripe with client secret] 
+			//fix [stripe succeeded msg =>client ] [stripe succeeded msg =>api] //todo [payment confirm]
+		#endregion
+
+		#region [2] stripe make email
+			https://dashboard.stripe.com/register =>simple register
+			Verify business [close activate] 
+			=>developer =>[ api keys =>{
+				'Publishable key':pk_test_51P6i5cRtQ2kwZHXnlSxw7S4VtwQMtp3fBU3OYirpC1Bxjfxs33jRIRmxOXgFaPers22NUsobmqzAqt23Hwg0oQbD00KsEoUQnI,
+			'Secret key':sk_test_51P6i5cRtQ2kwZHXny1j5NNX9SazSb0X52CecnWfsQ5Gdv4S1KxmuQATeSqHq2ZJFeYCEPEd4Fj0t0cY50CGjaDDH00oO05Nmw5
+			}]
+		#endregion
+
+		#region [3] add stripe to dep
+
+			#region [1] core/dependencies
+				manage nuget manager=>stripe.net
+			#endregion
+
+			#region [2] api/appSetting
+				{
+								"Logging": {
+												"LogLevel": {
+																"Default": "Information",
+																"Microsoft.AspNetCore": "Warning"
+												}
+								},
+								"AllowedHosts": "*",
+								"ConnectionStrings": {
+												"con": "server=.;database=AppDbRoute;trusted_connection=true;multipleActiveresultsets=true;",
+												"identity": "server=.;database=identityDbRoute;trusted_connection=true;multipleActiveresultsets=true;",
+												"redis": "localhost"
+								},
+								"JWT": {
+												"Key": "StrONGKAutHENTICATIONKEy",
+												"ValidIssuer": "https://localhost:7089",
+												"ValidAudience": "MySecuredApiUsers",
+												"DurationInDays": "30"
+								},
+								"BaseUrl": "https://localhost:7089",
+								"StripeSettings": {
+												"Publishablekey": "pk_test_51P6i5cRtQ2kwZHXnlSxw7S4VtwQMtp3fBU3OYirpC1Bxjfxs33jRIRmxOXgFaPers22NUsobmqzAqt23Hwg0oQbD00KsEoUQnI",
+												"Secretkey": "sk_test_51P6i5cRtQ2kwZHXny1j5NNX9SazSb0X52CecnWfsQ5Gdv4S1KxmuQATeSqHq2ZJFeYCEPEd4Fj0t0cY50CGjaDDH00oO05Nmw5"
+								}
+				}
+			#endregion
+		#endregion
+
+		#region [4] add stripe to api 
+			#region [1] core
+
+					#region [1] core/service/IPaymentService
+						public interface IPaymentService
+						{
+							Task<Basket> CreateOrUpdatePaymentIntent(string basketId);
+						}
+					#endregion
+
+					#region [2] core/entities/basket 
+						public class Basket
+						{
+							public string Id { get; set; }
+							public List<BasketItem> Items { get; set; } = new List<BasketItem>();
+							public string? PaymentIntentId { get; set; }
+							public string? ClientSecret { get; set; }
+							public int? DeliveryMethodId { get; set; }
+							public decimal? ShippingCost { get; set; }
+							public Basket(string id)
+							{
+								Id = id;
+							}
+						}
+					#endregion
+			#endregion
+
+			#region [2] service
+				public class PaymentService : IPaymentService
+				{
+					private readonly IConfiguration _config;
+					private readonly IBasketRepo _basket;
+					private readonly IUnitOfWork _unitOfWork;
+
+					public PaymentService(IConfiguration config, IBasketRepo basket,IUnitOfWork unitOfWork)
+					{
+						_config = config;
+						_basket = basket;
+						_unitOfWork = unitOfWork;
+					}
+					//mo configKey //todo [ get basketById => update basketById ]
+					//tsc delivery [shippingCost=shippingCost] //tsc productPrice
+					//idea [paymentIntent[serviceIntent|paymentIntent]] //idea option[price,Currency,PaymentMethodTypes] 
+					//mo if[options |createIntent|id|clientSecret] //mo else[options |update] 
+					//fix [UpdateBasket=>return basket]
+					public async Task<Basket> CreateOrUpdatePaymentIntent(string basketId)
+					{
+						StripeConfiguration.ApiKey = _config["StripeSettings:Secretkey"];
+						var basket = await _basket.GetBasketAsync(basketId);
+						if (basket is null) return null;
+						var shippingPrice = 0m;
+						if(basket.DeliveryMethodId.HasValue) 
+						{ 
+							var deliveryMethod=await _unitOfWork.Repository<DeliveryMethod>().GetByIdAsync(basket.DeliveryMethodId.Value);
+							basket.ShippingCost = deliveryMethod.Cost;	
+							shippingPrice = deliveryMethod.Cost;
+						}
+						if(basket?.Items?.Count > 0)
+						{
+							foreach (var item in basket.Items)
+							{
+								var product = await _unitOfWork.Repository<core.entities.Product>().GetByIdAsync(item.Id);
+								if(item.Price!=product.Price)
+								{
+									item.Price= product.Price;
+								}
+							}
+						}
+						var service = new PaymentIntentService();
+						PaymentIntent paymentIntent;
+						if (string.IsNullOrEmpty(basket.PaymentIntentId))
+						{
+							var options = new PaymentIntentCreateOptions()
+							{
+								Amount = (long)basket.Items.Sum(x => x.Price * x.Quantity * 100) + (long)shippingPrice * 100,
+								Currency="usd",
+								PaymentMethodTypes=new List<string>() {"card"}
+							};
+							paymentIntent= await service.CreateAsync(options);
+							basket.PaymentIntentId = paymentIntent.Id;
+							basket.ClientSecret = paymentIntent.ClientSecret;
+						}
+						else
+						{
+							var options = new PaymentIntentUpdateOptions()
+							{
+								Amount = (long)basket.Items.Sum(x => x.Price * x.Quantity * 100) + (long)shippingPrice * 100
+							};
+							await service.UpdateAsync(basket.PaymentIntentId, options);
+						}
+						await _basket.UpdateBasketAsync(basket);
+						return basket;
+					}
+				}
+			#endregion
+
+			#region [3] api 
+				#region [1] api/Extension/addAppServices 
+					public static class AddAppService
+					{
+						public static IServiceCollection addAppServices(this IServiceCollection services)
+						{
+							services.AddScoped<IPaymentService, PaymentService>(); //todo edit here
+							services.AddScoped<IUnitOfWork, UnitOfWork>();
+							services.AddScoped<IOrderService, OrderService>();
+							services.AddScoped<IBasketRepo, BasketRepo>();
+							//services.AddScoped(typeof(IGenericRepo<>), typeof(GenericRepo<>)); 
+							services.AddAutoMapper(typeof(MappingProfile));
+							return services;
+						}
+					}
+				#endregion
+
+				#region [2] api/dto/BasketDto 
+					public class BasketDto
+					{
+						public string Id { get; set; }
+						public List<BasketItemDto> Items { get; set; }
+						public string? PaymentIntentId { get; set; }
+						public string? ClientSecret { get; set; }
+						public int? DeliveryMethodId { get; set; }
+						public decimal ShippingCost { get; set; }
+					}
+				#endregion
+
+				#region [3] api/controller/PaymentService
+					[Authorize]
+					public class PaymentController : BaseController
+					{
+						private readonly IPaymentService _paymentService;
+
+						public PaymentController(IPaymentService paymentService)
+												{
+							_paymentService = paymentService;
+						}
+						[HttpPost("{basketId}")]
+						public async Task<ActionResult<BasketDto>> CreateOrUpdatePaymentIntent(string id)
+						{
+							var basket=await _paymentService.CreateOrUpdatePaymentIntent(id);
+							if(basket == null) { return BadRequest(); }
+							return Ok(basket);
+						}
+					}
+				#endregion
+			#endregion
+
+			#region [4] postman 
+				//{{baseUrl}}/api/Payment/order2
+				#region [1] basket post
+					{{baseUrl}}/api/basket endpoint UpdateBasket
+					{
+						"basketId": "order2",
+						"deliveryMethodId": 1,
+										"shippingAddress": {
+														"firstName": "mo",
+														"lastName": "taha",
+														"street": "s1",
+														"city": "c1",
+														"country": "cnt1"
+										}
+					}
+				#endregion
+
+				#region [2] payment post
+					//{{baseUrl}}/api/Payment/order2
+					{
+						"id": "order2",
+						"items": [
+								{
+												"name": "Double Caramel Frappuccino",
+												"description": "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Maecenas porttitor congue massa. Fusce posuere, magna sed pulvinar ultricies, purus lectus malesuada libero, sit amet commodo magna eros quis urna.",
+												"price": 200.0,
+												"quantity": 1,
+												"rating": 3,
+												"pictureUrl": "image/product/01product.jpg",
+												"brand": "Starbucks",
+												"type": "Frappuccino",
+												"id": 1
+								},
+								{
+												"name": "Double Caramel Frappuccino",
+												"description": "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Maecenas porttitor congue massa. Fusce posuere, magna sed pulvinar ultricies, purus lectus malesuada libero, sit amet commodo magna eros quis urna.",
+												"price": 200.0,
+												"quantity": 1,
+												"rating": 3,
+												"pictureUrl": "image/product/01product.jpg",
+												"brand": "Starbucks",
+												"type": "Frappuccino",
+												"id": 1
+								}
+						],
+						"paymentIntentId": null,
+						"clientSecret": null,
+						"deliveryMethodId": 3,
+						"shippingCost": 0
+					}
+				#endregion
+			#endregion
+		#endregion
+	#endregion
+#endregion

@@ -1,0 +1,99 @@
+#region [1] leet code day 1
+    #region [1] Given an array of integers nums and an integer target, return indices of the two numbers such that they add up to target.
+        #region [1] for loops 
+            public class Solution {
+                public int[] TwoSum(int[] nums, int target) {
+                    for (int i = 0; i < nums.Length; i++) {
+                        for (int j = i + 1; j < nums.Length; j++) {
+                            if (nums[i] + nums[j] == target) {
+                                return new int[] { i, j }; // Return the indices of the two numbers
+                            }
+                        }
+                    }
+                    throw new ArgumentException("No two sum solution"); // In case no solution is found, though the problem guarantees one solution
+                }
+            }
+        #endregion
+
+        #region [2] for 2 pointers
+            public int[] TwoSum(int[] nums, int target) {
+                for (int i = 0; i < nums.Length; i++) {
+                    for (int j = nums.Length - 1; j > i; j--) {
+                        if (nums[i] + nums[j] == target) {
+                            return new int[] { i, j }; // Return the indices of the two numbers
+                        }
+                    }
+                }
+                throw new ArgumentException("No two sum solution"); // In case no solution is found, though the problem guarantees one solution
+            }
+        #endregion
+
+        #region [3] Dictionary
+            public int[] TwoSum(int[] nums, int target) {
+                Dictionary<int, int> numMap = new Dictionary<int, int>(); 
+
+                for (int i = 0; i < nums.Length; i++) {
+                    int complement = target - nums[i];
+                    if (numMap.ContainsKey(complement)) {
+                        return new int[] { numMap[complement], i }; 
+                    }
+                    numMap[nums[i]] = i; 
+                }
+                throw new ArgumentException("No two sum solution"); 
+            }
+        #endregion
+    #endregion
+
+    #region [2] Given an integer x, return true if x is a palindrome, and false otherwise. 
+        #region [1] without string
+            // A negative number cannot be a palindrome
+            // Also, a number ending in 0 cannot be a palindrome unless it is 0
+            if (x < 0 || (x != 0 && x % 10 == 0)) {
+                return false;
+            }
+
+            int reversed = 0;
+            int original = x;
+            
+            // Reverse the number
+            while (x > 0) {
+                int digit = x % 10; //todo get last digit if //hint 123 =>3 |12%10=2|1%10=1
+                reversed = reversed * 10 + digit; //todo reverse //hint 123=> 0*10+3=3| 3*10+2=32|32*10+1=321
+                x /= 10; //todo divide to end //hint 123/10=12|12/10=1|1/10=0
+            }
+            
+            // Check if the original number is equal to its reverse
+            return original == reversed;
+        #endregion
+
+        #region [2] with string
+            public bool IsPalindrome(int x) {
+                // Convert the integer to a string
+                string str = x.ToString();
+                
+                // Get the reversed string
+                char[] charArray = str.ToCharArray();
+                Array.Reverse(charArray);
+                string reversedStr = new string(charArray);
+                
+                // Check if the original string is equal to the reversed string
+                return str == reversedStr;
+            }
+        #endregion
+
+        #region [3] with string arrange logic
+            int left = 0;
+            int right = charArray.Length - 1;
+            while (left < right) {
+                // Swap the characters at the left and right indices
+                char temp = charArray[left];
+                charArray[left] = charArray[right];
+                charArray[right] = temp;
+                
+                // Move towards the center
+                left++;
+                right--;
+            }
+        #endregion
+    #endregion
+#endregion

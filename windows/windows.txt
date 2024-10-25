@@ -1,0 +1,159 @@
+#region [1] powershell admin    
+    driverquery
+    #region [1] path of drivers get name
+        c:\Windows\System32\DriverStore\FileRepository directory
+    #endregion
+        pnputil /delete-driver iagpio.inf
+        pnputil /delete-driver iai2c.inf
+        pnputil /delete-driver iaLPSS2_I2C_SKL.inf
+        pnputil /delete-driver iaLPSS2i_GPIO2_BXT_P.inf
+        pnputil /delete-driver iaLPSS2i_GPIO2_CNL.inf
+        pnputil /delete-driver iaLPSS2i_GPIO2_GLK.inf
+        pnputil /delete-driver iaLPSS2i_I2C_BXT_P.inf
+        pnputil /delete-driver iaLPSS2i_I2C_CNL.inf
+        pnputil /delete-driver iaLPSS2i_I2C_GLK.inf
+        pnputil /delete-driver ialpssi_gpio.inf
+        pnputil /delete-driver ialpssi_i2c.inf
+#endregion
+
+#region [1] update delete
+ del /f /s /q %windir%\SoftwareDistribution\Download
+#endregion
+
+#region [1] disable defender
+    Computer\HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows Defender
+    r click=>key 32=>[name] DisableAntiSpyWare =>2 click=>1
+#endregion
+
+#region [1] window needs
+    #region [1] code
+        visual studio https://getintopc.com/softwares/development/microsoft-visual-studio-2022-all-in-one-free-download-1404717/
+        visual studio code https://code.visualstudio.com/download
+        sql server https://go.microsoft.com/fwlink/p/?linkid=2215158&clcid=0x409&culture=en-us&country=us
+        SQL2022-SSEI-Dev download  https://go.microsoft.com/fwlink/p/?linkid=2215158&clcid=0x409&culture=en-us&country=us
+        SSMS-Setup-ENU download https://aka.ms/ssmsfullsetup
+        redily download https://www.softpedia.com/get/Internet/Servers/Database-Utils/Redily.shtml
+        postman download https://www.postman.com/downloads/
+        nvm download  https://sourceforge.net/projects/nvm-for-windows.mirror/
+        nodejs download https://nodejs.org/en/download
+        redis  download https://redis.io/downloads/
+        notepad++ download https://notepad-plus-plus.org/downloads/
+        sublime download https://gist.github.com/rajibdpi/2ea3a97d025793e26225c69deb4d5768
+        autohotkey download https://www.autohotkey.com/download/ahk-install.exe
+    #endregion
+
+    #region [2] video
+        vlc  download https://www.videolan.org/vlc/download-windows.html
+        camtasia download https://getintopc.com/softwares/screen-recording/camtasia-2023-free-download/
+        HandBrake-1.6.1-x86_64-Win_GUI download https://handbrake.fr/rotation.php?file=HandBrake-1.7.3-x86_64-Win_GUI.exe
+    #endregion
+
+    #region [3] system clean 
+        ccleaner https://getintopc.com/softwares/optimization/ccleaner-professional-and-business-edition-2023-free-download/
+        wise memory optimizer download https://www.wisecleaner.com/wise-memory-optimizer.html
+    #endregion
+
+    #region [4] browser  
+        brave download https://laptop-updates.brave.com/download/BRV010?bitness=64
+        vivaldi https://getintopc.com/softwares/vivaldi-2-7-free-download/
+    #endregion
+
+    #region [5] contact
+        #region [1] from store 
+            opera browser
+            photo SaveChangesAsync
+            battery info
+            wunder mail
+            whatsapp =>whats beta
+        #endregion
+
+        #region [2] outer
+            discord download https://discord.com/api/downloads/distributions/app/installers/latest?channel=stable&platform=win&arch=x86
+            teams download https://www.microsoft.com/en-us/microsoft-teams/download-app#download-for-desktop
+            any desk download https://anydesk.com/en/downloads/thank-you?dv=win_exe
+        #endregion
+    #endregion
+
+    #region [6] in use
+        #region [1] copy
+            tera copy https://getintopc.com/softwares/utilities/teracopy-pro-2021-free-download/
+        #endregion
+
+        #region [1] delete 
+            wise force delete download https://www.wisecleaner.com/thanks-for-downloading-wiseforcedeleter.html
+        #endregion
+
+        #region [1] download
+            idm https://getintopc.com/softwares/download-managers/idm-internet-download-manager-free-download-3655509/
+        #endregion
+
+        #region [1] iso
+            ultra iso https://getintopc.com/softwares/image-editors/ultraiso-premium-edition-2020-free-download/
+        #endregion
+
+        #region [1] winrar
+            winrar https://www.win-rar.com/fileadmin/winrar-versions/winrar/winrar-x64-700.exe
+        #endregion
+
+        #region [1] translate
+            qtranslate https://getintopc.com/softwares/qtranslate-2020-free-download/
+        #endregion
+
+        #region [1] window
+            windowgrid download http://windowgrid.net/download/1.3.1.1
+        #endregion
+    #endregion
+
+    #region [7] office | pdf
+        ms 2019 https://getintopc.com/softwares/office-tools/office-2019-pro-plus-june-2021-free-download-1269397/
+        kmspico https://kmspico.io/downloading-kmspico/
+        #region [1] pdf
+            foxit pdf https://getintopc.com/softwares/pdf-editors/foxit-pdf-editor-pro-2024-free-download/
+        #endregion
+    #endregion
+#endregion
+
+#region [1] admin powershell
+    #region [1] nice to do
+        Get-AppxPackage | % { Add-AppxPackage -DisableDevelopmentMode -Register "$($_.InstallLocation)\AppxManifest.xml" -verbose}
+        sfc /scannow
+        DISM /Online /Cleanup-Image /ScanHealth
+        DISM /Online /Cleanup-Image /RestoreHealth
+    #endregion
+
+    #region [2] r click context
+        1. Add the registry point cmd admin
+        reg add HKCU\Software\Classes\CLSID\{86ca1aa0-34aa-4e8b-a509-50c905bae2a2}\InprocServer32 /ve /d "" /f
+
+        2. Restart Windows Explorer
+        taskkill /F /IM explorer.exe & start explorer
+
+        3. Remove the registry point (if needed)
+        reg.exe delete “HKCU\Software\Classes\CLSID\{86ca1aa0-34aa-4e8b-a509-50c905bae2a2}” /f
+    #endregion
+
+    #region [3] use cCleaner //todo solution
+        disable foxitPdf running context
+    #endregion
+
+    #region [4] sign out and complete
+        accounts => your info => sign in with ms account instead => change name and pass
+    #endregion
+
+    #region [5] problem with laptop
+        1=>clean with oil only
+        2=>check ram before exit
+        3=>check hard before exit
+        4=>leave every thing in it's place 
+        5=>charge empty =>close every thing and out every thing then out the battery =>1 min power button =>ctrl+shift+win+b
+    #endregion
+#endregion
+
+#region [1] allow windows to install from remote
+    win+r => gpedit.msc => windows config =>window template => windows powershell => turn on execution => enable  =>remote 
+#endregion
+
+#region [1] make software portable with winrar
+    install location => ctrl a =>add to archive =>  sfx archive [general]=> sfx option [advanced] {setup =>name.exe | modes=>unpack temp & hide all silent | update => override mode =>override all file =>ok}
+#endregion
+

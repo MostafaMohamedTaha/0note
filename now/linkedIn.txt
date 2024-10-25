@@ -1,0 +1,183 @@
+#region [1] linkedIn Code 
+ #region [1] function auto connection
+  function auto(skill){
+   if(!Array.isArray(skill)){
+    throw new Error('must be array of string')
+   }
+  
+   const newSkill=skill.map(x=>{
+    if(typeof x!='string'){
+     throw new Error('must be array of string')
+    }
+    return x.toLowerCase();
+   })
+  
+   setInterval(()=>{
+    document.querySelectorAll('ul.discover-fluid-entity-list.discover-fluid-entity-list--default-width-cards li').foreach(x=>{
+     const spnBtn=x?.querySelector?.('footer span')
+     for(let s of newSkill){
+      if(x.querySelector('span.discover-person-card__occupation')?.textContent?.toLowerCase()?.includes(s)
+      && spnBtn?.textContent?.toLowerCase().includes?.('connect')){
+       setTimeout(()=>{
+        spnBtn.click()
+       },1000)
+       break;
+      }
+     }
+    })
+    window.scrollTo(0,document.body.scrollHeight)
+   },5000)
+  }
+ #endregion
+#endregion
+
+#region [1] make images
+ text to image ai generator
+ craiyon
+ destocker.ai
+ mage.space
+ background.lol
+ adobe.com/express/ =>get free=>text to image
+ ideogram.ai
+#endregion
+
+#region [1] photoshop
+ #region [1] make action
+  //hint2 toolbar action=>new folder action=>new file action => record action =>but logo and theme =>close action
+  //hint file=>script=>image process=>[choose folder=>choose action folder =>choose action file]
+ #endregion
+
+ #region [1] text 
+  //use freepik download text style =>2 click smart object if[font exist|not=> replace] =>save
+ #endregion
+#endregion
+
+#region [1] job .net
+ #region [1] first
+
+  #region [1] senior skills 
+   Role: Senior Software Developer
+   Experience:
+
+   Minimum 8 years of software development experience.
+   Proficiency in C# and expertise in ASP.NET and ASP.NET Core.
+   Extensive experience with Angular (Angular 2+).
+   Previous work on large-scale and complex web applications.
+   Strong understanding of RESTful API design and implementation.
+   Familiarity with modern web development tools and frameworks.
+   Technical Skills:
+
+   HTML5, CSS3, JavaScript/TypeScript.
+   Responsive web design and cross-browser compatibility.
+   Database design and development (SQL Server or other relational databases).
+   Entity Framework or other ORM frameworks.
+   Git for version control.
+   Unit testing and integration testing.
+   Nice to Have:
+
+   NgRx or other state management in Angular.
+   Angular CLI and build tools.
+   Familiarity with testing frameworks (NUnit, xUnit).
+   Agile development methodologies (Scrum, Kanban).
+   Personal Skills:
+
+   Strong analytical and problem-solving skills.
+   Excellent communication skills (verbal and written).
+   Collaborative team player.
+   Commitment to continuous learning.
+   Work Schedule & Location:
+
+   Full Time: 10:00 AM to 7:00 PM Cairo time.
+   On-Site: Located in Naser City, Near Cairo Bank.
+   English proficiency is essential.
+  #endregion
+  #region [1] senior cv
+
+   [Your Name]
+
+   [Your Address] | [Your Phone Number] | [Your Email Address]
+
+   Objective:
+   Seasoned Senior Software Developer with over 9 years of hands-on experience in ASP.NET, ASP.NET Core, and Angular, seeking to leverage expertise in building scalable and innovative web applications to contribute effectively to a dynamic team.
+
+   Professional Experience:
+
+   Senior Software Developer | [Current/Previous Company Name]
+   [Dates of Employment]
+
+   Led the development of multiple large-scale and complex web applications using ASP.NET and ASP.NET Core, ensuring high performance and scalability.
+   Implemented cutting-edge solutions with Angular (Angular 2+), optimizing user experience and interface design.
+   Designed and implemented RESTful APIs, facilitating seamless integration with external systems and services.
+   Collaborated closely with cross-functional teams to gather requirements, plan project scope, and deliver solutions on time and within budget.
+   Software Developer | [Previous Company Name]
+   [Dates of Employment]
+
+   Contributed to the full software development lifecycle, from requirements analysis to design, implementation, testing, and deployment.
+   Developed responsive web applications with HTML5, CSS3, and JavaScript/TypeScript, ensuring cross-browser compatibility and optimal user experience.
+   Utilized modern web development tools and frameworks to streamline development processes and enhance productivity.
+   Employed unit testing and integration testing methodologies to ensure code quality and reliability.
+   Technical Skills:
+
+   Programming Languages: C#
+   Web Development: ASP.NET, ASP.NET Core, Angular (Angular 2+), HTML5, CSS3, JavaScript/TypeScript
+   Database Technologies: SQL Server, Entity Framework
+   Version Control: Git
+   Testing: Unit Testing, Integration Testing
+   Other: Responsive Web Design, RESTful API Design
+   Nice to Have Skills:
+
+   NgRx or other state management in Angular
+   Angular CLI and build tools
+   Testing Frameworks: NUnit, xUnit
+   Agile Development Methodologies: Scrum, Kanban
+   Education:
+   [Your Highest Degree Earned] in [Your Field of Study] | [University Name] | [Year of Graduation]
+
+   Certifications:
+   [Relevant Certifications, if any]
+
+   Languages:
+
+   English: Fluent (written and spoken)
+   Personal Skills:
+
+   Strong Analytical and Problem-Solving Skills
+   Excellent Communication Skills (Verbal and Written)
+   Collaborative Team Player
+   Commitment to Continuous Learning
+  #endregion
+ #endregion
+
+ #region [1] second
+  #region [1] req
+   Responsibilities:
+
+   Designing, developing, and maintaining software applications using Object-Oriented Programming (OOP) principles and the .NET Core framework.
+   Programming and developing ASP.NET MVC applications.
+   Utilizing expertise in .NET Core framework and software development.
+   Collaborating with the team to solve scalability problems and optimize code/APIs for increased user traffic.
+   Handling multiple tasks under tight deadlines with attention to detail.
+   Qualifications:
+
+   Excellent knowledge of OOP principles and design patterns.
+   Expertise in .NET Core framework and software development.
+   Proficiency in programming languages such as C# and JavaScript.
+   Experience in developing ASP.NET MVC, T-SQL, Web API.
+   Familiarity with OO programming, MVC, Web services, REST with Web API or WCF, JavaScript, jQuery, AJAX.
+   Proficiency in DevExpress and Entity Framework.
+   Advanced understanding of modern web technologies like Bootstrap.
+   Strong problem-solving skills and attention to detail.
+   Strong communication and teamwork skills.
+   Bachelor's or Master's degree in Computer Science or related field.
+   Experience with Agile development methodologies is a plus.
+   Experience in the software development lifecycle is a plus.
+   Proficiency in databases (MS SQL-MongoDB).
+   Minimum 5 years of relevant experience in web-based systems.
+   If you meet these qualifications and are ready to take on this exciting opportunity, we'd love to hear from you!
+  #endregion
+
+  #region [2] cv 
+
+  #endregion
+ #endregion
+#endregion

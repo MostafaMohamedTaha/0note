@@ -1,0 +1,2782 @@
+#region [1] day1
+	#region [1] create database sql 1
+		go
+		create database Net23_Company
+
+		on
+		(
+			Name ='Net23_Company_Data',
+			FileName = 'C:\Program Files\Microsoft SQL Server\MSSQL16.MSSQLSERVER01\MSSQL\DATA\Net23_Company_Data.mdf',
+			Size = 10MB,
+			MaxSize = 50MB,
+			filegrowth = 10%
+		)
+
+		LOG ON
+		(	
+			Name ='Net23_Company_Log',
+			FileName = 'C:\Program Files\Microsoft SQL Server\MSSQL16.MSSQLSERVER01\MSSQL\DATA\Net23_Company_Log.ldf',
+			Size = 5MB,
+			Maxsize = 40MB,
+			filegrowth = 10%
+		)
+
+		use Net23_Company
+	#endregion
+
+	#region [2] make table [create | insert | alter] 2
+		#region [1] emp|depart
+			depart have some employees [dep]=>emp
+			create table Employee
+			(
+				EmpNo int identity(1,1) primary key,
+				EmpFName varchar(10) not null,
+				EmpLName varchar(10) not null,
+				Salary int unique check(Salary > 700),
+				DeptNo int not null,
+				foreign key(DeptNo) 
+				references 
+				Department(DeptNo)
+			)
+			CREATE TABLE [Department]
+			(
+				[DeptNo] INT PRIMARY KEY,
+				[DeptName] NVARCHAR(20),
+				[Location] NCHAR(2) DEFAULT 'NY' CHECK ([Location] IN ('NY', 'DS', 'KW'))
+			)
+
+			INSERT INTO [Department]  
+			VALUES (1, 'Department_1', 'NY'),(2, 'Department_2', 'DS')
+			alter table Employee 
+			add TelephoneNumber char(11);
+			
+			alter table Employee 
+			drop column TelephoneNumber;
+		#endregion
+
+		#region [2] project|workOn
+			create table Project
+			(
+			ProjectNo char(2) primary key,
+			ProjectName varchar(10) not null,
+			Budget int
+			)
+
+			create table Works_on
+			(
+			EmpNo int not null,
+			ProjectNo char(2) not null foreign key references Project(ProjectNo),
+			Job varchar(10),
+			Enter_Date Date not null default(getdate())
+			)
+
+			alter table Works_on 
+			add constraint primary_key_EmpNo_ProjectNo primary key(EmpNo,ProjectNo);
+			alter table Works_on 
+			add constraint foreign_key_EmpNo foreign key(EmpNo) 
+			references Employee(EmpNo);
+			drop column PublishDate
+
+
+			insert into dbo.Department 
+			values (3,'example 2','KW');
+			insert into Employee 
+			values('Mathew','Smith',1,2500),('jo','mo',1,2400),('Ann','Jones',1,3000);
+			insert into Project 
+			values('p1','Apollo',120000),('p3','Mercury',185600),('p2','Gemini',9500);
+			insert into Works_on 
+			values (7,'p1','analyst','2006.10.1'),(7,'p3','Manager','2008.1.1'),(6,'p2','Clerk','2007.2.15');
+		#endregion
+
+		#region [3] alter 
+			alter schema CompanySchema
+			transfer dbo.Department 
+
+			alter schema CompanySchema
+			transfer Employee;
+
+			-- can't drop it has a constraint so delete the constraint first
+			alter table CompanySchema.Employee drop EmpNo;
+
+			--i'll alter the employee table first i'll remove the constraint from it
+			ALTER TABLE CompanySchema.Employee
+			DROP CONSTRAINT FK_EmployeeDeptNo_29572725;
+
+			ALTER TABLE CompanySchema.Department 
+			drop CONSTRAINT primaryKey_constraint_PK;
+
+			--now i'll change the data type of primary key of department table
+			ALTER TABLE CompanySchema.Department 
+			ALTER COLUMN DeptNo char(2) not null;
+
+			-- add the primary key constraint again
+			ALTER TABLE CompanySchema.Department 
+			add CONSTRAINT primaryKey_constraint_PK PRIMARY KEY (DeptNo);
+
+			--now i'll change the data type of  key of employee table
+			ALTER TABLE CompanySchema.Employee 
+			ALTER COLUMN DeptNo char(2) not null;
+
+			alter table CompanySchema.Employee 
+			add constraint foreignKey_constraint_deptNo 
+			foreign key(DeptNo) 
+			references  CompanySchema.Department(DeptNo);
+		#endregion
+	#endregion
+
+	#region [3] rule|fileGroup|checkConstraint
+		#region [1] create rule 3
+			CREATE RULE salary_rule  
+				AS  @salary<6000;
+				go
+				exec sp_bindrule 'salary_rule','Employee.Salary'
+				go
+				insert into  Employee values('ahmed','ali',1,5999)
+											,('hamad','najem',1,4000);
+		#endregion
+
+		#region [2] file group
+			alter database R12024Net2
+			modify filegroup Secondary default
+
+			alter database R12024Net2
+			remove filegroup ThirdFG
+
+			alter database R12024Net2
+			remove file R12024Net2DataFile5
+		#endregion
+
+		#region [3] check constraint
+			alter table PublisherPhone
+			add constraint PhoneCheck Check (len(Phone) = 11),
+			constraint BorrowDateCheck Check (BorrowDate >= getDate()),
+			constraint ReturnDateCheck check (ReturnDate >= BorrowDate)
+		#endregion
+	#endregion
+#endregion
+
+#region [1] day2
+	#region [1] insert | update |delete |truncate
+		update [dbo].[Publisher]
+		set [Address] = 'cairo'
+		where [Address] = 'cairo'
+
+		update [dbo].[Book]
+		set [Available] = 0
+		where [PublisherName] = 'P5'
+
+		update [dbo].[Book]
+		set [Title] = 'Book title', [Available] = 0
+		where ISBN = 1
+
+		insert into [dbo].[Borrowing](BookISBN,MemberID,BorrowDate)
+		values (1,2,'2023-08-09 10:50:31.260')
+
+		update [dbo].[Borrowing]
+		set [ReturnDate] = '2023-08-10'
+		where [MemberID] = 2 and [BorrowDate] = '2023-08-09'
+
+		delete from [dbo].[Book]
+		where PublisherName = 'P3'
+
+		delete from [dbo].[Book] --delete all rows in this table
+
+		truncate [Book] --delete all rows in this table
+
+		delete from Publisher 
+		where Name = 'P4'
+	#endregion
+
+	#region [2] onUpdate|onDelete
+		alter table Book
+		add Constraint PublisherNameDefault default 'P1' for [PublisherName]
+
+		alter table Book
+		drop constraint BookPublisherFK
+
+		alter table Book
+		add constraint BookPublisherFK foreign key (PublisherName) 
+		references Publisher(Name)
+		on delete set null 
+		on update set null
+
+		alter table Book
+		add constraint BookPublisherFK foreign key (PublisherName) 
+		references Publisher(Name)
+		on delete set default 
+		on update set default
+
+		alter table Book
+		add constraint BookPublisherFK foreign key (PublisherName) references Publisher(Name)
+		on delete cascade 
+		on update cascade
+	#endregion
+
+	#region [3] select|from|where|and|is null|is not null|isnull()|in|between|like'%'
+
+		select [EmployeeID],[NationalIDNumber],[Title] from [HumanResources].[Employee]
+		where [Gender] = 'M' and [MaritalStatus]='S'
+
+		select [EmployeeID],[NationalIDNumber],[Title],[SickLeaveHours], [VacationHours] 
+		from [HumanResources].[Employee]
+		where [SickLeaveHours]<10 or [VacationHours]<10
+
+		select [EmployeeID],[NationalIDNumber],[Title],[SickLeaveHours], [VacationHours] 
+		from [HumanResources].[Employee]
+		--where [VacationHours]>=5 and [VacationHours]<=9
+		where [VacationHours] between 5 and 9
+
+		select * 
+		from [Person].[Address]
+		where City in ('Orlando','Berlin','Cambridge')
+
+		select * 
+		from [Person].[Contact]
+		where [FirstName] like 'Ma___'
+
+		select * 
+		from [Person].[Contact]
+		where [MiddleName] is not null
+
+		select [Title],[FirstName],[MiddleName],[LastName]
+		from [Person].[Contact]
+
+		select [Title]+' '+[FirstName]+' '+ ISNULL([MiddleName],'')+ ' '+[LastName] as 'Full Name'
+		from [Person].[Contact]
+
+		select [Title],[FirstName] as 'Employee First Name',[MiddleName],[LastName]
+		from [Person].[Contact]
+
+		select [AddressLine1],[AddressLine2] 
+		from [Person].[Address]
+		where [AddressID] between 1 and 5
+	#endregion
+
+	#region [4] coalesce[concat]|count(*)|max()|min()|top|with ties
+
+		select coalesce([AddressLine1],[AddressLine2],'No Address') [address]
+		from [Person].[Address]
+		where [AddressID] between 1 and 5
+
+		select top 10 
+		with ties 
+		[EmployeeID],[NationalIDNumber],[VacationHours], [SickLeaveHours]
+	#endregion
+
+	#region [5] order by| group by | having |distinct[without duplication]
+
+		order by [VacationHours] asc,[SickLeaveHours] desc
+
+		from [HumanResources].[Employee] --1
+		where [SalariedFlag] = 1 --2
+		group by Gender,[MaritalStatus] --3
+		having COUNT(*)>12 --5
+		order by 'count' asc --6
+		having sum(*)>10 --6
+
+		select DISTINCT [City] from [Person].[Address]
+	#endregion
+#endregion
+
+#region [1] day3
+	#region [1] identity|sequence
+		#region [1] identity vs Sequence
+			#region [1] id
+
+				--Identity:
+				--Identity:
+				----When Creating Table 
+				----Start, increment
+				----By default identity column not editable 
+				----By default identity column not inserted
+				----Increment either insert statement successeded or not
+				----deleted identity number not assigned to any row again
+				----If Explicitly Write number Identity Counter will update to the last inserted value
+			#endregion
+
+			#region [2] seq
+				--Sequence:
+				----Not Associated with any other object
+				----more control
+				----can select value
+				----Restart 
+				----alter and change values
+				----can be used in any statement as value
+			#endregion
+		#endregion
+
+		#region [2] id
+			use [R12024Net2]
+			go
+			insert into [dbo].[Member] values ('Member 1 ', 'cairo',default)
+			go
+			set IDENTITY_INSERT [dbo].[Member] off
+
+			insert into [dbo].[Member] values ('Member 9 ', 'cairo',default)
+			insert into [dbo].[Member](ID,Name,Address,Type) values (10,'Member 10 ', 'cairo',default)
+			go
+		#endregion
+
+		#region [3] seq
+			go
+			create sequence IDs start with 1 increment by 1
+			select next value for IDs
+			insert into [dbo].[Book] values(next value for IDs,'JAVA',0,'P2')
+			go
+			alter sequence IDs Restart
+		#endregion
+	#endregion
+
+	#region [2] Joins[cross|inner|outer[left|right]
+		#region [1] cross|inner|outer[left|right]
+			--cross join:
+			select * 
+			from [Person].[Publisher],[dbo].[PublisherPhone]
+
+			--inner join:
+			select * from [Person].[Publisher],[dbo].[PublisherPhone]
+			where [Name] = PublisherName
+
+			select * from [Person].[Publisher]
+			inner join [dbo].[PublisherPhone]
+			on [Name] = PublisherName
+
+			--outer joins:
+			----Left outer join
+			select * 
+			from [Person].[Publisher] left join [dbo].[PublisherPhone]
+			on [Name] = PublisherName
+
+			----Right outer join
+			select * 
+			from [Person].[Publisher] right join [dbo].[PublisherPhone]
+			on [Name] = PublisherName
+
+			----Right outer join
+			select * 
+			from [Person].[Publisher] full outer join [dbo].[PublisherPhone]
+			on [Name] = PublisherName
+		#endregion
+
+		#region [2] practice
+
+			use [AdventureWorks]
+			--display each product name with its Subcategory name and its Category name
+			select p.Name as 'Product Name', s.Name as 'SubCategory Name', c.Name as 'Category Name'
+			from [Production].[Product] as p
+			join [Production].[ProductSubcategory] as s
+			on p.[ProductSubcategoryID] = s.[ProductSubcategoryID]
+			join [Production].[ProductCategory] as c
+			on s.ProductCategoryID = c.ProductCategoryID
+
+			--display number of products in each category
+			select c.Name as 'Category Name',s.Name as 'SubCategory Name', count(*) as 'Product Count'
+			from [Production].[Product] as p
+			join [Production].[ProductSubcategory] as s
+			on p.[ProductSubcategoryID] = s.[ProductSubcategoryID]
+			join [Production].[ProductCategory] as c
+			on s.ProductCategoryID = c.ProductCategoryID
+			group by c.Name, s.Name
+			order by 'Product Count'
+
+			Select Employee.EmployeeID as 'Emp ID', Manager.EmployeeID as 'Manager ID'
+			from [HumanResources].[Employee] as Employee 
+			join [HumanResources].[Employee] as Manager 
+			on Employee.ManagerID = Manager.EmployeeID
+
+			select Emp.EmployeeID, EmployeeContact.FirstName, Manager.EmployeeID, ManagerContact.FirstName 
+			from [HumanResources].[Employee] Emp 
+			join [HumanResources].[Employee] Manager 
+			on Emp.ManagerID = Manager.EmployeeID 
+			join [Person].[Contact] EmployeeContact 
+			on Emp.ContactID = EmployeeContact.ContactID 
+			join [Person].[Contact] ManagerContact 
+			on Manager.ContactID = ManagerContact.ContactID
+		#endregion
+
+		#region [3] selfJoin
+
+			--Self Joins:
+			create table Student
+			(
+				ID	int identity(1,1) primary key,
+				Name varchar(50) not null
+			)
+
+			create table StudentSibling
+			(
+				Student1 int not null foreign key references Student(ID),
+				Student2 int not null foreign key references Student(ID),
+				constraint StudentSiblingPK primary key(Student1,Student2)
+			)
+
+			select 
+			Student.ID as 'Student ID', 
+			Student.Name as 'Student Name',
+			[StudentSibling].Student2 as 'Sibiling ID',
+			Sibling.Name as 'Sibling Name'
+			from Student
+			join [dbo].[StudentSibling]
+			on StudentSibling.Student1 = Student.ID
+			join Student as Sibling
+			on StudentSibling.Student2 = Sibling.ID
+		#endregion
+	#endregion
+
+	#region [3] subquery
+		#region [1] ex1
+			--get Employee Data for those who take the maximum vacation hours
+			select Max(VacationHours) 
+			from [HumanResources].[Employee]
+
+			select * 
+			from [HumanResources].[Employee]
+			where [VacationHours] = 
+			(
+			select Max(VacationHours) 
+			from [HumanResources].[Employee]
+			)
+		#endregion
+
+		#region [2] ex2
+			--get Employee Data for those who take the top 3 maximum vacation hours
+			select distinct top 3 [VacationHours] 
+			from [HumanResources].[Employee]
+			order by [VacationHours] desc
+
+			select * 
+			from [HumanResources].[Employee]
+			where [VacationHours] 
+			in (
+			select distinct top 3 [VacationHours] 
+			from [HumanResources].[Employee]
+			order by [VacationHours] desc
+			)
+		#endregion
+
+		#region [3] ex3
+			--get category data who has the maximum number of products
+			select * 
+			from [Production].[ProductCategory] as c
+			where c.ProductCategoryID = 
+			(
+			select top 1 s.ProductCategoryID
+			from Production.Product as p
+			join Production.ProductSubcategory as s
+			on p.ProductSubcategoryID = s.ProductSubcategoryID
+			group by s.ProductCategoryID
+			order by Count(*) desc
+			)
+		#endregion
+	#endregion
+#endregion
+
+#region [1] day4
+	#region [1] global var|local var|assign var
+		#region [1] global var
+			1- defined by server.
+			2-begin with @@.
+			3-cann't be created by user
+			4-cann't assigned a value by user
+
+			@@rowcount  ---number of rows affected.
+			@@error  --------0 or num of error message.
+			@@version  ----- version of the DBMS.
+
+			go
+			select @@VERSION as 'result';
+			--OR
+			print @@VERSION;
+		#endregion
+
+		#region [2] local var
+			Local varibales (User Defined) 
+				User defined
+				Always begin with @
+			
+				go
+				DECLARE  
+				@stdID  varchar(11),
+				@vlName char(20),
+				@cName  varchar(10);
+				
+				go
+				DECLARE  @myVar  varchar(11);
+				set @myVar='test'
+				--or
+				select @myVar='test';
+
+				print @myVar
+				--or
+				select @myVar; 
+		#endregion
+
+		#region [3] assign var 
+			Assigning values to them
+				 1- Assigment select\set using an expression
+				 2- Assignment select using a table value
+				 3- Assignment update
+				set @Pname=
+				(SELECT  Name
+				FROM  Production.Product 
+				WHERE ProductID  = 4);
+				DECLARE  @cName  varchar(11);
+				set @cName='ahmed'
+				--update 
+				update customer
+				set phone=2222222
+					,contact=@cName
+				where cust_id=1
+		#endregion
+	#endregion
+
+	#region [2] insert var into table
+		#region [1] ex1 
+			-- create variable form table
+			DECLARE @ProductTotals TABLE
+			(
+			ProductID int,
+			Name nvarchar(50)
+			)
+			--insert into @ProductTotals values(10,1000)
+			insert into @ProductTotals
+			select [EmployeeID],[NationalIDNumber] from [HumanResources].[Employee]
+
+			select * from @ProductTotals
+		#endregion
+
+		#region [2] ex2 multi values
+			--create table data type
+			create type customertype as table
+			(
+			Cust_ID int not null,
+			Cust_Name varchar(50),
+			Cust_Surname varchar(50),
+			Cust_Email varchar(50)
+			)
+			go
+			declare @c customertype;
+			insert into @c values (1,'steven','gerrard','sg@liverpool.com')
+			insert into @c values (2,'jamie','caragher','jc@liverpool.com')
+			select * from @c
+		#endregion
+
+		#region [3] ex3 declare from other table
+			--insert into variable table
+			create type idColumn as table
+			(ID int)
+
+			declare @i idColumn;
+			select st_id 
+			from newschema.Student 
+			insert into @i;
+
+			select * from @i;
+		#endregion
+	#endregion
+
+	#region [3] while loop
+		declare @i int , @order_id integer
+		declare @orderdate datetime
+		declare @shipped_date datetime
+		declare @freight money
+		set @i = 1
+		set @orderdate = getdate()
+		set @shipped_date = getdate()
+		set @freight = 100.00
+		while @i < 10
+		begin
+			insert into orders (orderid, orderdate, shippeddate, freight)
+			values( @i, @orderdate, @shipped_date, @freight)
+			set @i = @i+1
+		end
+	#endregion
+
+	#region [4] built in function 
+		#region [1] var function
+			GO
+			SELECT [Description], DiscountPct, MinQty,MaxQty, ISNULL(MaxQty, 0) AS 'Max Quantity'
+			FROM Sales.SpecialOffer;
+			GO
+			--convert
+			declare @i int;
+			set @i=5;
+			--select ' Mynumber:' + @i
+			select' Mynumber:' + convert(nvarchar(3), @i) 
+		#endregion
+
+		#region [2] date function
+			select getdate();
+
+			select BirthDate , convert(nvarchar(20),BirthDate,113)--to get the date with a specific style
+			from HumanResources.Employee
+
+			select BirthDate,datename(dd,BirthDate) 
+			from HumanResources.Employee
+
+			select datename(mm,getdate()) 
+
+			select datename(yy,BirthDate) 
+			from HumanResources.Employee
+		#endregion
+
+		#region [3] UNION function 
+			SELECT '102 - ANSI:', CONVERT(varchar(30), GETDATE(), 102) AS Style
+			UNION
+			SELECT '111 - Japanese:', CONVERT(varchar(30), GETDATE(), 111)
+			UNION
+			SELECT '113 - European:', CONVERT(varchar(30), GETDATE(), 113)
+		#endregion
+
+		#region [4] system function
+			select db_name()
+
+			select SUSER_SNAME()
+		#endregion
+
+		#region [5] aggregate function
+			select COUNT(*) from HumanResources.Employee
+		#endregion
+
+		#region [6] condition function [iif,case]
+			select [EmployeeID], iif([SickLeaveHours]>50, 'Lazy','Active')
+			from [HumanResources].[Employee]
+
+			select [EmployeeID], [SickLeaveHours],
+			case 
+				when [SickLeaveHours] < 30 then 'Super Active'
+				when [SickLeaveHours] between 30 and 40 then 'Active'
+				when [SickLeaveHours] between 41 and 60 then 'Lazy'
+				--when [VacationHours] >10 then 'x'
+				else 'Super Lazy'
+			end as 'Productivity'
+		#endregion
+
+		#region [7] string 
+			select upper(Color) from Production.Product
+			select lower(Color) from Production.Product
+			select substring(Color,1,3) from Production.Product  --start--length 
+		#endregion
+
+		#region [8] math 
+			select sin(100)
+			select power(100,2)
+		#endregion
+	#endregion
+#endregion
+
+#region [1] day5
+	#region [1] execute[var|proc]
+		#region [1] ex1 var
+			declare 
+			@dbname varchar(30),
+			@tblname varchar(30)
+			SET @dbname = 'sales'
+			SET @tblname = 'customers'
+			--retrieve the whole products from products table in northwind DB
+			--select 'USE ' + @dbname + ' SELECT * FROM ' + @tblname
+			EXECUTE('USE ' + @dbname + ' SELECT * FROM ' + @tblname)
+		#endregion
+
+		#region [2] ex2
+			create proc d_proc(@t nvarchar(50))
+			as
+			Execute ('select * from ' +@t)
+
+			d_proc 'customers'
+		#endregion
+	#endregion
+
+	#region [2] if/else |if exists()
+		#region [1] if else
+			DECLARE @n tinyint
+			SET @n = 5;
+			IF (@n BETWEEN 4 and 6 )-- (4,6) "boundaries" are included
+			begin
+					--statements or queries
+					USE AdventureWorks;
+					select * FROM Production.Product
+					WHERE ProductID=@n;
+			end
+			Else
+			begin 
+					--statements or queries
+					select 'Not allowed number';
+			end
+		#endregion
+
+		#region [2] if exists()|else
+
+			--if exists
+			use AdventureWorks;
+			if exists(select * FROM Production.Product WHERE ProductID=1)
+
+				update Production.Product 
+				set Name='new product'
+				where ProductID=1;
+			Else
+				--insert
+				print 'Not Found';
+		#endregion
+	#endregion
+
+	#region [3] while loop
+		#region [1] ex1
+			DECLARE @n tinyint;
+			SET @n = 1
+			WHILE (@n < 10)      
+			BEGIN             --error if we remove begin,end here
+				--statements or Queries
+				print @n;
+				--USE AdventureWorks;
+					--select * FROM Production.Product WHERE ProductID=@n;
+				Set @n=@n+1;--increement of variable condition that ends the loop
+			END    
+		#endregion
+
+		#region [2] ex2 continue break
+			declare @i int
+			Set @i = 0
+			while (@i < 10)
+			begin
+				if (@i=5)
+					begin
+						Set @i=@i+1
+						continue  --go to the beginning of that loop
+					end
+				else if (@i=8)
+					break		--get out of loop
+				
+				Set @i=@i+1;
+				print @i;		
+			end
+		#endregion
+	#endregion
+
+	#region [4] case
+		SELECT  ProductNumber, ProductLine as Name
+		FROM Production.Product
+		ORDER BY ProductNumber;
+
+		SELECT   ProductNumber,
+			CASE ProductLine
+				WHEN 'R' THEN 'Road'
+				WHEN 'M' THEN 'Mountain'
+				WHEN 'T' THEN 'Touring'
+				WHEN 'S' THEN 'Other sale items'
+				ELSE 'Not for sale'
+			END as Name
+		FROM Production.Product
+		ORDER BY ProductNumber;	
+	#endregion
+	
+	#region [5] scalar function [return one value]
+		#region [1] syntax
+
+			create function FunctionName(paramater list)
+			returns Datatype
+			begin
+				function Body
+				return
+			end
+		#endregion
+
+		#region [2] ex1 hello world
+			Create function TestFun()
+			returns Nvarchar(15)
+			Begin
+				Return 'Hello World'
+			End
+			Select dbo.TestFun()
+		#endregion
+
+		#region [3] ex2 select
+			create function GetProductColor(@sid int)
+			returns nvarchar(20)
+			begin
+			declare @name nvarchar(20)
+				if @sid > 0
+					--set @name=(select Color from AdventureWorks.Production.Product
+					--where ProductID=@sid)
+
+					select @name=Color from AdventureWorks.Production.Product
+					where ProductID=@sid
+				else
+					set @name='sid must be positive'
+				return @name 	
+			end 
+			go
+
+			select dbo.GetProductColor(317) 
+			--OR
+			print dbo.GetProductColor(-1)
+			--OR
+			Declare @result nvarchar(20)
+			select @result=dbo.GetProductColor(317) 
+			print @result
+		#endregion
+
+		#region [4] ex3 date
+
+			create or alter function myday(@x datetime)
+			returns nvarchar(20)
+			as
+			begin
+			declare @d nvarchar(20)
+			select @d=datename(MM,@x)
+			return @d
+			end
+			go
+			select dbo.myday('2014-05-08')					
+		#endregion
+
+		#region [5] ex4 if
+			CREATE FUNCTION fn_NewRegion ( @myinput nvarchar(30) ) 
+			RETURNS nvarchar(30)
+			BEGIN
+			IF @myinput IS NULL
+				SET @myinput = 'Not Applicable'
+
+			RETURN @myinput
+			END
+			GO
+			exec fn_NewRegion 'Null'
+		#endregion
+
+		#region [6] ex5 generic 
+			CREATE FUNCTION fn_NULL_to_NA --//it is generic fn
+			(@inputString nvarchar(30))
+			RETURNS nvarchar(15)
+			AS
+			BEGIN
+				If @inputString IS NULL
+				SET @inputString = 'Not Available'
+			-- At this point, the value of the @inputString
+			-- variable is either the
+			-- original color or it has been changed to Not
+			-- Available if it was NULL
+				Return @inputString
+			END
+			go
+			
+			SELECT Name, ProductNumber, dbo.fn_NULL_to_NA(Color)
+		#endregion
+	#endregion
+
+	#region [6] inline function[return table as a result of select statement]
+		#region [1] ex1 select like 'a%'
+			create function highage(@age int)
+			returns table
+			as 
+			return
+			(
+				select st_fname,st_age 
+				from student 
+				where st_age=@age
+			)
+			go
+			select * from dbo.highage(20)
+
+			select st_fname from dbo.highage(20)
+			where st_fname like 'a%'
+		#endregion
+
+		#region [2] ex2 inner join
+
+			CREATE FUNCTION fn_PhoneEmail
+			(@LastName nvarchar(50))
+			RETURNS table
+			AS
+			RETURN 
+			(
+				SELECT p.FirstName, p.LastName, em.EmailAddress,
+				ph.PhoneNumber
+				FROM Person.Person p INNER JOIN Person.PersonPhone ph
+				ON p.BusinessEntityID = ph.BusinessEntityID
+				INNER JOIN Person.EmailAddress em
+				ON p.BusinessEntityID = em.BusinessEntityID
+				WHERE LastName = @LastName 
+			)
+			go
+			SELECT * FROM dbo.fn_PhoneEmail ('Alameda')				
+		#endregion
+	#endregion
+
+	#region [7] multiValue funcion[return a new table as a result of insert statement ] 
+		#region [1] ex1 if else
+
+			create function student_names(@format nvarchar(50)) 
+			returns @t table
+					(
+					student_id int primary key,
+					student_name nvarchar(50)
+					)
+			as
+			begin
+				if (@format='fullname') 
+					insert into @t
+					select st_id,st_fname+' '+st_lname 
+					from ITI.dbo.student
+				else
+				if (@format='firstname')
+					insert  into @t
+					select st_id,st_fname
+					from ITI.dbo.student
+
+			return
+			end
+			go
+			select * from student_names('fullname')
+			go
+			select * from student_names('firstname')
+			--where student_id>10
+			go
+			select student_id,student_name from student_names('firstname')
+		#endregion
+	#endregion
+#endregion
+
+#region [1] day6
+	#region [1] stored procedure vs function 
+
+		allows the end user to execute a group of precompiled statements by
+		entering a single predefined command
+
+		benifits
+			Simplify repeated tasks
+			Run faster
+			Reduce network traffic
+			Can catch user errors before they are entered into the database
+			Establish consistency by performing tasks the same way 
+			Help to provide security 
+			Can enforce complex business rules and defaults
+
+		performance benifits
+		A compiled stored procedure executes more rapidly than a batch because:
+		1)The stored procedure has already been parsed
+		2)Server does not need to build a query tree;
+		3)it can use the one in sysprocedures
+		3)If an unused query plan for the procedure exists in procedure cache
+		Server does not need to create a query plan
+
+		Differences Between Procedures and Functions
+		http://www.c-sharpcorner.com/uploadfile/skumaar_mca/differences-between-procedures-and-functions/
+		http://www.stupidcodes.com/difference-between-stored-procedures-and-function
+	#endregion
+
+	#region [2] ex1  without return
+		create proc p1 
+		as
+		begin
+			declare @x nvarchar(20)
+			set @x='test'
+			select @x	
+		end
+
+		p1 
+		-- or
+		exec p1
+	#endregion
+
+	#region [3] ex2 with return 1 for success
+		create or alter proc p33
+		as
+		begin
+			declare @x nvarchar(20)
+			set @x='test'
+			select @x	
+			return 1 -- return for user to detect run successfully or not.		
+		end
+
+		p33
+		declare @n int
+		exec @n=p33
+		select 'result of Execution:' + str(@n)	
+	#endregion
+
+	#region [4] ex3 with parameter
+		#region [1] 1 param
+			go
+			create proc p2(@x nvarchar(22))
+			as
+			begin
+				select 'Welcome ' + @x 
+			end	
+			go
+			
+			exec p2 'SQL Server'
+		#endregion
+
+		#region [2] 2 params with default
+
+			go
+			create proc p3(@x int,@y int=3)
+			as
+			begin
+				select (@x+@y);
+			end		
+			go
+			---
+			exec p3 1
+
+			--OR
+			exec p3 1,4
+		#endregion
+
+		#region [3] output param
+
+			go
+			Create  proc p4(@x nvarchar(20) output)
+			as
+			begin
+			set @x='test'
+			end		
+			go
+
+			declare @y nvarchar(50)
+			exec p4 @y output
+			set @y='This is test for output paramater: ' + @y
+			select @y
+		#endregion
+
+		#region [4] 2 output params set
+			Create  proc getProductsCountOfSpecColor(@pColor nvarchar(10), @pCount int output)
+			as
+			begin
+				--select @pCount=count ([ProductID]) 
+				--from [Production].[Product]
+				--where [Color]=@pColor
+				set @pCount= 
+				(
+					select count ([ProductID]) 
+					from [Production].[Product]
+					where [Color]=@pColor
+				)
+			end		
+			go
+			
+			declare @ProdCount int
+			declare @prodColor nvarchar(10)
+			Set @prodColor='Black'
+			exec getProductsCountOfSpecColor @prodColor, @ProdCount output
+			--exec getProductsCountOfSpecColor 'Black', @ProdCount output
+			Select str(@ProdCount) + '   products found for this color'
+		#endregion
+		#region [5] exec 2 params 
+			create or alter proc p44(@d nvarchar(22),@t nvarchar(22))
+			as
+			begin
+				exec('use ' + @d + '; select * from '+ @t )
+			end
+			go
+			
+			p44 'AdventureWorks' ,'Person.Contact'
+		#endregion
+
+		#region [6] insert 2 params
+
+			create proc InsertTopic(@id int,@name nvarchar(50))
+			as
+			begin
+			insert into ITI.dbo.Topic values (@id,@name);
+			end
+			go
+			exec InsertTopic 97,'test topic2'
+		#endregion
+	#endregion
+ 
+	#region [5] select PROCEDURE
+		#region [1] ex1 select
+			CREATE PROCEDURE HumanResources.uspGetAllEmployees
+			AS
+				SELECT LastName, FirstName, JobTitle, Department
+				FROM HumanResources.vEmployeeDepartment;
+			GO
+			exec HumanResources.uspGetAllEmployees
+		#endregion
+
+		#region [2] select 2
+
+			CREATE PROCEDURE uspNResults 
+			AS
+			SELECT COUNT(ContactID) FROM Person.Contact;
+			SELECT COUNT(CustomerID) FROM Sales.Customer;
+			GO
+			EXEC dbo.uspNResults
+		#endregion
+
+		#region [3] select join encapsulate 
+			CREATE PROC usp_GetEmp
+			AS
+			SELECT *
+			FROM Person.Contact p
+			INNER JOIN HumanResources.Employee e
+			ON (e.ContactID = p.ContactID)
+			order by p.FirstName;
+
+			EXEC usp_GetEmp
+		#endregion
+
+		#region [4] modify to add param
+			ALTER PROC usp_GetEmp(@LastName varchar(50))
+			AS
+			SELECT *
+			FROM Person.Contact p
+			INNER JOIN HumanResources.Employee e
+			ON e.ContactID = p.ContactID
+			WHERE LastName = @LastName
+
+			EXEC usp_GetEmp 'Gilbert'
+		#endregion
+	#endregion
+
+	#region [6] table proc
+		#region [1] desc
+			In Sql Server 2008 you can pass a table variable in a stored procedure as 
+			a parameter. now you have the ability to send multiple rows of data in 
+			a stored procedure.one main advantage of that is that it will reduce the amount 
+			of round trips to the server. 
+
+			Limitations to passing table parameters
+			- You must use the READONLY clause when passing in the table valued variable into the procedure. Data in the table variable cannot be modified -- you can use the data in the table for any other operation. Also, you cannot use table variables as OUTPUT parameters -- you can only use table variables as input parameters.
+		#endregion
+
+		#region [2] insert values into table
+
+			CREATE TABLE Customers
+			(
+				Cust_ID int NOT NULL
+				,Cust_Name varchar(50) NOT NULL
+				,Cust_Surname varchar(50) NOT NULL
+				,Cust_Email varchar(50) NOT NULL
+			)
+			go
+			create procedure insertIntoCustomer
+			(
+				@Cust_ID int
+				,@Cust_Name varchar(50)
+				,@Cust_Surname varchar(50)
+				,@Cust_Email varchar(50)
+			)
+			as
+			begin 
+					insert into dbo.Customers
+					values(@Cust_ID, @Cust_Name,@Cust_Surname,@Cust_Email)
+			end
+			Go
+			exec insertIntoCustomer  3,'steven','gerrard','sg@liverpool.com'
+			exec insertIntoCustomer  5,'jamie','caragher','jc@liverpool.com'
+			exec insertIntoCustomer  6,'Ahmed','Sleepy','ahmed@liverpool.com'
+
+			select * from dbo.Customers
+		#endregion
+
+		#region [3] insert values into type table readonly
+			create type customertype as table
+			(
+				Cust_ID int not null
+				,Cust_Name varchar(50)
+				,Cust_Surname varchar(50)
+				,Cust_Email varchar(50)
+			)
+			go
+			create procedure InsertIntoCustomerNew
+					(@Customer_details customertype READONLY)
+					--to be read only it have to be a table value data type
+			as
+			begin 
+					insert into Customers
+					select * from @Customer_details
+			end
+			go
+
+			declare @c customertype
+			insert into @c values (7,'steven','gerrard','sg@liverpool.com')
+			insert into @c values (8,'jamie','caragher','jc@liverpool.com')
+			insert into @c values (9,'Ahmed','Sleepy','ahmed@liverpool.com')
+
+			execute InsertIntoCustomerNew @c
+
+			select * from dbo.Customers
+		#endregion
+	#endregion
+
+	#region [7] trigger
+
+		--Triggers
+		go
+		/*
+		CREATE TRIGGER trigger_name
+		ON {table|view}
+		[WITH ENCRYPTION]
+		{
+		{{FOR {AFTER|INSTEAD OF} {[INSERT] [,] [UPDATE] [,] [DELETE]}
+		AS
+		[{IF [UPDATE (column)
+		[{AND|OR} UPDATE (column)]] ]
+		COLUMNS_UPDATE()]
+		sql_statements}}
+		http://msdn.microsoft.com/en-us/library/ms189799.aspx
+		http://www.dotnet-tricks.com/Tutorial/sqlserver/OJ97170312-Different-Types-of-SQL-Server-Triggers.html
+		*/
+		/*A powerful tool that can be used when creating DDL triggers is the
+		eventData() function. Any time a DDL trigger fires, the information
+		about the trigger is captured in the eventData() function as XML data.*/
+		--Add a trigger to prevent the modification of any tables within the
+		--Sales database with the following code:
+		go
+		USE Master;
+		GO
+		CREATE DATABASE Sales2;
+		GO
+		USE Sales2;
+		GO
+		--DDL Trigger
+		create TRIGGER trgNoChange
+		ON DATABASE --define the scope
+		after ALTER_TABLE -- with DDL we can use After trigger only.
+		AS
+		begin
+			rollback;
+			PRINT 'User can not change on a table'
+		end
+
+		/****************/
+		USE Sales2;
+		GO
+
+
+		CREATE TABLE Customers 
+		(
+			CustomerID int NOT NULL,
+			LName varchar(50) NOT NULL,
+			FName varchar(50) NULL,
+			[Status] varchar (10) NULL,
+			ModifiedBy varchar(30) NULL
+		)
+
+		alter table Customers drop column CustomerID
+
+		go
+
+		drop trigger trgNoChange
+
+		----------------------------------------------------
+		--DML Triggers
+		--Trigger on table
+		go
+		Create trigger PreventDelete
+		on Customers instead of delete
+		as 
+		begin
+			print 'You can not delete form this table'	
+		end
+		go
+		delete from Customers
+
+		drop trigger PreventDelete
+
+		--Add an UPDATE trigger on the Customers table with the following code:
+		go
+		create or alter TRIGGER trgRecordModifyDate
+		ON Customers
+		AFTER UPDATE
+		AS
+		begin
+		IF UPDATE (LName)
+			begin
+				--DECLARE @CustomerID int;
+				--SET @CustomerID = 
+								--(SELECT CustomerID FROM inserted);
+				UPDATE Customers
+				SET ModifiedBy = suser_sname()
+				--WHERE CustomerID = @CustomerID;
+				WHERE CustomerID in (SELECT CustomerID FROM inserted);
+			end
+		end
+		go
+		select * from Customers
+		--Modify the customer data with the following query:
+		UPDATE Customers
+		SET LName = 'test'
+		WHERE CustomerID = 1
+
+		UPDATE Customers
+		SET LName = 'iti'
+		WHERE CustomerID = 2
+		--Modify fname
+		UPDATE Customers
+		SET FName = 'SQL'
+		WHERE CustomerID = 2
+
+		UPDATE Customers
+		SET LName = 'test'
+		WHERE CustomerID in (4,5)
+
+		--This causes the UPDATE trigger to fire and add data to the ModifiedBy column.
+		--View your new customer data with the following query:
+		SELECT * FROM Customers
+		--You should see that the ModifiedBy column is no longer NULL.
+		--===*****************====
+		go
+		--Add an INSTEAD OF DELETE trigger to prevent the deletion of customers
+		--with the following code:
+		go
+		create or alter TRIGGER trgNoDelete
+		ON Customers
+		INSTEAD OF DELETE
+		AS
+		--raiseERROR ('Customers can’’t be deleted. Customer
+		--changed to inactive instead.', 16, 10) WITH LOG			
+		UPDATE Customers
+		SET [Status] = 'Inactive'
+		where CustomerID in (select CustomerID from deleted)
+		--FROM Customers as c INNER JOIN deleted as d
+		--ON c.CustomerID = d.CustomerID
+		go
+		--note The trigger is an INSTEAD OF trigger, so the actual DELETE statement
+		--doesn’t fire.
+		--Try to delete a customer with the following code:
+		DELETE FROM Customers
+		Where CustomerID = 2
+
+		DELETE FROM Customers
+		Where CustomerID in (1,3)
+		--Instead of deleting the customer, the message Customers can’t be deleted.
+		--Customer changed to inactive is displayed.
+		--View your new customer data with the following query:
+		SELECT * FROM Customers
+		--The status has been changed to Inactive.
+	#endregion
+
+	#region [8] transaction batch
+
+		go
+		/*
+		A transaction is a single unit of work. If a transaction is successful, all of the data modifications made during the transaction are committed and become a permanent part of the database. If a transaction encounters errors and must be canceled or rolled back, then all of the data modifications are erased.
+
+		SQL Server operates in the following transaction modes.
+
+		AutoCommit transactions
+
+			Each individual statement is a transaction.
+		Explicit transactions
+
+			Each transaction is explicitly started with the BEGIN TRANSACTION statement and explicitly ended with a COMMIT or ROLLBACK statement.
+		Implicit transactions
+
+			A new transaction is implicitly started when the prior transaction completes, but each transaction is explicitly completed with a COMMIT or ROLLBACK statement.
+		Batch-scoped transactions
+
+			Applicable only to multiple active result sets (MARS), a Transact-SQL explicit or implicit transaction that starts under a MARS session becomes a batch-scoped transaction. A batch-scoped transaction that is not committed or rolled back when a batch completes is automatically rolled back by SQL Server.
+
+		A transaction has four key properties that are abbreviated ACID. ACID is an acronym for for Atomic Consistent Isolated Durability.
+			--Atomic means that all the work in the transaction is treated as a single unit. Either it is all performed or none of it is. 
+			--Consistent means that a completed transaction leaves the database in a consistent internal state. 
+			--Isolation means that the transaction sees the database in a consistent state. This transaction operates on a consistent view of the data. If two transactions try to update the same table, one will go first and then the other will follow. 
+			--Durability means that the results of the transaction are permanently stored in the system.
+		- See more at: http://www.sqlteam.com/article/introduction-to-transactions#sthash.jPHDSRfo.dpuf
+		*/
+		go
+		--transactions and batches:
+		use AdventureWorks;
+		begin tran t
+		update Production.Product set Name='iti1' where ProductID=1;
+		update Production.Product set Name='iti2' where ProductID=2;
+		rollback
+		--commit
+		go
+		select Name from Production.Product
+		where ProductID in (1,2);
+		---------------------------------------
+		go
+		use AdventureWorks;	
+		go
+		begin tran t1
+			declare @r1 int, @r2 int;
+			update Production.Product set ProductNumber='19A'  where ProductID=3;
+			--insert into Production.Product (ProductNumber) values('19A');
+			set @r1=@@error
+			update Production.Product set ReorderPoint=88 where ProductID=3;
+			set @r2=@@error
+			if @r1 = 0 and @r2=0
+				begin
+					commit tran
+					select 'Done'
+				end
+			else
+				begin
+					rollback tran
+					select @r1,@r2
+				end;
+		go
+		---------------------------------------------------------------------
+		--Save point
+		use AdventureWorks;
+		go
+		begin tran t1
+			declare @r2 int, @r1 int
+			update Production.Product set ProductNumber='19A' where ProductID=3;
+			save tran s1									--save point
+			update Production.Product set ReorderPoint=null where ProductID=3;
+			set @r1=@@error			
+			update Production.Product set ReorderPoint=null where ProductID=4;
+			set @r2=@@error                                 
+			if @r1=0 and @r2 = 0
+				begin
+					commit tran
+					select 'true'
+				end
+			else
+				begin
+					rollback tran s1			--partially rollback
+					commit tran					--without this statement "engin hanging"
+					select @r1,@r2
+		end
+		go
+		select ProductNumber from Production.Product where ProductID=3
+	#endregion
+#endregion
+
+#region [1] day7
+	#region [1] handle error
+
+		--Using try/catch
+		begin try
+			select 1/0
+		end try
+		begin catch
+			print 'Error'
+		end catch
+		------------------------------------------------------
+		begin try
+			select 1/0
+		end try
+		begin catch
+			print 'Error'
+			select ERROR_MESSAGE() 'Error Message'
+			,ERROR_NUMBER() 'Error Number'
+			,ERROR_LINE () 'Error Line Number'
+			,ERROR_SEVERITY () 'Error Severity Level'
+			,ERROR_PROCEDURE() 'Error Procedure'
+			,ERROR_STATE () 'Error State'
+		end catch
+		--------------------------------------------------------------------
+		use AdventureWorks;
+		begin try
+			insert into Production.Product(Name) values('n') 
+		end try
+		begin catch
+			select @@ERROR
+		end catch
+		---------------------------
+		--RaiseError					
+		declare @msgNum int,
+		@severity int,
+		@msgTxt nvarchar(30)
+		go
+		sp_addMessage @msgNum = 50005,
+					@severity = 10,
+					@msgTxt = N'this is User define message';--7char displayed,take 1st 3char from msg
+		GO
+		raiseERROR (50005, -- Message id.
+				10, -- Severity,
+				1 -- State
+				)
+		-- The message text returned is: <<    abc>>.
+		GO
+		sp_dropMessage @msgNum = 50005;
+		GO
+
+		select * from sys.messages
+		where message_id=50005
+	#endregion
+
+	#region [2] temp table
+
+		go
+		-- http://msdn.microsoft.com/en-us/library/ms186986.aspx
+		/*
+		Local Temporary Tables:
+		------------------------
+		Local temporary tables are the tables stored in tempdb. Local temporary tables are temporary tables that are available only to the session that created them. These tables are automatically destroyed at the termination of the procedure or session. They are specified with the prefix #, for example #table_name and these temp tables can be created with the same name in multiple windows. 
+		*/
+		go
+		create table #myTbl
+		(
+				ID int identity Primary Key,
+				Name nvarchar(20)
+		)
+		-- its lifetime for current session only
+		--exists in tempdb=>Temporary Tables
+		insert into #myTbl(Name)
+		values ('a')
+		,('b')
+		,('c') 
+		go
+		select * from #myTbl
+		go
+
+		--try to open a new query and repeat the previous query
+		--Invalid object name '#temp'
+									-------------------
+
+
+		/*Global Temporary Tables:  
+		--------------------------
+		Global temporary tables are also stored in tempdb. Global temporary tables are temporary tables that are available to all sessions and all users. They are dropped automatically when the last session using the temporary table has completed. They are specified with the prefix #, for example ##table_name.
+		*/
+		go
+		use tempdb
+		create table ##MySharedTemp
+		(
+			ID int identity Primary Key,
+			Name nvarchar(20)
+		)
+		go
+		--exists in tempdb=>Tables
+		--dbo.MySharedTemp
+		go
+		use tempdb
+		insert into ##MySharedTemp(Name)
+		values ('a')
+		,('B')
+		,('c') 
+		go	
+		use tempdb;				
+		select * from ##MySharedTemp
+		--open a new Query and write the following query
+		use tempdb
+		select * from dbo.##MySharedTemp 
+		go
+		--data will be retrieved	
+		--will be removed when
+		--	1. Drop it manually
+		--	2. Restart the server		
+		go
+	#endregion
+
+	#region [3] computed column
+		--Computed Column
+		Use [Intake35DB]
+		go
+		CREATE FUNCTION udf_get_FullName (@fname Varchar(50), @lname Varchar(50))
+		RETURNS varchar(100)
+		WITH SCHEMABINDING
+		BEGIN
+		DECLARE @FullName  varchar(100)
+		SELECT @FullName 
+				= @fname + ' ' + @lname;
+		RETURN @FullName 
+		END
+		go
+		ALTER TABLE [dbo].[Customers]
+		ADD   FullName --calculated column name
+		AS dbo.udf_get_FullName ([FName],[LName])
+		go
+		insert into [dbo].[Customers] ([CustomerID],[LName],[FName]) 
+		values(66,'fff','rrr');
+		select * from [dbo].[Customers]
+		go
+		--((((((((((((((((((31)))))))))))))))))))))))))
+		--(((((((((((((((((((cursor)))))))))))))))))))
+		--cursor
+		go
+		--------------------------------
+		-- is a mechanism that processes the result row-by-row 
+		-- More about cursors
+		-- http://technet.microsoft.com/en-us/library/ms191179.aspx
+		-- http://technet.microsoft.com/en-us/library/ms180169.aspx
+		-- http://www.mssqlcity.com/Articles/General/UseCursor.htm
+		----------------------------
+		go
+		--1- Declare Cursor
+		declare s_cur cursor
+			for select CustomerID,LName from dbo.Customers
+			for read only  --read only
+		declare @id int
+		declare @name nvarchar(50)
+		--2- open Cursor
+		open s_cur 
+		--3- fetch
+		begin
+		fetch s_cur into @id,@name
+			While @@fetch_status=0  --returns 0 success -- 1 failed  --2 no more rows to fetch
+			begin
+				select @id,@name 
+				fetch s_cur into @id,@name
+			end
+		end
+		--4-Close Cursor
+		close s_cur
+		--5-deallocate
+		deallocate s_cur
+		go
+		--------------------------------------------------------------------------	
+		Alter table Customers
+		add Ser int
+		--------------------------------------
+		go
+		declare Ins_cur cursor
+			for select CustomerID,LName from dbo.Customers
+			for update
+		declare @idI int
+		declare @nameI nvarchar(50) 
+		declare @counter int
+		set @counter=1;
+		open Ins_cur 
+		begin
+		fetch Ins_cur into @idI,@nameI --for enter while first time
+			While @@fetch_status=0
+			begin
+				--if @idI<100
+					begin
+						update 	dbo.Customers
+						set Ser=@counter
+						where CURRENT of ins_cur --Current row
+						--where CustomerID=@idI 
+						set @counter=@counter+1;
+						end
+				fetch Ins_cur into @idI,@nameI
+					
+			end
+		end
+		close Ins_cur
+		deallocate Ins_cur
+	#endregion
+
+	#region [4] indexes
+
+		go
+		--indexes---
+		--table scan is a scan that reads every row in a table
+		--table that does not have any indexes created on it can be searched only via a table scan
+		--An index is an on-disk structure associated with a table or view that speeds retrieval of rows from the table or view. An index contains keys built from one or more columns in the table or view. These keys are stored in a structure (B-tree) that enables SQL Server to find the row or rows associated with the key values quickly and efficiently.
+		/*
+		--Clustered 
+		Clustered indexes sort and store the data rows in the table or view based on their key values. These are the columns included in the index definition. There can be only one clustered index per table, because the data rows themselves can be sorted in only one order. 
+		A clustered index stores the actual data rows at the leaf level of the index.
+		The only time the data rows in a table are stored in sorted order is when the table contains a clustered index. When a table has a clustered index, the table is called a clustered table. If a table has no clustered index, its data rows are stored in an unordered structure called a heap. 
+
+
+		--Nonclustered 
+		Nonclustered indexes have a structure separate from the data rows. A nonclustered index contains the nonclustered index key values and each key value entry has a pointer to the data row that contains the key value. 
+		The pointer from an index row in a nonclustered index to a data row is called a row locator. The structure of the row locator depends on whether the data pages are stored in a heap or a clustered table. For a heap, a row locator is a pointer to the row. For a clustered table, the row locator is the clustered index key.
+		Unlike a clustered indexed, the leaf nodes of a nonclustered index contain only the values from the indexed columns and row locators that point to the actual data rows, rather than contain the data rows themselves. This means that the query engine must take an additional step in order to locate the actual data.
+		--Allow Null, and Allow repeat data
+
+		--Unique
+		A unique index ensures that the index key contains no duplicate values and therefore every row in the table or view is in some way unique.
+		A unique index is automatically created when you define a primary key or unique constraint
+		*/
+		--Indexes basics
+		-- http://msdn.microsoft.com/en-us/library/ms190457.aspx
+		--Indexes types
+		-- http://msdn.microsoft.com/en-us/library/ms175049.aspx
+		--Implementing Indexes
+		-- http://msdn.microsoft.com/en-us/library/ms180857.aspx
+
+		--Simple explanation for Indexes
+		-- http://www.codeproject.com/Articles/190263/Indexes-in-MS-SQL-Server
+		-- https://www.simple-talk.com/sql/learn-sql-server/sql-server-index-basics/
+		-- http://www.programmerinterview.com/index.php/database-sql/clustered-vs-non-clustered-index/
+		----------------------------------------------------------------------------
+		go
+		drop  table stud
+		go
+		create table stud
+		(
+		id int,
+		sname nvarchar(50),
+		sal int,
+		age int
+		)
+		go
+		--indexing affect with the existing data
+		insert into stud(id) values (3)
+		insert into stud(id) values (1)
+		go
+		insert into stud(id,sal) values (9,99)
+		insert into stud(id,sal) values (7,11)
+		go
+		select * from stud 
+		go
+		create clustered index cIndex
+			on stud(id)
+		go
+		insert into stud(id,sal) values (5,11)
+		go
+		create nonclustered index cIndex2
+			on stud(sal)
+		go
+		select sname,age from  stud
+		where sname ='e'
+		go
+		create unique index uni_index  
+		on stud(age)
+		go
+		drop index stud.uni_index
+		---------------
+		--table can have one clustered index
+		--table can have up to 249
+		use ITI
+		--1)unique index
+		create unique index uni_index
+		on stud(sname)
+		go
+		drop index student.non_uni_index
+		---unique nonclustered noncomposite
+		go
+		--2)non unique index
+		go
+		create index non_uni_index  
+		on student(st_fname)
+		go
+		--3)clustered index
+		create clustered index clustered_ind --nonclustered
+		on department(Dept_Manager)
+		go
+		--5)composite index
+		--6)non composite attribute
+		go
+		-----------------------------------------------------------------------------
+		--the TerminationReason table was created without a primary key defined,
+		--meaning that initially, the table was a “heap.” 
+		--The primary key was then added afterward using ALTER TABLE.
+		--The word CLUSTERED follows the PRIMARY KEY statement,
+		--thus designating a clustered index with the new constraint
+		USE AdventureWorks
+		GO
+		drop table HumanResources.TerminationReason
+		go
+		CREATE TABLE HumanResources.TerminationReason(
+		TerminationReasonID smallint IDENTITY(1,1) NOT NULL,
+		TerminationReason varchar(50) NOT NULL,
+		DepartmentID smallint NOT NULL,
+		CONSTRAINT FK_TerminationReason_DepartmentID
+		FOREIGN KEY (DepartmentID) REFERENCES
+		HumanResources.Department(DepartmentID)
+		)
+		---create pk (Clustered)
+		ALTER TABLE HumanResources.TerminationReason
+		ADD CONSTRAINT PK_TerminationReason 
+		PRIMARY KEY CLUSTERED (TerminationReasonID)
+		go
+
+		ALTER TABLE HumanResources.TerminationReason
+		drop CONSTRAINT PK_TerminationReason 
+		go
+		---create pk (NONClustered)
+		ALTER TABLE HumanResources.TerminationReason
+		ADD CONSTRAINT PK_TerminationReason 
+		PRIMARY KEY NONCLUSTERED (TerminationReasonID)
+		---------
+		go
+		CREATE CLUSTERED INDEX CI_TerminationReason_TerminationReasonID ON
+		HumanResources.TerminationReason (TerminationReason)
+		go
+		---------------------------
+		CREATE NONCLUSTERED INDEX NCI_TerminationReason_DepartmentID ON
+		HumanResources.TerminationReason (DepartmentID)
+		go
+		use Intake29
+		/* 
+		Creating Partitioned Tables and Indexes
+		http://msdn.microsoft.com/en-us/library/ms188730.aspx
+		Planning Guidelines for Partitioned Tables and Indexes
+		http://msdn.microsoft.com/en-us/library/ms180767.aspx
+		Implementing Partitioned Tables and Indexes
+		http://msdn.microsoft.com/en-us/library/ms190199.aspx
+
+		The steps for creating a partitioned table or index include the following: 
+
+		1.Create a partition function to specify how a table or index that uses the function can be partitioned.
+
+		2.Create a partition scheme to specify the placement of the partitions of a partition function on filegroups.
+
+		3.Create a table or index using the partition scheme.
+		*/
+		--Creating partitioned table
+		-- http://msdn.microsoft.com/en-us/library/ms187802.aspx
+		/*
+		Partition function specify in it (col_data_type,range)
+		A partition function specifies how the table or index is partitioned. 
+		The function maps the domain into a set of partitions. 
+		To create a partition function, you specify the number of partitions, the partitioning column, and the range of partition column values for each partition. 
+		Note that when you specify the partitioning column, you can only specify one.
+		*/
+		create partition function pfn(int)
+		as range left
+		for values (10,20,30)
+		--exists in Storage=>Partition Functions
+		---------------------------------------
+		--Partition scheme
+		-- http://msdn.microsoft.com/en-us/library/ms179854.aspx
+		/*
+		A partition scheme maps the partitions produced by a partition function to a set of filegroups that you define.
+
+		When you create a partition scheme, you define the filegroups where the table partitions are mapped, based on the parameters of the partition function. You must specify enough filegroups to hold the number of partitions. You can specify that all partitions map to a different filegroup, that some partitions map to a single filegroup, or that all partitions map to a single filegroup. You can also specify additional, "unassigned" filegroups in the event you want to add more partitions later. In this case, SQL Server marks one of the filegroups with the NEXT USED property. This means that the filegroup will hold the next partition that is added. 
+
+		A partition scheme can use only one partition function. However, a partition function can participate in more than one partition scheme.
+		*/
+		go
+		--((((((((((((((((((32)))))))))))))))))))))))))
+		--(((((((((((((((((((partition)))))))))))))))))))
+		create partition scheme pSchema
+		as partition pfn
+		to (fg1,fg2,fg3,fg4)
+		go
+		--exists in Storage=>Partition Schemes
+		---------------------------------------
+		--Create Partitioned table
+		/*
+		To partition a table or index at the time you create it, you specify the following in the CREATE TABLE or CREATE INDEX statement: 
+
+		The partition scheme that the table will use to map the partitions to filegroups.
+
+		The column on which to partition the table (the partitioning column). The partitioning column must match that specified in the partition function that the partition scheme is using in terms of data type, length, and precision. If the column is computed, it must be specified as PERSISTED. 
+		*/
+		go
+		create table t
+		(
+		fullName nvarchar(30),
+		age int
+		)on pSchema(age)
+		go
+		------------------------------
+		insert into t values
+		('a',12)
+		,('b',9)
+		,('c',21)
+		,('d',33)
+		,('e',25)
+		go
+		------------------------------------------------------
+		--Drop partitioning
+		drop partition scheme pSchema	--execute this first before trying to drop the partition function
+		drop partition function pfn 
+		go
+		--Retrieving information about partitions
+		------------------------------
+		select * ,$partition.pfn(age)
+		from t
+		set rowcount 1  --to return only (1) row in result set
+		------------------------------------
+		go
+		select * 
+		from sys.partitions
+		where OBJECT_NAME(OBJECT_ID )='t'
+		-------------------------------------------------
+	#endregion
+
+	#region [5] t-sql cat
+
+		go
+		-- T-SQL cat:
+		--DML
+		--DML is abbreviation of Data Manipulation Language. It is used to retrieve, store, modify, delete, insert and update data in database.
+		--Examples: SELECT, UPDATE, INSERT statements
+
+		--DDL
+		--DDL is abbreviation of Data Definition Language. It is used to create and modify the structure of database objects in database.
+		--Examples: CREATE, ALTER, DROP statements
+
+		--DCL
+		--DCL is abbreviation of Data Control Language. It is used to create roles, permissions, and referential integrity as well it is used to control access to database by securing it.
+		--Examples: GRANT, REVOKE statements
+
+		--TCL
+		--TCL is abbreviation of Transactional Control Language. It is used to manage different transactions occurring within a database.
+		--Examples: COMMIT, ROLLBACK statements
+
+		-- TQL 
+		-- SQL Select statements
+		--=
+
+		--Sys info & system tables structure
+		-------------------------------------------------------------
+		go
+		Use ITI;
+
+		----------------------------------
+		--ROWNUMBER() --Self study
+		----------------------------------
+		go
+		--TOP
+		select Top 10 [St_Lname],[St_Address],[St_Age]
+		from [ITI].[dbo].[Student]
+		order by [St_Age] Desc;
+		----------------------------------
+		go
+		Use AdventureWorks;
+		--Compute
+		SELECT SalesOrderID, UnitPrice, UnitPriceDiscount
+		FROM Sales.SalesOrderDetail 
+		ORDER BY SalesOrderID 
+		COMPUTE SUM(UnitPrice), SUM(UnitPriceDiscount)
+		go
+		--Compute by
+		SELECT SalesPersonID, CustomerID, OrderDate, SubTotal, TotalDue 
+		FROM Sales.SalesOrderHeader 
+		ORDER BY SalesPersonID, OrderDate 
+		COMPUTE SUM(SubTotal), SUM(TotalDue) BY SalesPersonID
+		-----------------------------------------------------------
+		go
+		--Correlated SubQueries
+		/* http://msdn.microsoft.com/en-us/library/ms187638.aspx
+		Many queries can be evaluated by executing the subquery once and substituting the resulting value or values into the WHERE clause of the outer query. In queries that include a correlated subquery (also known as a repeating subquery), the subquery depends on the outer query for its values. This means that the subquery is executed repeatedly, once for each row that might be selected by the outer query.
+		*/
+		--Example
+		go
+		use ITI;
+		USE AdventureWorks;
+		GO
+		SELECT DISTINCT c.LastName, c.FirstName, e.BusinessEntityID 
+		FROM Person.Person AS c JOIN HumanResources.Employee AS e
+		ON e.BusinessEntityID = c.BusinessEntityID 
+		WHERE 5000.00 IN
+			(SELECT Bonus
+			FROM Sales.SalesPerson sp
+			WHERE e.BusinessEntityID = sp.BusinessEntityID) ;
+		GO
+
+		-----------------------------------------------------------
+		--CTE (Common Table Expression)
+		/* -- http://msdn.microsoft.com/en-us/library/ms190766.aspx
+		A common table expression (CTE) can be thought of as a temporary result set that is defined within the execution scope of a single SELECT, INSERT, UPDATE, DELETE, or CREATE VIEW statement. A CTE is similar to a derived table in that it is not stored as an object and lasts only for the duration of the query. Unlike a derived table, a CTE can be self-referencing and can be referenced multiple times in the same query.
+		A CTE can be used to: 
+		Create a recursive query. For more information, see Recursive Queries Using Common Table Expressions.
+		Substitute for a view when the general use of a view is not required; that is, you do not have to store the definition in metadata.
+
+		Enable grouping by a column that is derived from a scalar subselect, or a function that is either not deterministic or has external access.
+		Reference the resulting table multiple times in the same statement.
+
+		Using a CTE offers the advantages of improved readability and ease in maintenance of complex queries. The query can be divided into separate, simple, logical building blocks. These simple blocks can then be used to build more complex, interim CTEs until the final result set is generated. 
+		*/
+		USE AdventureWorks;
+		GO
+		-- Define the CTE expression name and column list.
+		WITH Sales_CTE (SalesPersonID, SalesOrderID, SalesYear)
+		AS
+		-- Define the CTE query.
+		(
+			SELECT SalesPersonID, SalesOrderID, YEAR(OrderDate) AS SalesYear
+			FROM Sales.SalesOrderHeader
+			WHERE SalesPersonID IS NOT NULL
+		)
+		-- Define the outer query referencing the CTE name.
+		SELECT SalesPersonID, COUNT(SalesOrderID) AS TotalSales, SalesYear
+		FROM Sales_CTE
+		GROUP BY SalesYear, SalesPersonID
+		ORDER BY SalesPersonID, SalesYear;
+		GO
+		--Compare CTE to temp Tables
+		-----------------------------------------------------------
+		--Pivot --See Resources
+		--Unpivot -- See Resources
+		-----------------------------------------------------------
+		--ROll,Cube 
+		--Rank
+		--Merge
+		-----------------------------------------------------------
+		--Bulk Insert
+		--Imports a data file into a database table or view in a user-specified format in SQL Server 2008 R2. Use this statement to efficiently transfer data between SQL Server and heterogeneous data sources.
+		--http://msdn.microsoft.com/en-us/library/ms188365.aspx
+		go
+		-- http://msdn.microsoft.com/en-us/library/ms179932.aspx
+		-- http://msdn.microsoft.com/en-us/library/ms174365.aspx
+		--Returns DB files and groups
+		select * 
+		from sys.database_files
+		------------------
+		--return information about attached DBs
+		use master
+		select * from sys.databases
+		------------------
+		--To check the value of a specific db property
+		SELECT DATABASEPROPERTYEX
+		('AdventureWorks', 'IsAutoShrink');
+
+		SELECT DATABASEPROPERTYEX
+		('AdventureWorks', 'Collation');
+		----------------	
+		--Retrieve Info about all objects
+		sp_help
+
+		--Retrieving Info about all dbs
+		sp_helpdb 
+
+		--Retrieving Info about a specific db
+		sp_helpdb AdventureWorks
+
+		--To retrieve info. about a specific DataType
+		sp_help nvarchar
+		go
+		/*Type_name:nvarchar		Storage_type:nvarchar
+			Length: 8000					Prec :4000
+			Scale:NULL					Nullable:  yes
+			Default_name:none		Rule_name:  none
+			Collation:SQL_Latin1_General_CP1_Cl_AS 
+		*/
+		------------------
+		--Retrieving Info about the db size, unallocated space
+		--data size, index size, free "unused" space
+		use ITI
+		go
+		sp_spaceUsed 
+		------------------
+		/** MetaData Fn (scalar fn.) **/
+		--select ID of the current Database
+		select DB_ID()
+
+		--select name of the current Database
+		SELECT DB_NAME() AS 'database'    
+
+
+		select file_id( N'Northwind')  --Returns the file ID for the given
+									--logical file name in the current database.
+
+		select FILE_NAME(1)			   --Returns the logical file name
+									--for the given file ID.
+
+		select FILEGROUP_ID('primary') --Returns the filegroup ID for
+									-- a specified filegroup name.
+
+		select FILEGROUP_NAME(1)	   --Returns the filegroup name
+									--for the specified filegroup ID.
+											------------------------
+		exec sys.sp_databases
+											------------------------	
+		--Returns one row for each column of an object that contains columns
+		--(for example, a table or a view)a row of each column in that table
+		--columns of the same table will have the same obj_id
+		select * 
+		from sys.columns
+
+		select * 
+		from sys.tables
+
+		select * 
+		from sys.schemas
+											-------------------------																
+		--You can query the sys.filegroups catalog view 
+		--to view the files in the newly created database:
+		USE MyNewDB
+		GO
+		SELECT fg.name as file_group,
+		df.name as file_logical_name,
+		df.physical_name as physical_file_name
+		FROM sys.filegroups fg
+		join sys.database_files df
+		on fg.data_space_id = df.data_space_id	
+						------------------------------
+		--getting the schemas from specified db
+		SELECT name,
+		SCHEMA_NAME(schema_id) as schemaName,
+		USER_NAME(principal_id) as principal
+		FROM AdventureWorks.sys.schemas	
+						--------------------------------
+		--To retrieve data about tables in a specific schema
+		SELECT TABLE_NAME
+		FROM AdventureWorks.INFORMATION_SCHEMA.TABLES
+		WHERE TABLE_SCHEMA = 'Purchasing'
+		ORDER BY TABLE_NAME	
+						-------------------------------
+		--Retrieving MetaDate about a DB file "data file"
+		select * from sys.database_files
+		where name='AdventureWorks_Data'				
+						------------------------------
+		--To see the constraints created on a specific table
+		use ITI
+		sp_helpConstraint emp		
+	#endregion
+
+	#region [6] wide table
+
+		go
+		/* 
+		Wide Tables
+		http://msdn.microsoft.com/en-us/library/ms186986.aspx
+		A wide table is a table that has defined a column set. Wide tables use sparse columns to increase the total of columns that a table can have to 30,000. The number of indexes and statistics is also increased to 1,000 and 30,000, respectively. The maximum size of a wide table row is 8,019 bytes. Therefore, most of the data in any particular row should be NULL. To create or change a table into a wide table, you add a column set to the table definition. The maximum number of nonSparse columns plus computed columns in a wide table remains 1,024.
+		By using wide tables, you can create flexible schemas within an application. You can add or drop columns whenever you want. Keep in mind that using wide tables has unique performance considerations, such as increased run-time and compile-time memory requirements. 
+		Spare Columns
+		http://msdn.microsoft.com/en-us/library/cc280604.aspx
+		Sparse columns are ordinary columns that have an optimized storage for null values. Sparse columns reduce the space requirements for null values at the cost of more overhead to retrieve nonnull values. Consider using sparse columns when the space saved is at least 20 percent to 40 percent. Sparse columns and column sets are defined by using the CREATE TABLE or ALTER TABLE statements.
+		Sparse columns have the following characteristics:
+		The SQL Server Database Engine uses the SPARSE keyword in a column definition to optimize the storage of values in that column. Therefore, when the column value is NULL for any row in the table, the values require no storage.
+		Catalog views for a table that has sparse columns are the same as for a typical table. The sys.columns catalog view contains a row for each column in the table and includes a column set if one is defined.
+		Sparse columns are a property of the storage layer, rather than the logical table. Therefore a SELECT…INTO statement does not copy over the sparse column property into a new table. 
+		A sparse column must be nullable and cannot have the ROWGUIDCOL or IDENTITY properties. A sparse column cannot be of the following data types: text, ntext, image, timestamp, user-defined data type, geometry, or geography; or have the FILESTREAM attribute.
+		A sparse column cannot have a default value.
+		A sparse column cannot be bound to a rule.
+		*/
+		--Creating spare columns
+		USE AdventureWorks;
+		GO
+		CREATE TABLE DocumentStore
+		(DocID int PRIMARY KEY,
+		Title varchar(200) NOT NULL,
+		ProductionSpecification varchar(20) SPARSE NULL,
+		ProductionLocation smallint SPARSE NULL,
+		MarketingSurveyGroup varchar(20) SPARSE NULL ) ;
+		GO
+		INSERT DocumentStore(DocID, Title, ProductionSpecification, ProductionLocation)
+		VALUES (1, 'Tire Spec 1', 'AXZZ217', 27);
+		GO
+		INSERT DocumentStore(DocID, Title, MarketingSurveyGroup)
+		VALUES (2, 'Survey 2142', 'Men 25 - 35');
+		GO
+
+		--To select all the columns from the table returns an ordinary result set
+		SELECT * FROM DocumentStore ;
+		go
+		-- Using column set
+		--http://msdn.microsoft.com/en-us/library/cc280521.aspx
+		/*
+		Tables that use sparse columns can designate a column set to return all sparse columns in the table. A column set is an untyped XML representation that combines all the sparse columns of a table into a structured output. A column set is like a calculated column in that the column set is not physically stored in the table. A column set differs from a calculated column in that the column set is directly updatable.
+
+		You should consider using column sets when the number of columns in a table is large, and operating on them individually is cumbersome. Applications might see some performance improvement when they select and insert data by using column sets on tables that have lots of columns. However, the performance of column sets can be reduced when many indexes are defined on the columns in the table. This is because the amount of memory that is required for an execution plan increases.
+		*/
+		CREATE TABLE t (i int SPARSE, cs xml column_set FOR ALL_SPARSE_COLUMNS)
+		GO
+		INSERT t(cs) VALUES ('<i/>')
+		GO
+		SELECT i FROM t
+		GO
+	#endregion
+
+	#region [7] views 
+		#region [1] all member
+			go
+			create or alter view allMembers
+			as
+			select name ,role from student    as Students
+			union
+			select name ,role from instructor as Instructors
+			union
+			select name ,role from instructor as Managers
+			where role='Manager'
+			go
+		#endregion
+
+		#region [2] do exam
+			go
+			create or alter view doExam
+			as
+			select * from  mtm.studentExamQuestion
+			go
+
+			Select * From doExam
+		#endregion
+
+		#region [3] examples 
+						--1. From the following table, create a view for those salespeople who belong to the city of New York.
+						CREATE VIEW newYorkStaff
+						AS SELECT *
+						FROM salesman
+						WHERE city = 'New York';
+						--2. From the following table, create a view for all salespersons. Return salesperson ID, name, and city.
+						CREATE VIEW salesOwn
+						AS SELECT salesman_id, name, city
+						FROM salesman;
+						--3. From the following table, create a view to locate the salespeople in the city 'New York'.
+						CREATE VIEW newYorkStaff
+						AS SELECT *
+						FROM salesman
+						WHERE city = 'New York';
+						--4. From the following table, create a view that counts the number of customers in each grade.
+						go
+						CREATE VIEW gradeCount (grade, number)
+						AS SELECT grade, COUNT(*)
+						FROM customer
+						GROUP BY grade;
+						--5. From the following table, create a view to count the number of unique customers, compute the average and the total purchase amount of customer orders by each date.
+						go
+						CREATE VIEW totalForDay
+						AS SELECT ord_date, COUNT(DISTINCT customer_id),
+						AVG(purChase), SUM(purChase)
+						FROM orders
+						GROUP BY ord_date;
+						--6. Fr0om the following tables, create a view to get the salesperson and customer by name. Return order name, purchase amount, salesperson ID, name, customer name.
+						go
+						CREATE VIEW nameOrders
+						AS SELECT ord_no, purChase, a.salesman_id, name, cust_name
+						FROM orders a, customer b, salesman c
+						WHERE a.customer_id = b.customer_id
+						AND a.salesman_id = c.salesman_id;
+						--7. From the following table, create a view to find the salesperson who handles a customer who makes the highest order of the day. Return order date, salesperson ID, name.
+						--8. From the following table, create a view to find the salesperson who deals with the customer with the highest order at least three times per day. Return salesperson ID and name.
+						go
+						CREATE VIEW incentive
+						AS SELECT DISTINCT salesman_id, name
+						FROM salesMan a
+						WHERE 3 <=
+						(SELECT COUNT (*)
+						FROM salesMan b
+						WHERE a.salesman_id = b.salesman_id);
+						--9. From the following table, create a view to find all the customers who have the highest grade. Return all the fields of customer.
+						go
+						CREATE VIEW highGrade
+						AS SELECT *
+						FROM customer
+						WHERE grade =
+						(SELECT MAX (grade)
+						FROM customer);
+						--10. From the following table, create a view to count the number of salespeople in each city. Return city, number of salespersons.
+						go
+						CREATE VIEW cityNum
+						AS SELECT city, COUNT (DISTINCT salesman_id)
+						FROM salesman
+						GROUP BY city;
+						--11. From the following table, create a view to compute the average purchase amount and total purchase amount for each salesperson. Return name, average purchase and total purchase amount. (Assume all names are unique.).
+						go
+						CREATE VIEW nOrders
+						AS SELECT name, AVG(purCh_amt), SUM(--1.	Create backup from your database (using three types) and try to restore it  after drop.
+			--a.	Explain when to use each type.
+			-------------------------------------------------------------------------
+			--2.	Create one database user and allow it to see some parts of DB and test it.
+			create database userTest
+			CREATE LOGIN mo   
+				WITH PASSWORD = '340$Uuxwp7Mcxo7Khy';  
+			GO  
+			CREATE USER mo FOR LOGIN mo;  
+			GO  
+
+			------------------------------------------------------------------
+			--3.	Create a  clustered index on Employee table (EmpNo column).
+			create database testEmp
+			use testEmp
+			create table employee
+			(
+				id int ,
+				name varchar(50),
+				salary int 
+			)
+
+			insert into employee
+			values(1,'mo',1),(2,'mos',22),(3,'mot',333),(4,'moa',32),(5,'moc',1321),(111,'moz',123123),(112,'mox',1223123),(132,'moq',32),(143,'mof',1231231),(1142,'mob',5435)
+			create clustered index clusterIndex
+				on employee(id)
+				use testEmp
+			create table employee2
+			(
+				id int ,
+				name varchar(50),
+				salary int 
+			)
+			insert into employee2
+			values(1,'mo',1),(2,'mos',22),(3,'mot',333),(4,'moa',32),(5,'moc',1321),(111,'moz',123123),(112,'mox',1223123),(132,'moq',32),(143,'mof',1231231),(1142,'mob',5435)
+			create nonclustered index nonClusterIndex3
+				on employee2(salary)
+				select * from employee2)
+						FROM salesman, orders
+						WHERE salesman.salesman_id = orders.salesman_id
+						GROUP BY name;
+						--12. From the following table, create a view to identify salespeople who work with multiple clients. Return all the fields of salesperson.
+						go
+						CREATE VIEW mCustomer
+						AS SELECT *
+						FROM salesman a
+						WHERE 1 <
+						(SELECT COUNT(*)
+						FROM customer b
+						WHERE a.salesman_id = b.salesman_id);
+						--13. From the following table, create a view that shows all matching customers with salespeople, ensuring that at least one customer in the city of the customer is served by the salesperson in the city of the salesperson.
+						go
+						CREATE VIEW cityMatch(custCity, salesCity)
+						AS SELECT DISTINCT a.city, b.city
+						FROM customer a, salesman b
+						WHERE a.salesman_id = b.salesman_id;
+						--14. From the following table, create a view to display the number of orders per day. Return order date and number of orders.
+						go
+						CREATE VIEW dateOrd(ord_date, odCount)
+						AS SELECT ord_date, COUNT (*)
+						FROM orders 
+						GROUP BY ord_date;
+						--15. From the following table, create a view to find the salespeople who placed orders on October 10th, 2012. Return all the fields of salesperson.
+						go
+						CREATE VIEW salesMan
+						AS SELECT *
+						FROM salesman
+						WHERE salesman_id IN
+						(SELECT salesman_id
+						FROM orders
+						WHERE ord_date = '2012-10-10');
+						--16. From the following table, create a view to find the salespersons who issued orders on either August 17th, 2012 or October 10th, 2012. Return salesperson ID, order number and customer ID.
+						go
+						CREATE VIEW sOrder
+						AS SELECT salesman_id, ord_no, customer_id
+						FROM orders
+						WHERE ord_dateIN('2012-08-17', '2012-10-10');
+						--Example 1 – Create an Encrypted View
+						CREATE VIEW dbo.v_Cats
+						WITH ENCRYPTION
+						AS
+							SELECT 
+								CatId,
+								CatName,
+								Phone
+		#endregion
+	#endregion
+
+	#region [8] permission
+		create schema manager
+
+		go
+		alter schema manager
+		transfer [dbo].[insertInstructor]
+		alter schema manager
+		transfer [dbo].[insertCourse]
+		alter schema manager
+		transfer [dbo].[insertStudent]
+		alter schema manager
+		transfer [dbo].[insertBranch]
+		alter schema manager
+		transfer [dbo].[InsertIntake]
+		alter schema manager
+		transfer [dbo].[insertTrack]
+
+		alter schema manager
+		transfer [dbo].[deleteBranch]
+		alter schema manager
+		transfer [dbo].[deleteCourse]
+		alter schema manager
+		transfer [dbo].[DeleteInstructor]
+		alter schema manager
+		transfer [dbo].[DeleteIntake]
+		alter schema manager
+		transfer [dbo].[deleteStudent]
+		alter schema manager
+		transfer [dbo].[deleteTrack]
+
+		alter schema manager
+		transfer [dbo].[updateBranch]
+		alter schema manager
+		transfer [dbo].[updateCourse]
+		alter schema manager
+		transfer [dbo].[updateInstructor]
+		alter schema manager
+		transfer [dbo].[UpdateIntake]
+		alter schema manager
+		transfer [dbo].[UpdateStudent]
+		alter schema manager
+		transfer [dbo].[updateTrack]
+		go
+		go
+		alter schema examProc
+		transfer [dbo].[numberOfQuestion]
+		alter schema examProc
+		transfer [dbo].[studentExamGrade]
+
+		go
+		go
+		create schema instructor
+		GO
+		alter schema instructor
+		transfer [dbo].[DeleteQuestion]
+		alter schema instructor
+		transfer [dbo].[insertChoices]
+		alter schema instructor
+		transfer [dbo].[insertQuestion]
+		alter schema instructor
+		transfer [dbo].[UpdateChoices]
+		alter schema instructor
+		transfer [dbo].[updateQuestion]
+		go
+		--- Create a role for the admin account
+		CREATE ROLE studentRole;
+
+		---Assign Permissions to Roles:
+		-- Grant necessary permissions to the admin role
+		GRANT EXECUTE  ON [examProc].[TakeExam]  TO studentRole;
+		GRANT EXECUTE ON [examProc].[SaveStudentExamAnswers] TO studentRole;
+
+		-- Create SQL logins for each account
+		CREATE LOGIN student WITH PASSWORD = 'student123';
+
+		-- Map logins to database users and assign roles
+		CREATE USER student FOR LOGIN student WITH DEFAULT_SCHEMA = dbo;
+		ALTER ROLE studentRole ADD MEMBER student;
+
+		go
+		--- Create a role for the admin account
+		CREATE ROLE instructorRole;
+
+		---Assign Permissions to Roles:
+		-- Grant necessary permissions to the admin role
+		GRANT EXECUTE  ON  [examProc].[GenerateAnExam] TO instructorRole;
+		GRANT EXECUTE ON [examProc].[GenerateInstructorExam] TO instructorRole;
+		GRANT EXECUTE ON [examProc].[GetStudentModelAnswer] TO instructorRole;
+		GRANT EXECUTE ON [examProc].[studentExamCorrect] TO instructorRole;
+		GRANT EXECUTE ON SCHEMA::[instructor] TO instructorRole;
+		-- Create SQL logins for each account
+		CREATE LOGIN instructor WITH PASSWORD = 'instructor123';
+
+		-- Map logins to database users and assign roles
+		CREATE USER instructor FOR LOGIN instructor WITH DEFAULT_SCHEMA = dbo;
+		ALTER ROLE instructorRole ADD MEMBER instructor;
+		go
+
+		CREATE ROLE managerRole;
+
+		---Assign Permissions to Roles:
+		-- Grant necessary permissions to the admin role
+		GRANT EXECUTE ON SCHEMA::[manager] TO managerRole
+
+
+		-- Create SQL logins for each account
+
+		CREATE LOGIN manager WITH PASSWORD = 'manager123';
+
+		-- Map logins to database users and assign roles
+		CREATE USER manager FOR LOGIN manager WITH DEFAULT_SCHEMA = dbo;
+		ALTER ROLE managerRole ADD MEMBER manager;
+		go
+	#endregion
+
+	#region [9] user
+		--1. How to create a user on localhost.
+		--create user [user name]@[<localhost>|<IP address>|<any host('%')>] 
+		--identified by ["password"];
+		create user jjj@localhost identified by "pass";
+		--2. How to create a user for an IP address other than localhost.
+		create user jjj@192.168.0.105 identified by "pass";
+		--3. How to grant permission to a user to select only from localhost.
+		grant select on posts.* to jjj@localhost identified by 'pass';
+		flush privileges;
+		--4. How to grant a user permission to create, insert, update, delete and create temporary tables from localhost.
+		grant select, create, insert, update, delete, create temporary tables 
+		on posts.* to emit@localhost identified by 'pass';
+		flush privileges;
+		--5. How to grant a user permission to create, insert, update, delete and create temporary tables from any host.
+		grant select, create, insert, update, delete, create temporary tables on posts.* 
+		to emit@'%' identified by 'pass';
+		flush privileges;
+		--6. How to grant a user permission to select only from any host but to a specific table of a database.
+		grant select on posts.url_master to jon@'%' identified by 'pass';
+		flush privileges;
+		--7. How to grant all privileges to a user from all machines.
+		grant all on posts.* to joy@'%' identified by 'pass';
+		flush privileges;
+		--8. How to revoke all privileges from a user.
+		revoke all privileges on posts.* from joy@'%';
+		flush privileges;
+		--9. How to revoke specific privilege from a user.
+		revoke select on posts.* from joy@'%';
+		flush privileges;
+		--10. How to check permissions granted to a specific user.
+		show grants for emit;
+		--11. How to check the list of system privileges that the MySQL server supports.
+		show privileges; 
+		--12. How to Grant permission to a user so that (s)he can execute not more than a specific number of queries in an hour.
+		create user staff@localhost identified by 'pass';
+		grant select on posts.* to staff@localhost 
+		identified by 'pass' with MAX_QUERIES_PER_HOUR 50;
+		flush privileges;
+		--13. How to Grant permission to a user so that (s)he can execute not more than a specific number of queries in an hour.
+		set password for staff@localhost = password('pass123');
+		--14. How to delete user.
+		drop user staff@'localhost';
+		--15. How to rename a user.
+		rename user emit@localhost to submit@localhost;
+		--16. How to create a user and granting no privileges
+		grant usage on posts.* to boris@localhost identified by 'pass';
+	#endregion
+
+	#region [10] transition and backup
+		--1.	Create backup from your database (using three types) and try to restore it  after drop.
+		--a.	Explain when to use each type.
+		-------------------------------------------------------------------------
+		--2.	Create one database user and allow it to see some parts of DB and test it.
+		create database userTest
+		CREATE LOGIN mo   
+			WITH PASSWORD = '340$Uuxwp7Mcxo7Khy';  
+		GO  
+		CREATE USER mo FOR LOGIN mo;  
+		GO  
+
+		------------------------------------------------------------------
+		--3.	Create a  clustered index on Employee table (EmpNo column).
+		create database testEmp
+		use testEmp
+		create table employee
+		(
+			id int ,
+			name varchar(50),
+			salary int 
+		)
+
+		insert into employee
+		values(1,'mo',1),(2,'mos',22),(3,'mot',333),(4,'moa',32),(5,'moc',1321),(111,'moz',123123),(112,'mox',1223123),(132,'moq',32),(143,'mof',1231231),(1142,'mob',5435)
+		create clustered index clusterIndex
+			on employee(id)
+			use testEmp
+		create table employee2
+		(
+			id int ,
+			name varchar(50),
+			salary int 
+		)
+		insert into employee2
+		values(1,'mo',1),(2,'mos',22),(3,'mot',333),(4,'moa',32),(5,'moc',1321),(111,'moz',123123),(112,'mox',1223123),(132,'moq',32),(143,'mof',1231231),(1142,'mob',5435)
+		create nonclustered index nonClusterIndex3
+			on employee2(salary)
+			select * from employee2
+	#endregion
+#endregion
+
+#region [1] example
+	USE [ShaTask]
+	GO
+	#region [1] entities
+		#region [1] branches
+
+			SET ANSI_NULLS ON //nullable
+			GO
+			SET QUOTED_IDENTIFIER ON //double quote 
+			GO
+			CREATE TABLE [dbo].[Branches]
+			(
+				[ID] [int] IDENTITY(1,1) NOT NULL,
+				[BranchName] [nvarchar](200) NOT NULL,
+				[CityID] [int] NOT NULL,
+			CONSTRAINT [PK_Branches] PRIMARY KEY CLUSTERED 
+				(
+					[ID] ASC
+				)
+				WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+			) ON [PRIMARY]
+		#endregion
+
+		#region [2] cashier
+			GO
+			SET ANSI_NULLS ON
+			GO
+			SET QUOTED_IDENTIFIER ON
+			GO
+			CREATE TABLE [dbo].[Cashier]
+			(
+					[ID] [int] IDENTITY(1,1) NOT NULL,
+					[CashierName] [nvarchar](200) NOT NULL,
+					[BranchID] [int] NOT NULL,
+				CONSTRAINT [PK_Cashier] PRIMARY KEY CLUSTERED 
+				(
+					[ID] ASC
+				)
+				WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+			) ON [PRIMARY]
+		#endregion
+
+		#region [3] cities 
+
+			GO
+			SET ANSI_NULLS ON
+			GO
+			SET QUOTED_IDENTIFIER ON
+			GO
+			CREATE TABLE [dbo].[Cities]
+			(
+					[ID] [int] IDENTITY(1,1) NOT NULL,
+					[CityName] [nvarchar](200) NOT NULL,
+				CONSTRAINT [PK_Cities] PRIMARY KEY CLUSTERED 
+					(
+						[ID] ASC
+					)
+				WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+			) ON [PRIMARY]
+		#endregion
+
+		#region [4] InvoiceDetails
+			GO
+			SET ANSI_NULLS ON
+			GO
+			SET QUOTED_IDENTIFIER ON
+			GO
+			CREATE TABLE [dbo].[InvoiceDetails](
+				[ID] [bigint] IDENTITY(1,1) NOT NULL,
+				[InvoiceHeaderID] [bigint] NOT NULL,
+				[ItemName] [nvarchar](200) NOT NULL,
+				[ItemCount] [float] NOT NULL,
+				[ItemPrice] [float] NOT NULL,
+			CONSTRAINT [PK_InvoiceDetails] PRIMARY KEY CLUSTERED 
+				(
+					[ID] ASC
+				)
+			WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+			) ON [PRIMARY]
+		#endregion
+
+		#region [5] invoiceHeader
+			GO
+			SET ANSI_NULLS ON
+			GO
+			SET QUOTED_IDENTIFIER ON
+			GO
+			CREATE TABLE [dbo].[InvoiceHeader](
+				[ID] [bigint] IDENTITY(1,1) NOT NULL,
+				[CustomerName] [nvarchar](200) NOT NULL,
+				[Invoicedate] [datetime] NOT NULL,
+				[CashierID] [int] NULL,
+				[BranchID] [int] NOT NULL,
+			CONSTRAINT [PK_InvoiceHeader] PRIMARY KEY CLUSTERED 
+			(
+				[ID] ASC
+			)
+			WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+			) ON [PRIMARY]
+		#endregion
+	#endregion
+
+	#region [2] insert
+		#region [1] insert branches
+
+			GO
+			SET IDENTITY_INSERT [dbo].[Branches] ON 
+
+			GO
+			INSERT [dbo].[Branches] ([ID], [BranchName], [CityID]) VALUES (2, N'فرع الحي السابع', 1)
+			GO
+			INSERT [dbo].[Branches] ([ID], [BranchName], [CityID]) VALUES (3, N'فرع عباس العقاد', 1)
+			GO
+			INSERT [dbo].[Branches] ([ID], [BranchName], [CityID]) VALUES (4, N'فرع التجمع الاول', 2)
+			GO
+			INSERT [dbo].[Branches] ([ID], [BranchName], [CityID]) VALUES (5, N'فرع سموحه', 5)
+			GO
+			INSERT [dbo].[Branches] ([ID], [BranchName], [CityID]) VALUES (6, N'فرع الشروق', 3)
+			GO
+			INSERT [dbo].[Branches] ([ID], [BranchName], [CityID]) VALUES (7, N'فرع العبور', 4)
+			GO
+			SET IDENTITY_INSERT [dbo].[Branches] OFF
+		#endregion
+
+		#region [2] insert cashier
+
+			GO
+			SET IDENTITY_INSERT [dbo].[Cashier] ON 
+
+			GO
+			INSERT [dbo].[Cashier] ([ID], [CashierName], [BranchID]) VALUES (1, N'محمد احمد', 2)
+			GO
+			INSERT [dbo].[Cashier] ([ID], [CashierName], [BranchID]) VALUES (2, N'محمود احمد محمد', 3)
+			GO
+			INSERT [dbo].[Cashier] ([ID], [CashierName], [BranchID]) VALUES (3, N'مصطفي عبد السميع', 2)
+			GO
+			INSERT [dbo].[Cashier] ([ID], [CashierName], [BranchID]) VALUES (4, N'احمد عبد الرحمن', 6)
+			GO
+			INSERT [dbo].[Cashier] ([ID], [CashierName], [BranchID]) VALUES (5, N'ساره عبد الله', 4)
+			GO
+			SET IDENTITY_INSERT [dbo].[Cashier] OFF
+		#endregion
+
+		#region [3] insert city
+
+			GO
+			SET IDENTITY_INSERT [dbo].[Cities] ON 
+
+			GO
+			INSERT [dbo].[Cities] ([ID], [CityName]) VALUES (1, N'القاهرة - مدينة نصر')
+			GO
+			INSERT [dbo].[Cities] ([ID], [CityName]) VALUES (2, N'القاهرة - القاهرة الجديدة ')
+			GO
+			INSERT [dbo].[Cities] ([ID], [CityName]) VALUES (3, N'القاهرة - الشروق ')
+			GO
+			INSERT [dbo].[Cities] ([ID], [CityName]) VALUES (4, N'القاهرة - العبور ')
+			GO
+			INSERT [dbo].[Cities] ([ID], [CityName]) VALUES (5, N'الاسكندرية - سموحة')
+			GO
+			SET IDENTITY_INSERT [dbo].[Cities] OFF
+		#endregion
+
+		#region [4] insert invoice Details
+
+			GO
+			SET IDENTITY_INSERT [dbo].[InvoiceDetails] ON 
+
+			GO
+			INSERT [dbo].[InvoiceDetails] ([ID], [InvoiceHeaderID], [ItemName], [ItemCount], [ItemPrice]) VALUES (2, 2, N'بيبسي 1 لتر', 2, 20)
+			GO
+			INSERT [dbo].[InvoiceDetails] ([ID], [InvoiceHeaderID], [ItemName], [ItemCount], [ItemPrice]) VALUES (3, 2, N'ساندوتش برجر', 2, 50)
+			GO
+			INSERT [dbo].[InvoiceDetails] ([ID], [InvoiceHeaderID], [ItemName], [ItemCount], [ItemPrice]) VALUES (4, 2, N'ايس كريم', 1, 10)
+			GO
+			INSERT [dbo].[InvoiceDetails] ([ID], [InvoiceHeaderID], [ItemName], [ItemCount], [ItemPrice]) VALUES (6, 3, N'سفن اب كانز', 1, 5)
+			GO
+			SET IDENTITY_INSERT [dbo].[InvoiceDetails] OFF
+		#endregion
+
+		#region [5] insert invoice header
+
+			GO
+			SET IDENTITY_INSERT [dbo].[InvoiceHeader] ON 
+
+			GO
+			INSERT [dbo].[InvoiceHeader] ([ID], [CustomerName], [Invoicedate], [CashierID], [BranchID]) VALUES (2, N'محمد عبد الله', CAST(N'2022-02-22T00:00:00.000' AS DateTime), 1, 2)
+			GO
+			INSERT [dbo].[InvoiceHeader] ([ID], [CustomerName], [Invoicedate], [CashierID], [BranchID]) VALUES (3, N'محمود احمد', CAST(N'2022-02-23T00:00:00.000' AS DateTime), 2, 3)
+			GO
+			SET IDENTITY_INSERT [dbo].[InvoiceHeader] OFF
+		#endregion
+	#endregion
+
+	#region [3] constraint
+
+		#region [1] defaults
+
+			GO
+			ALTER TABLE [dbo].[Branches] ADD  CONSTRAINT [DF_Branches_BranchName]  DEFAULT ('') FOR [BranchName]
+			GO
+			ALTER TABLE [dbo].[Cashier] ADD  CONSTRAINT [DF_Cashier_CashierName]  DEFAULT ('') FOR [CashierName]
+			GO
+			ALTER TABLE [dbo].[Cashier] ADD  CONSTRAINT [DF_Cashier_BranchID]  DEFAULT ((0)) FOR [BranchID]
+			GO
+			ALTER TABLE [dbo].[Cities] ADD  CONSTRAINT [DF_Cities_CityName]  DEFAULT ('') FOR [CityName]
+			GO
+			ALTER TABLE [dbo].[InvoiceDetails] ADD  CONSTRAINT [DF_InvoiceDetails_ItemName]  DEFAULT ('') FOR [ItemName]
+			GO
+			ALTER TABLE [dbo].[InvoiceDetails] ADD  CONSTRAINT [DF_InvoiceDetails_ItemCount]  DEFAULT ((0)) FOR [ItemCount]
+			GO
+			ALTER TABLE [dbo].[InvoiceDetails] ADD  CONSTRAINT [DF_InvoiceDetails_ItemPrice]  DEFAULT ((0)) FOR [ItemPrice]
+			GO
+			ALTER TABLE [dbo].[InvoiceHeader] ADD  CONSTRAINT [DF_InvoiceHeader_CustomerName]  DEFAULT ('') FOR [CustomerName]
+			GO
+			ALTER TABLE [dbo].[InvoiceHeader] ADD  CONSTRAINT [DF_InvoiceHeader_Invoicedate]  DEFAULT (getdate()) FOR [Invoicedate]
+		#endregion
+
+		#region [2] constraint details 
+			city=>Branches
+			branches=>[cashier|invoiceHeader]
+			cashier=>invoicesHeader
+			header=>details
+		#endregion
+
+		#region [3] constraint
+
+			GO
+			ALTER TABLE [dbo].[Branches]  WITH CHECK ADD  CONSTRAINT [FK_Branches_Cities] FOREIGN KEY([CityID])
+			REFERENCES [dbo].[Cities] ([ID])
+			GO
+			ALTER TABLE [dbo].[Branches] CHECK CONSTRAINT [FK_Branches_Cities]
+			GO
+			ALTER TABLE [dbo].[Cashier]  WITH CHECK ADD  CONSTRAINT [FK_Cashier_Branches] FOREIGN KEY([BranchID])
+			REFERENCES [dbo].[Branches] ([ID])
+			GO
+			ALTER TABLE [dbo].[Cashier] CHECK CONSTRAINT [FK_Cashier_Branches]
+			GO
+			ALTER TABLE [dbo].[InvoiceDetails]  WITH CHECK ADD  CONSTRAINT [FK_InvoiceDetails_InvoiceHeader] FOREIGN KEY([InvoiceHeaderID])
+			REFERENCES [dbo].[InvoiceHeader] ([ID])
+			GO
+			ALTER TABLE [dbo].[InvoiceDetails] CHECK CONSTRAINT [FK_InvoiceDetails_InvoiceHeader]
+			GO
+			ALTER TABLE [dbo].[InvoiceHeader]  WITH CHECK ADD  CONSTRAINT [FK_InvoiceHeader_Branches] FOREIGN KEY([BranchID])
+			REFERENCES [dbo].[Branches] ([ID])
+			GO
+			ALTER TABLE [dbo].[InvoiceHeader] CHECK CONSTRAINT [FK_InvoiceHeader_Branches]
+			GO
+			ALTER TABLE [dbo].[InvoiceHeader]  WITH CHECK ADD  CONSTRAINT [FK_InvoiceHeader_Cashier] FOREIGN KEY([CashierID])
+			REFERENCES [dbo].[Cashier] ([ID])
+			GO
+			ALTER TABLE [dbo].[InvoiceHeader] CHECK CONSTRAINT [FK_InvoiceHeader_Cashier]
+			GO
+		#endregion
+	#endregion
+#endregion

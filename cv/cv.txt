@@ -1,0 +1,1356 @@
+#region [1]  job
+    #region [1]  job1
+        Job Description
+        Write well-designed, testable, efficient code by using best software development practices.
+        Create website layout/user interface by using standard HTML/CSS practices.
+        Integrate data from various back-end services and databases.
+        Gather and refine specifications and requirements based on technical needs.
+        Create and maintain software documentation.
+        Be responsible for maintaining, expanding, and scaling our site.
+        Stay plugged into emerging technologies/industry trends and apply them to operations and activities.
+        Cooperate with web designers to match visual design intent.
+        Job Requirements
+        They have proven working experience in web programming.
+        Top-notch programming skills and in-depth knowledge of modern HTML/CSS
+        Familiarity with at least one of the following programming languages: PHP, ASP.NET, JavaScript, or Ruby on Rails
+        A solid understanding of how web applications work including security, session management, and best development practices.
+        Adequate knowledge of relational database systems, Object Oriented Programming, and web application development
+        Hands-on experience with network diagnostics, network analytics tools
+        Basic knowledge of the Search Engine Optimization process
+        Aggressive problem diagnosis and creative problem-solving skills.
+        Strong organizational skills to juggle multiple tasks within the constraints of timelines and budgets with business acumen.
+        Ability to work and thrive in a fast-paced environment, learn rapidly, and master diverse web technologies and techniques.
+        BS in computer science or a related field
+    #endregion
+
+    #region [2]  job2
+        Job Description
+
+        Responsibilities
+
+        - Employing modern software development techniques and practices
+
+        - Assisting the operation team during trials in production Managing individual project priorities, deadlines, and deliverables
+
+        
+        Minimum Qualifications
+
+        - 4+ years of professional experience in software development.
+
+        - Strong understanding of JavaScript fundamentals, ES6, and TypeScript.
+
+        - Proven experience in front-end development using React and mobile applications using React Native.
+
+        - Proficiency in state management libraries such as Redux, and integrating GraphQL and RESTful APIs.
+
+        - Experience with AWS services beyond Amplify, such as Lambda, S3 and DynamoDB.
+
+        - Create, edit and manage AWS Resources using Terraform and github actions.
+
+        - Strong understanding of web UI/UX design principles, responsive design, and mobile-first
+        development.
+
+        - Excellent problem-solving skills and ability to work independently and collaboratively in a
+        remote team environment.
+
+        - Ability to write efficient, maintainable, and reusable code. Excellent problem-solving and communication skills.
+
+
+        Preferable Qualifications (Bonus Skills):
+
+        - Experience writing unit test cases using Jest or similar testing frameworks. 
+
+        - Familiarity with CI/CD pipelines and deployment automation. 
+
+        - Previous experience in a fast-paced startup environment or Agile teams. 
+
+        - Demonstrated ability to lead or mentor junior developers. 
+    #endregion
+
+    #region [3]  job3
+        Job Description
+        ● Learn new technologies as needed
+
+        ● Take part in requirement gathering and documentation
+
+        ● Design and develop web-based applications.
+
+        ● Write high-quality, maintainable, scalable software solutions
+
+        ● Build modular and reusable components and libraries.
+
+        ● Refactor applications based on business process changes, optimization needs, etc.
+
+        ● Test and debug the software they develop (Unit tests and Integration tests)
+
+
+        
+
+        Job Requirements
+        Next.JS
+        CSS, HTML, JavaScript / Typescript
+        UX / UI design best practices and tools
+        React and Redux are recommended
+        Git version control
+        Software Development Life Cycle
+        REST and JSON
+        ● Good understanding of design patterns, object-oriented analysis, design, and programming.
+
+        ● Familiarity with Back End (ASP.NET Core, Web API, C#)
+
+        ● Very Good analytical, debugging, and problem-solving skills
+
+        ● Excellent communication and teamwork skills.
+
+        
+
+        DEADLINE FOR APPLICATIONS:
+
+        Deadline for application:, Sunday 13 Oct 2024 (Midnight Cairo Time). Kindly note that applications shall be reviewed on a rolling basis.
+
+        Placement is based on the candidate’s experience and skills. Only candidates who make it to the shortlist will be contacted, Zewail City of Science, Technology & Innovation is an equal-opportunity employer
+
+        We thank all individuals who have expressed interest in working at Zewail City of Science, Technology & Innovation
+    #endregion
+
+    #region [4]  job4
+        Job Description
+        Experience with ASP.NET Core Web API , MVC
+        Experience with Angular
+        Experience with oAuth, JWT
+        Experience with HTML5, CSS3, Bootstrap / Material
+        Experience with Microsoft SQL Server and Entity Framework Core
+        Experience with SOLID / DRY / KISS / YAGNI principles
+        Knowledge of using design patterns & practices, clean code principles & DDD
+        Strong soft skills incl. attention to detail, problem-solving & communication
+        Experience with Azure DevOps
+        Using devexpress ,extra report
+        Experience with Microsoft Azure (App Services, Azure SQL, Storage, CosmosDB, Azure Service Bus)
+        Experience with ERP systems
+        Experience with multi-layer, Clean/Onion architectures
+        Experience with Docker and Containerization
+        Experience with DevOps Process and CI/CD
+        Any Microsoft certifications
+        Upper-Intermediate and higher level of English
+        Job Requirements
+        Experience with Microsoft Azure (App Services, Azure SQL, Storage, CosmosDB, Azure Service Bus)
+
+        Experience with Kubernetes (AKS)
+
+        Experience with multi-layer, Clean/Onion architectures
+
+        Experience with Docker and Containerization
+
+        Experience with DevOps Process and CI/CD
+
+        Any Microsoft certifications
+
+        Upper-Intermediate and higher level of English 
+    #endregion
+
+    #region [5]  job5
+        Job Description
+        Develop applications according to requirement specifications.
+        Develop system integration software components according to requirement specifications.
+        Develop and manage well-functioning databases and applications
+        Write effective APIs
+        Perform unit testing and debugging to ensure the code is correct.
+        Respond to testing bug reports and fix bugs
+        Participate in requirement gathering and business analysis activities
+        Participate in application\database design activities
+        Present ideas for system improvements
+        Participate in training and / or customer support activities as needed.
+        Troubleshoot client problems both remotely and onsite.
+        Research and identify cause of reported defects and issues
+        Create security and data protection settings
+        Build features and applications with a mobile responsive design
+        Work with data scientists and analysts to improve software
+        Job Requirements
+        Proven experience as a Full Stack Developer or similar role
+        Experience developing desktop and mobile applications
+        Experienced in Patterns, Designs and Algorithms.
+        Experienced in Microservices Architecture.
+        Experience with Websockets.
+        Experience with Kafka Streams and Redis.
+        Experience with Spring security, OpenID, OAuth2, and SAML 2.
+        Familiarity with common stacks
+        Knowledge of multiple front-end languages and libraries (e.g. HTML/ CSS, JavaScript, XML, jQuery)
+        Knowledge of multiple back-end languages (e.g. C#, Java, Python) and JavaScript frameworks (e.g. Angular, React, Node.js)
+        Familiarity with databases (e.g. MySQL, MongoDB), web servers (e.g. Apache) and UI/UX design
+        Excellent communication and teamwork skills.
+        An analytical mind.
+        Degree in Computer Science, Statistics or relevant field.
+    #endregion
+
+    #region [6]  job6
+        Job Description
+        A programmer is required to work in a asp.net that will work on developing an existing website and improving it. The work will be done through our office in Cairo
+
+        Job Requirements
+        A programmer is required to work in a asp.net that will work on developing an existing website and improving it. The work will be done through our office in Cairo
+    #endregion
+
+    #region [7]  job7
+        ob Description
+        
+
+        Involves designing, developing, 
+
+        maintaining software applications using Object-Oriented Programming (OOP) principles and
+        the .NET Core framework. 
+
+        Senior .NET Developer will  be responsible for programming, developing ASP.NET MVC applications.
+
+        
+
+        Job Requirements
+        Excellent knowledge of Object-Oriented
+        Programming (OOP) principles and design patterns
+        • Expertise in .NET Core framework and software
+        development
+        • Proficiency in programming languages such as C# and Javascript
+        • Experience in developing ASP.NET MVC, T-SQLWeb API)
+        Work with oo programming, MVC, Web services, REST with Web APl or WCF, JavaScript, jQuery, AJAX Working with DevExpress and Entity Framework. Advanced with modern web technologies such as Bootstrap, Solving scalability problems and understanding how to optimize code/APls to handle an increase in users.
+        Ability to handle multiple tasks under tight deadlines
+        Strong problem-solving skills and attention to detail Strong communication and teamwork skills
+        Proficiency in the database (MS SQL-MongoDB)
+        Bachelor's or Master's degree in Computer Science or related field
+        Experience with angular 2
+    #endregion
+
+    #region [8]  job8 
+        Job Description
+        Work with development teams and product managers to ideate software solutions
+        Work with data scientists and analysts to improve softwareWe use a wide range of different technologies
+        and run some systems still build on  top of an MS SQL Server, ASP.NET WebForms technology stack.
+        You will monitor, maintain and adjust parts of the web frontend as well as automatically running import tasks implemented in C# and T-SQL.
+        At the same time, we built up a completely new product line.
+        You will be part of the team who is creating the system using modern web technologies such as .NET Core  MVC REST services, elastic, RabbitMQ and components like DevExtreme
+        Write technical documentation
+        Job Requirements
+        You have successfully completed an information technology degree You have a very good knowledge of Databases, T-SQL, .NET Core and ASP.NET Framework. 
+        You have experience with JavaScript and modern libraries and concepts like Angular2+, Typescript, RxJs. You are familiar with OOP and SOLID principles and have knowledge in design patterns and data structures.
+        If you have been working with Oracle, elastic or GraphQL before, it will be a big bonus.
+        You love to research and investigate, bring “Sherlock Homes”-like abilities and attitude. You do not give up until you finally found a solution – or at least an explanation.
+        Experience with version control systems (e.g. DevOps, GIT) is an advantage, but can also be gained while working with us.
+        Excellent communication and teamwork skills
+        Great attention to detail
+        Organizational skills
+        An analytical mind
+        Degree in Computer Science, Statistics or relevant field
+        ITI is a must.
+        Salary according to the exchange rate
+    #endregion
+
+    #region [9]  job9
+        Job Description:
+
+        We are seeking a talented and motivated Mid-level Full Stack Web Developer with 2-3 years of experience to join our dynamic team. You will be responsible for developing and maintaining high-quality web applications using .NET Core and Angular. The ideal candidate should have proven experience working in an agile environment.
+
+        
+
+        Key Responsibilities:
+
+        Develop and maintain web applications using .NET Core and Angular.
+        Collaborate with cross-functional teams to define, design, and ship new features.
+        Ensure the performance, quality, and responsiveness of applications.
+        Work in an agile environment with regular sprints and stand-up meetings.
+        Troubleshoot and debug applications to optimize performance.
+        Maintain code integrity and organization.
+        
+
+        
+
+        Job Requirements
+        Qualifications
+
+        Education: Bachelor's degree in computer science, engineering, or equivalent degree.
+        Experience: 2-3 years in full stack development.
+        Technical Skills:
+        Proficiency in .NET Core, ASP .Net Core, EF Core, Angular, HTML, CSS, JavaScript/TypeScript.
+        Strong understanding of RESTful APIs and web services.
+        Strong understanding of relational databases such as SQL Server or PostgreSQL.
+        Familiarity with NoSQL databases such as MongoDB.
+        Familiarity with CI/CD.
+        Familiarity with version control systems (e.g., Git).
+        Proven experience working in an agile environment.
+        Excellent problem-solving skills and attention to detail.
+        Ability to work collaboratively in a team environment
+    #endregion
+
+    #region [10]  job10
+        Job Description
+        Develop high-quality software design and architecture
+        Ensure software is up-to-date with latest technologies.
+        Analyze system requirements, determine the requirements feasibility and prioritize tasks.
+        Coach and support team members in technical issues, challenges, and Problems.
+        Plan, develop, and implement large-scale projects from conception to completion
+        Work with development teams and stakeholders to produce software solutions.
+        Own in the entire software development life cycle, debugging applications, and support existing systems.
+        Writing clean, testable code using .NET programming languages (C#, .NET Core).
+        Review/test and refactor code.
+        Commit to deadline and report project status, issues and risks to project managers.
+        Document development and operational procedures.
+        Participate in putting the development guidelines and processes to be followed by development team 
+        Create an inspiring team environment with an open communication culture
+        Set clear team goals
+        Delegate tasks and set deadlines
+        Oversee day-to-day operation
+        Monitor team performance and report on metrics
+        Motivate team members
+        Listen to team members’ feedback and resolve any issues or conflicts
+        Recognize high performance and reward accomplishments
+        Encourage creativity and risk-taking
+        Suggest and organize team building activities
+
+        Job Requirements
+        Minimum 7 years’ experience in web development with at least 4 years’ experience in using ASP.net Core.
+        Strong knowledge of C#, JavaScript, and SQL.
+        Expert in programming with C#, ASP .NET Core, MVC and WebAPI
+        Proficient understanding of web markup, including HTML5, CSS3
+        Experience with database creation and maintenance.
+        Strong knowledge of modern and Design Patterns.
+        Attention to Detail and Deadline-Oriented individual.
+        Very good knowledge in Microsoft SQL server development.
+        Very good knowledge in database performance optimization techniques.
+        Expert in object-oriented programming and design techniques.
+        Very good knowledge in SOLID Principles and Design Patterns.
+        Leading a team with at least 5 members for 3 years is a must.
+        SharePoint, office 365 and project server knowledge is a plus 
+        Proven work experience as a team leader or supervisor
+        Excellent communication and leadership skills
+        Organizational and time-management skills
+        Decision-making skills
+        Degree in Management or training in team leading is a plus
+    #endregion
+#endregion
+
+#region [2]  job
+    #region [1]  job1
+        intro
+        The role is based in Cegedim Egypt at our office in New Cairo and represents a collaboration with Cegedim UK Healthcare Solutions, also part of Cegedim group. The nature of work involves working on one of Cegedim's healthcare products targeting the UK market. The product area you are being considered for serves the general practice profession through Vision Anywhere, Appointments, and other solutions. More information can be found here: https://info.visionhealth.co.uk/gp-solution
+        It is expected you'll be working on daily basis as part of agile cross-functional teams spread across UK and Egypt to deliver new features and enhancements to our existing products.
+
+
+        Job Description
+        Responsible for the design, development and maintenance of high quality software applications.
+        Participation in design workshops, peer code reviews, unit testing, test-driven development and refactoring.
+        Development of exciting new software applications using modern, best practice development techniques, design patterns and quality standards.
+        Design, develop and maintain software functionality to an agreed time-scale and quality
+        Aid development work by the testing of specific program changes
+        Provide 2nd level escalation for customer queries
+        Participate in both design and code reviews
+        Document departmental procedures
+        Document software changes
+        Maintain the software build process
+        Provide accurate estimates of development work
+        Liaise with other departments and customers regarding potential or real support issues
+        Liaise with customers to document requirements and produce specifications
+        Essential skills and experience:
+
+        C# .NET Core
+        MVVM
+        Strong experience with Front End development using JavaScript and related frameworks (e.g., React, Angular)
+        Best practice around implementing responsive design
+        Deep understanding of web standards and architecture
+        Strong HTML5, CSS and Typescript/JavaScript skills
+        Strong working understanding of the Windows platform, both desktop and server
+        Web Services, REST APIs, XML, JSON
+        TDD
+        Demonstrable experience working in N-tier architectures.
+        Knowledge and experience of agile development methods
+        Desirable skills and experience:
+
+        Degree educated
+        Exposure to application of UX design principles
+        RDBMS Databases, ideally PostgreSQL
+        Pharmacy, GP or Healthcare domain experience
+        Atlassian ALM toolset, including JIRA, Confluence, and BitBucket
+        A good understanding of the SAFe agile framework
+        Visual Studio 2015 or above
+    #endregion
+
+    #region [1]  job2
+        BlackStone eIT is a vibrant technology company that focuses on delivering innovative software solutions to a diverse range of clients. We are currently looking for motivated Mid to Junior Frontend Developers to join our growing team. In this role, you will contribute to the development of user-friendly web applications and assist in translating designs into functional interfaces.
+
+        As a Frontend Developer at BlackStone eIT, you will collaborate closely with designers and senior developers to create visually appealing and responsive web applications. This is an excellent opportunity for individuals who are looking to enhance their skills in frontend development and gain experience in a supportive and dynamic environment.
+
+        Responsibilities
+
+        Assist in the development of user interfaces for web applications using HTML, CSS, and JavaScript
+        Experience as a Frontend Developer from 2 to 4 years of experience 
+        Collaborate with designers to implement responsive and engaging user experiences
+        Learn and apply best practices in coding standards and software development processes
+        Troubleshoot and debug issues in existing applications
+        Participate in team meetings and contribute ideas to enhance project outcomes
+        Stay updated on the latest frontend development trends and technologies
+
+
+        Requirements
+
+        Degree in Computer Science, Software Engineering, or a related field (or equivalent practical experience)
+        Basic proficiency in HTML, CSS, and JavaScript
+        Familiarity with frontend frameworks like React, Vue, or Angular is a plus
+        Understanding of responsive design principles
+        Experience with version control systems, such as Git
+        Strong problem-solving skills and a willingness to learn
+        Good communication skills and the ability to work in a team-oriented environment
+
+
+        Benefits
+
+        Paid Time Off
+        Hybrid model 
+        Performance Bonus
+        Training & Development
+    #endregion
+
+    #region [1]  job3
+        BlackStone eIT is a vibrant technology company that focuses on delivering innovative software solutions to a diverse range of clients. We are currently looking for motivated Mid to Junior Frontend Developers to join our growing team. In this role, you will contribute to the development of user-friendly web applications and assist in translating designs into functional interfaces.
+
+        As a Frontend Developer at BlackStone eIT, you will collaborate closely with designers and senior developers to create visually appealing and responsive web applications. This is an excellent opportunity for individuals who are looking to enhance their skills in frontend development and gain experience in a supportive and dynamic environment.
+
+        Responsibilities
+
+        Assist in the development of user interfaces for web applications using HTML, CSS, and JavaScript
+        Experience as a Frontend Developer from 2 to 4 years of experience 
+        Collaborate with designers to implement responsive and engaging user experiences
+        Learn and apply best practices in coding standards and software development processes
+        Troubleshoot and debug issues in existing applications
+        Participate in team meetings and contribute ideas to enhance project outcomes
+        Stay updated on the latest frontend development trends and technologies
+
+
+        Requirements
+
+        Degree in Computer Science, Software Engineering, or a related field (or equivalent practical experience)
+        Basic proficiency in HTML, CSS, and JavaScript
+        Familiarity with frontend frameworks like React, Vue, or Angular is a plus
+        Understanding of responsive design principles
+        Experience with version control systems, such as Git
+        Strong problem-solving skills and a willingness to learn
+        Good communication skills and the ability to work in a team-oriented environment
+
+
+        Benefits
+
+        Paid Time Off
+        Hybrid model 
+        Performance Bonus
+        Training & Development
+    #endregion
+
+    #region [1]  job4 
+        Responsibilities
+
+        Full Stack Development: Design, develop, and maintain end-to-end web applications using .NET Core and Angular frameworks.
+        Architecture and Design: Work closely with the technical leads and architects to design scalable and modular software solutions.
+        Front-End Development: Develop responsive and user-friendly UI components using Angular, HTML, CSS, and JavaScript.
+        Back-End Development: Design and implement server-side APIs, business logic, and data access layers using C# and .NET Core.
+        Database Management: Develop and optimize database schemas, queries, and stored procedures using SQL Server or other relational databases.
+        Code Reviews: Conduct code reviews to ensure code quality, adherence to coding standards, and best practices.
+        Testing and Debugging: Write unit tests, perform integration testing, and debug applications to ensure high-quality software delivery.
+        Performance Optimization: Identify and optimize application performance bottlenecks, including database queries, network latency, and UI responsiveness.
+        Collaboration: Collaborate with cross-functional teams, including designers, product owners, and other developers, to understand requirements and deliver high-quality software solutions.
+        Documentation: Create technical documentation, including design specifications, code documentation, and deployment guides.
+
+        Qualifications
+
+        Bachelor's degree in Computer Science, Engineering, or a related field (or equivalent experience).
+        2- 6 years of hands-on experience in full stack web development using .NET Core and Angular.
+        Strong proficiency in C#, .NET Core, Angular, TypeScript, HTML, CSS, and JavaScript.
+        Experience with database design and development using SQL Server or other relational databases.
+        Solid understanding of software engineering principles, design patterns, and best practices.
+        Experience with RESTful API development, authentication, and authorization mechanisms.
+        Familiarity with Agile development methodologies and tools (e.g., Scrum, JIRA, Git).
+        Strong problem-solving skills and the ability to work independently and as part of a team.
+        Excellent communication and interpersonal skills, with the ability to collaborate effectively with stakeholders at all levels.
+        Experience with cloud platforms such as Azure or AWS.
+        Familiarity with DevOps practices and tools for CI/CD pipelines.
+        Knowledge of containerization technologies like Docker and orchestration tools like Kubernetes.
+        Knowledge of cross-platform mobile app development using frameworks like Xamarin or React Native
+    #endregion
+
+    #region [1]  job5
+        About the job
+        We're looking for talented and motivated .NET Developers to join our dynamic team. If you're ready to play a critical role in developing and maintaining web and desktop applications, we want to hear from you!
+
+        🔹 Junior .NET Developer: 1-2.5 years of experience
+
+        🔹 Mid-Level .NET Developer: 2.5-5 years of experience
+
+        🔹 Senior .NET Developer: 5-10 years of experience
+
+        Requirements
+
+        Critical Thinking & Strong Problem Solving
+        Good Arabic & English Communication Skills
+        Good interpersonal skills
+        Excellent Research Skills
+        Ability to work with minimum supervision on technical and non-technical matters
+        Ability to analyze information and make appropriate recommendations
+        Ability to adapt and change based on new business requirements and environment
+        Ability to understand the given task verbally or written
+        Strong understanding of Microsoft technologies in the web and/or desktop environment
+        Experience in Microsoft .NET Framework
+        Experience in programming in Microsoft .NET using C#
+        Experience developing numerous web-based and/or desktop-based applications
+        Experience in the following web standards and technologies: HTML, XHTML, CSS, XML, XSL, JavaScript, Web Services, Web APIs, RSS
+        Experience in front-end frameworks: Angular, JQuery
+        Experience in Object Oriented Programming (OOP) concepts
+        Database Experience (in either Microsoft SQL Server or Oracle Databases):
+        Understands complex database concepts and effectively employ different database design techniques
+        Create entity-relationship diagrams
+        Create and debug stored procedures and functions in T-SQL or PL-SQL
+        Understanding of the Software Development Life Cycle (SDLC)
+        Knowledge in Xamarin is a plus
+    #endregion
+
+    #region [1]  job6
+        Introduction
+
+        As an Application Developer, you will lead IBM into the future by translating system requirements into the design and development of customized systems in an agile environment. The success of IBM is in your hands as you transform vital business needs into code and drive innovation. Your work will power IBM and its clients globally, collaborating and integrating code into enterprise systems. You will have access to the latest education, tools and technology, and a limitless career path with the world’s technology leader. Come to IBM and make a global impact!
+
+        Your Role and Responsibilities
+
+
+        Help build and implement front-end structures for web applications.
+        Work with designers, back-end developers, and other team members to create responsive, high-quality web apps.
+        Write clean code using HTML, CSS, JavaScript, and frameworks like React, Angular, or Vue.js.
+        Improve web apps for better performance and speed.
+        Make sure UI/UX designs are technically possible.
+        Join code reviews and share feedback to improve code quality.
+        Troubleshoot and fix issues across browsers and devices.
+        Stay informed about new trends in front-end development.
+        Take part in Agile processes like sprint planning and daily stand-ups.
+
+
+        Required Technical and Professional Expertise
+
+
+        HTML, CSS, JavaScript, and modern front-end frameworks (e.g., React, Angular, Vue.js).
+        Bachelor's degree in Computer Science, Information Technology, or a related field.
+
+
+        Preferred Technical And Professional Expertise
+
+        1-3 years of experience in front-end development.
+
+        About Business Unit
+
+        IBM Consulting is IBM’s consulting and global professional services business, with market leading capabilities in business and technology transformation. With deep expertise in many industries, we offer strategy, experience, technology, and operations services to many of the most innovative and valuable companies in the world. Our people are focused on accelerating our clients’ businesses through the power of collaboration. We believe in the power of technology responsibly used to help people, partners and the planet.
+
+        Your Life @ IBM
+
+        In a world where technology never stands still, we understand that, dedication to our clients success, innovation that matters, and trust and personal responsibility in all our relationships, lives in what we do as IBMers as we strive to be the catalyst that makes the world work better.
+
+        Being an IBMer means you’ll be able to learn and develop yourself and your career, you’ll be encouraged to be courageous and experiment everyday, all whilst having continuous trust and support in an environment where everyone can thrive whatever their personal or professional background.
+
+        Our IBMers are growth minded, always staying curious, open to feedback and learning new information and skills to constantly transform themselves and our company. They are trusted to provide on-going feedback to help other IBMers grow, as well as collaborate with colleagues keeping in mind a team focused approach to include different perspectives to drive exceptional outcomes for our customers. The courage our IBMers have to make critical decisions everyday is essential to IBM becoming the catalyst for progress, always embracing challenges with resources they have to hand, a can-do attitude and always striving for an outcome focused approach within everything that they do.
+
+        Are you ready to be an IBMer?
+
+        About IBM
+
+        IBM's greatest invention is the IBMer. We believe that through the application of intelligence, reason and science, we can improve business, society and the human condition, bringing the power of an open hybrid cloud and AI strategy to life for our clients and partners around the world.
+
+        Restlessly reinventing since 1911, we are not only one of the largest corporate organizations in the world, we’re also one of the biggest technology and consulting employers, with many of the Fortune 50 companies relying on the IBM Cloud to run their business.
+
+        At IBM, we pride ourselves on being an early adopter of artificial intelligence, quantum computing and blockchain. Now it’s time for you to join us on our journey to being a responsible technology innovator and a force for good in the world.
+
+        Location Statement
+
+        For additional information about location requirements, please discuss with the recruiter following submission of your application.
+
+        Being You @ IBM
+
+        IBM is committed to creating a diverse environment and is proud to be an equal-opportunity employer. All qualified applicants will receive consideration for employment without regard to race, color, religion, sex, gender, gender identity or expression, sexual orientation, national origin, caste, genetics, pregnancy, disability, neurodivergence, age, veteran status, or other characteristics. IBM is also committed to compliance with all fair employment practices regarding citizenship and immigration status.
+    #endregion
+
+    #region [1]  job7
+        About the job
+        Develop and maintain applications using Angular and Next.js. 
+        Collaborate in a team for feature development and design. 
+        Optimize for speed and scalability. 
+        Adapt to new technologies for continuous improvement. 
+        Collaborate with UX/UI designers to implement responsive and visually appealing designs. 
+        Troubleshoot and debug applications to ensure high performance. 
+        Work closely with backend developers to integrate APIs and services. 
+        Participate in code reviews and contribute to team knowledge sharing. 
+        Stay updated with the latest industry trends and best practices in frontend development. 
+
+        Requirements
+
+        Bachelor’s degree in Computer Science, Engineering, or a related field (or equivalent experience). 
+        1-3 years of experience in frontend development using Angular. 
+        Proficiency in HTML, CSS, and JavaScript. 
+        Understanding of responsive design principles and mobile-first development. 
+        Strong problem-solving skills and attention to detail. 
+        Familiarity with Agile methodologies.
+    #endregion
+
+    #region [1]  job8
+        About the job
+        Job Description
+
+        We are looking for front end developers responsible for ensuring the alignment of web design and user experience requirements, optimizing web pages for maximum efficiency, and maintaining brand consistency across all web pages, among other duties.
+
+        Front end developers are required to work in teams alongside back end developers, graphic designers, and user experience designers to ensure all elements of web creation are consistent. This requires excellent communication and interpersonal skills.
+
+        Front End Developer Responsibilities:
+
+        Determining the structure and design of web pages
+        Ensuring user experience determines design choices
+        Developing features to enhance the user experience
+        Striking a balance between functional and aesthetic design
+        Ensuring web design is optimized for smartphones
+        Building reusable code for future use
+        Optimizing web pages for maximum speed and scalability
+        Utilizing a variety of markup languages to write web pages
+        Maintaining brand consistency throughout the design
+
+
+        Front End Developer Skills And Qualifications
+
+        Develop user interfaces using the AngularJS framework. (3 years' experience at least)
+        Degree in computer science or related field
+        Delivering (building, optimizing, and maintaining) front-end applications
+        The ability to use Angular best practices
+        Understanding of key design principles
+        Cooperating with the back-end developer in the process of building the RESTful API
+        Proficiency in HTML, CSS, JavaScript, and jQuery
+        Understanding of server-side CSS
+        Experience with back-end technologies (Node.js, Express) is a plus
+        Experience with graphic design applications such as Adobe Illustrator
+        Experience with responsive and adaptive design
+        Understanding of SEO principles
+    #endregion
+
+    #region [1]  job9
+        About the job
+        Valleysoft | Center of Excellence is a regional IT services provider based in Riyadh, serving clients globally since 2006. The company collaborates with global partners like IBM to address diverse business and technical challenges, from enterprise application development to process management. Valleysoft's vendor-neutral and process-oriented approach, coupled with operational maturity, ensures high-quality and cost-effective services for clients.
+
+        Valleysoft | Center of Excellence is currently seeking a talented and experienced .NET Developer to join our team. As a .NET Developer, you will be responsible for designing, developing, and maintaining .NET applications for our clients.
+
+        The ideal candidate will have a strong background in .NET development, with demonstrated experience in developing scalable and high-performance web applications. They will possess excellent coding skills, strong problem-solving abilities, and the ability to work collaboratively in a team environment. If you are a passionate and dedicated .NET Developer looking to work on challenging projects, we want to hear from you!
+    #endregion
+
+    #region [1]  job10
+        About the job
+        At FreePL, you will be an integral part of a small team that is currently on a mission to build something big from the ground-up. You will need to be comfortable with ambiguity and fast pace, have an entrepreneurial mindset, a can-do attitude and will be expected to take ownership of your work and be comfortable making decisions and solving problems independently.
+
+        As part of a quickly growing team, you will have the opportunity to shape the future of FreePL and make a real impact. You will work closely with the founding team to develop and implement strategies for growth and success. If you are self-motivated, results-driven and have a passion for delivering excellence, this is your chance to not only join us in our launch phase, but to grow into a leader at FreePL.
+
+        What We Look For
+
+        To all the tech gurus out there, do you believe you have what it takes to help us build the future of logistics in Egypt, the region and the world?
+
+        We are looking for an Angular Developer who has the technical ability to implement user interfaces using Angular framework. Knowledge of the best practices and modern ways of creating interfaces and ensuring the interface is able to interact with backend APIs. Work closely with backend developers on a regular basis to ensure components can be integrated together, ensure system consistency and create a great user experience.
+
+        Responsibilities
+
+        Work closely with the development and product teams.
+        Design and implement visually aesthetic user interfaces using Angular best practices.
+        Adapting interface for modern internet applications using the latest front-end technologies.
+        Identify issues with front end code and rectify them to remove bugs.
+        Create unit tests to ensure code is functioning as expected.
+        Create well written documentation.
+        Ensure front end code can query APIs.
+        Audit code to identify bottlenecks of performance and fixing them.
+        Building self-contained, reusable, and testable modules and components.
+        Ensuring a clear dependency chain, in terms of both application logic as well as file relationships.
+        Ensuring high performance on mobile and desktop.
+        Writing non-blocking code, and resorting to advanced techniques such as multi-threading, when needed.
+        Cooperating with the back-end developer in the process of building the Restful APIs
+        Communicating with external web services.
+        Knowledge of .Net Framework is a plus.
+        Strong proficiency in HTML, CSS and writing cross-browser compatible code.
+        Familiarity with newer specifications of ECMAScript is also a major advantage.
+        Making complex technical and design decisions for AngularJS projects.
+        Conducting performance tests.
+        Ensuring high performance of applications and providing support.
+
+        Job Qualifications
+
+        Bachelor’s degree in Computer Science / Computer Engineering or related discipline.
+        2-3 year of relevant experience.
+        Deep Understanding of SOLID Principles.
+        Solid understanding of object-oriented programming concepts and design patterns.
+        Very Good experience in using Angular and TypeScript.
+        Experience in Git source control.
+        Experience in Agile Development Methodologies.
+        Having skills in designing and working with Restful Web APIs is a must.
+        Experience in HTML5, CSS3 and JavaScript.
+        Excellent programming skills with Angular and High-level knowledge of front-end interfaces.
+        Fundamental knowledge of UX/UI.
+        Fundamental knowledge of SEO.
+        Develop user interfaces using the AngularJS framework.
+        Create high-performing, responsive, and interactive web applications.
+        Unit-test the code and debug the application.
+        Create custom directives and components.
+        Experience with unit testing tools.
+        Good debugging skills.
+        Excellent project management skills.
+        Excellent communication skills.
+        Critical thinker and good problem-solver
+    #endregion
+#endregion
+
+
+#region [3]  job
+    #region [1]  job1
+        About the job
+        WE ARE HIRING!We are seeking a skilled and experienced .NET and .NET Core Developer to join our dynamic team. As a developer, you will play a crucial role in designing, developing, and maintaining robust and scalable software applications. The ideal candidate should possess a strong background in .NET and .NET Core development, with a deep understanding of object-oriented programming, design patterns, and SOLID principles.
+
+        Requirements
+
+        Responsibilities: 
+
+        - Utilize your strong experience in .NET and .NET Core development to build high-quality and efficient software solutions. 
+
+        - Demonstrate proficiency in object-oriented programming (OOP), design patterns, and SOLID principles to create well-structured and maintainable code. 
+
+        - Employ your expertise in SQL databases, preferably Postgres or SQL Server, to design and optimize database schemas and perform efficient data manipulation operations. 
+
+        - Leverage your knowledge of LINQ and EF Core to facilitate seamless data access and manipulation within the application. 
+
+        - Demonstrate proficiency in Git and version control systems to ensure collaborative and organized codebase management. 
+
+        - Utilize your experience in building scalable and maintainable products, applying best practices and industry standards to achieve outstanding results. 
+
+        - Demonstrate knowledge and practical experience with unit-testing frameworks like Xunit to ensure code quality and reliability. 
+
+        - Familiarity with Domain-Driven Design (DDD) and clean architecture principles is a plus, as you'll be involved in designing applications with a strong focus on domain modeling and separation of concerns. 
+
+        - Employ your expertise in building RESTful APIs with .NET Core and open API specifications to create efficient and standardized communication interfaces. 
+
+        - Utilize your experience with Docker to containerize applications and facilitate seamless deployment and scalability. 
+
+        - Familiarity with CI/CD concepts is important as you'll be working in an environment that values continuous integration and deployment processes. 
+
+        - Demonstrate knowledge and experience in caching mechanisms such as mem-cache or Redis to optimize application performance. 
+
+        - Experience with Kubernetes will be considered a significant advantage, as it aligns with our future plans for infrastructure and deployment. 
+
+        - Develop and maintain the front-end web application using Angular Framework with at least one year experience.
+        - Write clean, optimized, and well-documented code using HTML, CSS, and Typescript/JavaScript
+
+
+        Requirements: 
+
+        6+ years of experience.
+        Excellent command of English language.
+        Strong proficiency in Oracle DB, Oracle Stored procedures and SQL Server.
+        Proven experience in DDD/Domain driven design and N tiers architectures.
+        Very good analytical and creative problem solving skills.
+        Good work ethics, Team player, positive and self-motivated.
+        Strong Communication & Interpersonal skills.
+        Previous experience working with U.S clients is a plus.
+        Flexibility to travel when needed (mainly to U.S).
+
+        Benefits
+
+        Salary paid in USD
+        Six-month career-advancing opportunities
+        Employee parking space
+        Supportive and friendly work environment
+        Premium medical insurance [employee +family]
+        English language development courses
+        Interest-free loans paid over 2.5 years
+        Technical development courses
+        Planned overtime program (POP)
+        Employment referral program
+        Premium location in Maadi
+        Social insurance
+    #endregion
+
+    #region [2]  job2
+        About the job
+        Introduction
+
+        In this role, you'll work in one of our IBM Consulting Client Innovation Centers (Delivery Centers), where we deliver deep technical and industry expertise to a wide range of public and private sector clients around the world. Our delivery centers offer our clients locally based skills and technical expertise to drive innovation and adoption of new technology.
+
+        Your Role and Responsibilities
+
+
+        Front-End Development: Design and develop user interfaces using Angular best practices, ensuring high performance and responsiveness.
+        Cloud Integration: Implement and manage cloud-based solutions, leveraging Azure services to optimize application performance and scalability.
+        API Integration: Integrate with APIs to facilitate seamless communication between front-end and back-end systems.
+        Code Quality: Write clean, efficient, and maintainable code, adhering to coding standards and best practices.
+        Testing and Debugging: Conduct thorough testing and debugging to ensure the functionality and performance of applications.
+        Collaboration: Work closely with cross-functional teams, including designers, product managers, and other developers, to deliver high-quality software solutions.
+        Continuous Improvement: Stay updated with the latest industry trends and technologies, and apply them to improve existing applications and develop new solutions.
+
+
+        Required Technical and Professional Expertise
+
+
+        Experience: 5+ years of experience in front-end development, with a strong focus on Angular and cloud-based solutions.
+        Technical Skills: Proficiency in HTML, CSS, JavaScript, and TypeScript. Experience with RESTful APIs and version control systems like Git.
+        Problem-Solving: Excellent analytical and problem-solving skills.
+        Communication: Strong verbal and written communication skills, with the ability to convey technical concepts to non-technical stakeholders.
+
+
+        Preferred Technical And Professional Expertise
+
+
+        Cloud Expertise: Extensive experience with cloud services, preferably Azure, including Azure Functions, Azure DevOps, and Azure SQL Database.
+
+
+        Join us at IBM Egypt's Client Innovation Center and be a part of a team that is at the forefront of technological innovation, driving impactful solutions for our clients.
+
+        About Business Unit
+
+        IBM Consulting is IBM’s consulting and global professional services business, with market leading capabilities in business and technology transformation. With deep expertise in many industries, we offer strategy, experience, technology, and operations services to many of the most innovative and valuable companies in the world. Our people are focused on accelerating our clients’ businesses through the power of collaboration. We believe in the power of technology responsibly used to help people, partners and the planet.
+
+        Your Life @ IBM
+
+        In a world where technology never stands still, we understand that, dedication to our clients success, innovation that matters, and trust and personal responsibility in all our relationships, lives in what we do as IBMers as we strive to be the catalyst that makes the world work better.
+    #endregion
+
+    #region [3]  job3
+        About the job
+        Votre Mission Chez Cegedim
+
+        About the Company
+
+        We are Cegedim; a leading worldwide innovative technology and services company; with a global team of 4200 employees. We are looking to start our operations in Egypt as a global development and support Center for our Software systems, with a large team of various profiles and skills.
+
+        About The Job
+
+        Job Description
+
+        Responsible for the design, development and maintenance of high quality software applications.
+
+        Participation in design workshops, peer code reviews, unit testing, test-driven development and refactoring.
+
+        Development of exciting new software applications using modern, best practice development techniques, design patterns and quality standards.
+
+        Design, develop and maintain software functionality to an agreed time-scale and quality
+        Aid development work by the testing of specific program changes
+        Provide 2nd level escalation for customer queries
+        Participate in both design and code reviews
+        Document departmental procedures
+        Document software changes
+        Maintain the software build process
+        Provide accurate estimates of development work
+        Liaise with other departments and customers regarding potential or real support issues
+        Liaise with customers to document requirements and produce specifications
+
+        Profil De Candidat Recherché
+
+        Essential skills and experience:
+
+        C# .NET Core
+        MVVM
+        Strong experience with Front End development using JavaScript and related frameworks (e.g., React, Angular)
+        Best practice around implementing responsive design
+        Deep understanding of web standards and architecture
+        Strong HTML5, CSS and Typescript/JavaScript skills
+        Strong working understanding of the Windows platform, both desktop and server
+        Web Services, REST APIs, XML, JSON
+        TDD
+        Demonstrable experience working in N-tier architectures.
+        Knowledge and experience of agile development methods
+
+        Desirable Skills And Experience
+
+        Degree educated
+        Exposure to application of UX design principles
+        RDBMS Databases, ideally PostgreSQL
+        Pharmacy, GP or Healthcare domain experience
+        Atlassian ALM toolset, including JIRA, Confluence, and BitBucket
+        A good understanding of the SAFe agile framework
+        Visual Studio 2015 or above
+
+        Compétences
+
+        React
+    #endregion
+
+    #region [4]  job4
+        About the job
+        Job Description 
+
+        Responsible for the design, development and maintenance of high quality software applications. 
+
+        Participation in design workshops, peer code reviews, unit testing, test-driven development and refactoring. 
+
+        Development of exciting new software applications using modern, best practice development techniques, design patterns and quality standards. 
+
+        • Design, develop and maintain software functionality to an agreed time-scale and quality 
+
+        • Aid development work by the testing of specific program changes 
+
+        • Provide 2nd level escalation for customer queries 
+
+        • Participate in both design and code reviews 
+
+        • Document departmental procedures 
+
+        • Document software changes 
+
+        • Maintain the software build process 
+
+        • Provide accurate estimates of development work 
+
+        • Liaise with other departments and customers regarding potential or real support issues 
+
+        • Liaise with customers to document requirements and produce specifications 
+
+        
+        Essential skills and experience: 
+
+        • C# .NET Core 
+
+        • Either React or WPF, XAML, MVC, MVVM 
+
+        • Strong working understanding of the Windows platform, both desktop and server 
+
+        • Web Services, REST APIs, XML, JSON 
+
+        • TDD 
+
+        • Demonstrable experience working in N-tier architectures. 
+
+        • Knowledge and experience of agile development methods 
+
+        
+        Desirable skills and experience
+
+        
+        • RDBMS Databases, ideally PostgreSQL 
+
+        • Pharmacy, GP or Healthcare domain experience 
+
+        • Atlassian ALM toolset, including JIRA 
+
+        • Visual Studio 2015 or above
+    #endregion
+
+    #region [5]  job5
+        About the job
+        Siemens Digital Industries Software is a global technology powerhouse. With some of the best-known brands in the world, Siemens has stood for engineering excellence, innovation, quality, and reliability for more than 175 years.
+
+        The Digital Verification Technologies (DVT) division of Siemens EDA is looking for a Frontend Development Engineer to join our DVT VIQ R&D team in Cairo, Egypt.
+
+        In this role, you'll immerse yourself in DVT technologies, working with extensive codebases to design, develop, and research advanced visualizations that simplify the debugging and analysis of complex data. You will also gain a deep understanding of the challenges faced by verification engineers, particularly as chip designs grow increasingly complex. As the demand for scalable tools and solutions rises, you will play a critical role in developing software solutions tailored to these needs.
+
+        Key Responsibilities:
+
+        Collaborate with design and development teams to create intuitive and responsive user interfaces.
+        Develop and maintain web applications using leading JavaScript frameworks (React, Angular, or Vue.js).
+        Build dynamic, data-driven visualizations with D3.js.
+        Ensure cross-browser compatibility and optimize applications for maximum speed and scalability.
+        Participate in code reviews, offering feedback and continuously improving code quality.
+        Work closely with backend developers to integrate front-end components with server-side logic.
+        Troubleshoot and debug issues to ensure smooth user experiences across various devices.
+        Stay updated on the latest trends and best practices in front-end development and data visualization.
+
+        Qualifications:
+
+        Bachelor’s degree in Computer Science, Information Technology, or a related field, or equivalent experience.
+        Hands-on experience with a major JavaScript framework (React, Angular, or Vue.js).
+        Proficiency in D3.js for creating interactive data visualizations.
+        Strong foundation in HTML, CSS, and JavaScript.
+        Familiarity with version control systems (e.g., Git).
+        Basic knowledge of backend technologies and server-side languages, particularly Java, is a plus.
+        Exposure to full-stack development and a willingness to expand skills in backend technologies is a plus.
+        Strong team collaboration skills and the ability to clearly communicate technical ideas.
+        A keen eye for detail and a passion for delivering high-quality work.
+        Experience with RESTful APIs and asynchronous request handling.
+        Understanding of responsive design principles and mobile-first development.
+        A strong ability to learn, explore, and innovate with complex technologies.
+        Self-motivation, self-discipline, and the ability to set and work consistently towards personal goals in a dynamic environment.
+        Excellent communication skills, including the ability to present ideas and share knowledge with others.
+
+        We’re Siemens. A collection of over 377,000 minds building the future, one day at a time in over 200 countries. We're dedicated to equality, and we welcome applications that reflect the diversity of the communities we work in. All employment decisions at Siemens are based on qualifications, merit and business need. Bring your curiosity and creativity and help us shape tomorrow!
+
+        We offer a comprehensive reward package which includes a competitive basic salary, bonus scheme and generous holiday allowance.
+
+        Siemens is an equal opportunities employer and do not discriminate unlawfully on any grounds. We are committed to providing access and equal opportunity.
+    #endregion
+
+    #region [6]  job6
+        About the job
+        Siemens Digital Industries Software is a global technology powerhouse. With some of the best-known brands in the world, Siemens has stood for engineering excellence, innovation, quality, and reliability for more than 175 years.
+
+        We're looking for Associate Software Engineers to join our Brightly team in Cairo, Egypt.
+
+        Responsibilities
+
+        Design and develop innovative, high-performance features for next-generation software applications. 
+        Apply advanced knowledge of computer science and programming principles, along with professional experience, to create innovative solutions. 
+        Develop, integrate, and document libraries and frameworks to scale application development across multiple projects, serving as common services or components for various products, while adhering to scope, cost, time, and quality constraints. 
+        Incorporate quality throughout the agile product lifecycle, including requirements, design, coding, testing, delivery, and support. 
+        Create and maintain scalable, full-stack solutions that comply with or enhance existing standards, within a professional software engineering environment (source control, short release cycles, continuous integration, and deployment). 
+        Align team goals with company objectives and metrics; communicate these effectively to the team. 
+        Collaborate with product owners and UX designers to determine what is technically feasible, and assist in translating user requirements into technical specifications; serve as a technical SME during product planning sessions. 
+        Support and maintain our products by identifying and resolving root causes of production incidents and coordinating troubleshooting across teams. 
+        Foster a DevOps mindset, including monitoring, incident resolution, and ongoing discovery. 
+        Ensure product quality by quickly addressing production defects and embedding a DevOps mentality within the team. 
+        Serve as a technical leader for your team, or on special projects based on business priorities; provide mentorship and guidance to junior engineers and interns. 
+        Stay current with technological trends and continuously share knowledge with the team. 
+        Collaborate with architects, engineers, development managers, product managers, and agile coaches in a global agile environment. 
+        Drive continuous improvement through metrics and feedback. 
+        Embrace change and complexity; learn quickly, adapt fast, and be a leader in change management. 
+
+        Requirements: 
+
+        Bachelor’s degree in Computer Science or a related field, or equivalent work experience. 
+        Strong understanding of data structures, algorithms, object-oriented programming, databases, SQL, web development, design patterns, and SOLID principles. 
+        Hands-on experience with C# (.NET Framework / Core) or other object-oriented programming languages. 
+        Familiarity with web development, JavaScript frameworks, UI/UX technologies, and RESTful services. 
+        Proficiency in writing SQL queries, stored procedures, and functions. 
+        Experience with unit testing, mocking frameworks, and automation tools. 
+        A DevOps mindset with experience in a mature CI/CD environment. 
+        Experience in implementing exception handling, event logging, and performance measurement. 
+        Familiarity with agile methodologies such as Scrum or Kanban. 
+        Strong communication, teamwork, and leadership skills. 
+        Flexibility to work with teams in North America. 
+
+        Technologies: 
+
+        ASP.NET, C# 
+        JavaScript/TypeScript 
+        .NET Framework and .NET Core 
+        MS SQL Server 
+        NUnit, XUnit, Jest, Cypress 
+        Visual Studio 
+        Angular 
+        Version Control Systems like Git/SVN 
+
+        Bonus Points: 
+
+        Experience with AWS Services. 
+        Contributions to open-source projects, personal repositories, or personal tech projects. 
+        Participation in tech communities, meetups, or industry events. 
+        Certifications in technology or agile methodologies. 
+        Experience working in agile environments implemented at scale across multiple global teams. 
+
+        We’re Siemens. A collection of over 377,000 minds building the future, one day at a time in over 200 countries. We're dedicated to equality, and we welcome applications that reflect the diversity of the communities we work in. All employment decisions at Siemens are based on qualifications, merit and business need. Bring your curiosity and creativity and help us shape tomorrow!
+
+        We offer a comprehensive reward package which includes a competitive basic salary, bonus scheme and generous holiday allowance.
+
+        Siemens is an equal opportunities employer and do not discriminate unlawfully on any grounds. We are committed to providing access and equal opportunity.
+    #endregion
+
+    #region [7]  job7
+        About the job
+        Design, develop, and maintain high-quality web applications using the Angular framework
+        Collaborate with cross-functional teams to identify and prioritize project requirements
+        Write clean, efficient, and well-documented code that adheres to industry standards and best practices
+        Participate in code reviews and contribute to the improvement of the overall codebase
+        Troubleshoot and debug application issues, and work with the QA team to resolve defects
+        Stay up-to-date with the latest trends and technologies in the field, and apply this knowledge to improve the development process
+        Work closely with the UI/UX designer to ensure that the application's user interface is intuitive and visually appealing
+        Collaborate with the back-end developers to ensure seamless integration between the front-end and back-end systems
+
+
+        Requirements
+
+        3+ years of experience with Angular (version 2+), including component-based architecture, services, and dependency injection
+        Strong understanding of HTML, CSS, and JavaScript, with experience in building responsive and accessible web applications
+        Experience with other front-end frameworks and libraries, such as React or Vue.js, is a plus
+        Familiarity with TypeScript or other statically-typed languages is a plus
+        Experience with Agile development methodologies and version control systems such as Git
+        Strong problem-solving skills and attention to detail
+        Experience with Angular Material or other UI libraries
+        Knowledge of RESTful APIs and HTTP requests
+        Familiarity with containerization technologies such as Docker
+        Experience with continuous integration and deployment tools such as Jenkins or CircleCI
+        Familiarity with cloud platforms such as AWS or Azure
+    #endregion
+
+    #region [8]  job8
+        About the job
+        Line of Service
+
+        Advisory
+
+        Industry/Sector
+
+        Technology
+
+        Specialism
+
+        Advisory - Other
+
+        Management Level
+
+        Associate
+
+        Job Description & Summary
+
+        A career within General Consulting services, will provide you with the opportunity to help clients seize essential advantages by working alongside business leaders to solve their toughest problems and capture their greatest opportunities. We work with some of the world’s largest and most complex companies to understand their unique business issues and opportunities in an ever changing environment. We help create sustainable change by stimulating innovation, unlocking data possibilities, navigating risk and regulatory complexity, optimising deals, and aligning costs with business strategy to create a competitive advantage.
+
+        Bachelor's or higher degree in Computer Science, Software Engineering, or a related field (essential).
+        2+ Years Solid experience in building and maintaining reliable and scalable services/platforms.
+        Proven experience with Full stack development using JavaScript & related technology stacks.
+        Familiarity with Google Apps Script development & deployments.
+        Strong understanding of object-oriented programming & SOLID principles.
+        Familiarity or hands on experience with Microsoft Power Platform services & integrations.
+        Familiarity with C# &.Net/Core framework.
+        Strong problem-solving skills and attention to detail, especially in optimizing software for performance and scalability.
+        Experience & familiarity with database design and SQL.
+        Familiarity with Azure DevOps & CI/CD tools integration / operations / change management and maintenance.
+
+        Education (if blank, degree and/or field of study not specified)
+
+        Degrees/Field Of Study Required
+
+        Degrees/Field of Study preferred:
+
+        Certifications (if blank, certifications not specified)
+
+        Required Skills
+
+        Optional Skills
+
+        Desired Languages (If blank, desired languages not specified)
+
+        Travel Requirements
+
+        Available for Work Visa Sponsorship?
+
+        Government Clearance Required?
+
+        Job Posting End Date
+    #endregion
+
+    #region [9]  job9
+        About the job
+        Siemens Digital Industries Software is a global technology powerhouse. With some of the best-known brands in the world, Siemens has stood for engineering excellence, innovation, quality, and reliability for more than 175 years.
+
+        We're looking for a Software Engineer to join our Brightly team in Cairo, Egypt.
+
+        Responsibilities
+
+        Lead the design and development of innovative, high-performance features for our next-generation software applications. 
+        Leverage your expertise in computer science and programming principles, along with practical experience, to create cutting-edge solutions. 
+        Develop, integrate, and document libraries and frameworks that enable scalable development across multiple projects and products, ensuring they meet scope, cost, time, and quality requirements. 
+        Build and maintain quality throughout the agile product lifecycle, including requirements gathering, design, coding, testing, delivery, and support. 
+        Write clear, maintainable full-stack solutions that scale effectively and adhere to or enhance existing standards in a professional software engineering environment (source control, short release cycles, continuous integration, deployment, etc.). 
+        Align the team’s technical objectives with the company’s goals and metrics, promoting a shared understanding. 
+        Collaborate with product owners and UX designers to determine technical feasibility, translating user requirements into technical specifications; serve as a technical expert during product planning sessions. 
+        Support our products by identifying and resolving the root causes of production issues, leading troubleshooting and resolution efforts across teams. 
+        Promote a DevOps culture, overseeing discovery, solution development, monitoring, and incident resolution. 
+        Ensure product quality and quickly address any defects in production. 
+        Act as a technical leader for your team or on special projects based on business priorities; identify coaching opportunities and mentor team members. 
+        Stay up-to-date with the latest technology trends and share knowledge with junior engineers and interns. 
+        Collaborate with architects, engineers, development managers, product managers, and agile coaches across the engineering practice in a global agile environment. 
+        Drive continuous improvement using metrics and feedback. 
+        Adopt change and complexity, learn rapidly, adapt quickly, and lead innovation. 
+
+        Requirements: 
+
+        Bachelor's degree in Computer Engineering, Computer Science, or a related field. 
+        Strong knowledge of data structures, algorithms, object-oriented programming, databases, SQL, web programming, design patterns, and SOLID principles. 
+        Extensive experience with ASP.NET, C#, .NET Framework/Core, or other object-oriented programming languages. 
+        Hands-on experience with web development, JavaScript frameworks, and UI/UX technologies. 
+        Solid understanding of REST services, SOA, microservices, and integration with third-party APIs. 
+        Experience with unit testing, mocking frameworks, and automation tools. 
+        A DevOps mindset with experience in a mature CI/CD environment. 
+        Experience in exception handling, key event logging, and performance measurement. 
+        Familiarity with agile methodologies (Scrum, Kanban). 
+        Strong communication, teamwork, and influencing skills. 
+        Ability to work flexible hours to coordinate with teams in North America. 
+
+        Technologies: 
+
+        .NET Framework/Core 
+        ASP.NET, C# 
+        MS SQL Server 
+        NUnit, XUnit, Jasmine, Cypress 
+        Visual Studio 
+        JavaScript/TypeScript 
+        Angular 
+        Version Control Systems (Git/SVN) 
+
+        Bonus Points: 
+
+        Experience with Auth0. 
+        Experience with AWS services. 
+        Knowledge of cloud optimization. 
+        Experience with .NET Core. 
+        Contributions to open-source projects, personal repositories, or other technical projects. 
+        Active participation in tech communities, meetups, or industry events. 
+        Certifications in technology or agile methodologies. 
+        Experience working in agile environments at scale across multiple global teams. 
+
+        We’re Siemens. A collection of over 377,000 minds building the future, one day at a time in over 200 countries. We're dedicated to equality, and we welcome applications that reflect the diversity of the communities we work in. All employment decisions at Siemens are based on qualifications, merit and business need. Bring your curiosity and creativity and help us shape tomorrow!
+
+        We offer a comprehensive reward package which includes a competitive basic salary, bonus scheme and generous holiday allowance.
+
+        Siemens is an equal opportunities employer and do not discriminate unlawfully on any grounds. We are committed to providing access and equal opportunity.
+    #endregion
+
+    #region [10]  job10
+        About the job
+        BlackStone eIT, a leading computer software company, is seeking a highly skilled Fullstack Developer with expertise in .Net and React. As a Fullstack Developer, you will play an integral role in developing innovative software solutions that meet the needs of our clients. You will collaborate with a highly talented team of developers and engineers to implement and support various software projects. This is an excellent opportunity for someone who is passionate about technology and has a strong desire to work in a fast-paced, challenging environment.
+
+        Responsibilities
+
+        Design, develop, and maintain high-quality software applications using .Net and React
+        Collaborate with cross-functional teams to define and implement software requirements
+        Participate in code reviews to ensure adherence to coding standards and best practices
+        Troubleshoot and resolve software defects and issues in a timely manner
+        Continuously identify areas for improvement and propose solutions to enhance software development processes
+        Document software design and development activities for future reference and knowledge sharing
+        Stay up-to-date with industry trends and advancements in software development to drive innovation within the company
+
+
+        Requirements
+
+        Bachelor's degree in Computer Science or a related field
+        Strong experience in .Net framework and React
+        Proficiency in web development technologies such as HTML, CSS, and JavaScript
+        Experience with database design and SQL queries
+        Familiarity with version control systems, such as Git
+        Excellent problem-solving and analytical skills
+        Strong attention to detail and ability to work within deadlines
+
+
+        Benefits
+
+        Paid Time Off
+        Work From Home
+        Performance Bonus
+        Regular Buisness trips to UAE
+        Training & Development
+
+        Desired Skills and Experience
+        .net
+        .net core
+        fullstack
+        react
+        reactjs
+    #endregion
+#endregion
+
+
+#region [1]  job1
+    About the job
+    About Capgemini
+
+    Capgemini is a global leader in partnering with companies to transform and manage their business by harnessing the power of technology. The Group is guided everyday by its purpose of unleashing human energy through technology for an inclusive and sustainable future. It is a responsible and diverse organization of 350,000 team members in more than 50 countries. With its strong 55-year heritage and deep industry expertise, Capgemini is trusted by its clients to address the entire breadth of their business needs, from strategy and design to operations, fueled by the fast evolving and innovative world of cloud, data, AI, connectivity, software, digital engineering and platforms. The Group reported in 2022 global revenues of €22 billion.
+
+    Role Description
+    Angular Developer | Midlevel/Senior
+    Experience & Qualification
+    Must have:
+    5+ commercial experience as software engineer
+    Min 3 years' experience in Angular
+    Good TS and Nodejs skills
+    Unit testing with Jest
+    Good understanding of microservice or serverless architecture
+    Confluence, Jira
+    Nice to have:
+    Experience in open source dataViz (amCharts, Highcharts, D3, ChartJs..)
+    AWS basic knowledge
+    GitHub Actions
+    Grafana, Kibana
+    Java, python
+    Terraform
+#endregion
+
+#region [1]  job2
+    About the job
+    Department: Digital Commerce Platform, Digital & Technology Platform Services
+    Location: Egypt, Cairo
+    Contract: Annual hiring with extension
+
+
+    As a Frontend Developer in the e-Commerce & digital services area, you will play a role in designing and implementing end-to-end solutions with a focus on storefront development. Your expertise in Spartacus development and front-end technologies will be critical in delivering high-quality, scalable, and maintainable solutions that meet the expectations of our customers and business stakeholders
+
+
+    YOUR KEY RESPONSIBILITIES:
+
+    Design and implement high-quality solutions according to SAP Composable Storefront (Spartacus) architecture & best practices
+    Participate in troubleshooting, technical analyses and code review process within the team
+    Collaborate with B2B DevOps Team especially with Product Manager, Lead Developer, Platform Architect on analyzing business requirements and providing sequence and effort/Story Points estimation
+    Responsible to document the development specification in Azure DevOps and all related artificats to ensure proper components and solution build
+    Responsible to apply, adhere to CCH code management & propose improvement to best practices
+    Take responsibility on code quality execution and on-time completion of tasks
+    Support the success and development of others in the team
+
+
+    ARE THESE YOUR SECRET INGREDIENTS?
+
+    University Degree in computer science or equivalent.
+    2+years of experience in working as Frontend Developer preferably in the e-Commerce area
+    Designing, building, and testing AngularJS based web solutions
+    Min 1 year experience with SAP Composable Storefront (Spartacus)
+    Very good knowledge of HTML5, CSS3, and its pre-processor
+    Good knowledge of web accessibility and SEO
+    Good understanding of Google Tag Manager
+    Experience with SAP Commerce JSP-based accelerator is a plus
+    Strong concepts & knowledge of object-oriented programming, data structures, algorithms and design patterns.
+    FMCG Commercial business process awareness will be considered as an advantage
+    Proven Experience in Agile Scrum development practices
+    Proven ability to work in a multi-cultural environment
+    Strong communication and influencing skills
+    English proficiency
+
+
+    ABOUT YOUR NEW TEAM:
+
+    We are a family of 33 thousand engaged people. Each and every one of us is the secret ingredient of Coca-Cola HBC – one of the world’s largest bottlers and partner of The Coca-Cola Company. Our every day mission is to delight over 715 million consumers by offering a choice of over 100 iconic global and favorite local brands in the moments that matter, 24 hours a day, 7 days a week. We are a truly empowered and talented team that drives superior results by winning and learning every day in 29 countries, across 3 continents. Our success comes from us working together as one to make a positive difference for the local communities we serve.
+
+
+    AT COCA-COLA HBC, DIVERSITY HELPS US THRIVE
+
+    At Coca-Cola HBC, we are an inclusive employer that thrives on diversity. This means our environment provides equal opportunities for all, regardless of race, color, religion, age, disability, sexual orientation, or gender identity. Join us in nurturing a culture where everyone belongs and contributes to our collective success.
+#endregion
+
+#region [1]  job3
+    About the job
+    Company Description
+
+    Systems Limited is a globally recognized IT software solution company offering state-of-the-art professional services and BPO offerings in the technology landscape. The company has positioned itself as the top IT company in Pakistan and provides computing strategies and solutions to Government and Private Organizations. Systems Limited excels in Digital Transformation, Cloud, Digital, and Data, and has accomplished over 600 projects in the US, Europe, Pakistan, Middle East, and Africa.
+
+
+    Key Responsibilities:
+
+    Develop and maintain: Build and maintain complex web applications using Angular, ensuring high performance, scalability, and a seamless user experience.
+    Architect solutions: Design and implement architecture for scalable, modular, and maintainable frontend solutions using Micro Frontend strategies.
+    State management: Utilize NgRx or other state management libraries to manage application state efficiently.
+    Testing: Write and maintain comprehensive unit tests, integration tests, and end-to-end tests to ensure code quality and stability using tools like Jasmine, Karma, and Protractor.
+    Code reviews: Conduct regular code reviews to ensure code quality and adherence to best practices.
+    Collaboration: Work closely with backend developers, UI/UX designers, and product managers to deliver high-quality products.
+    Continuous Improvement: Stay up-to-date with the latest industry trends and technologies to ensure we are using the best tools and practices available.
+
+
+    Required Skills & Qualifications:
+
+    Experience: 4+ years of experience in frontend development with at least 3 years of professional experience working with Angular.
+    Angular Expertise: Strong proficiency in Angular (version 8 and above), including a deep understanding of components, services, directives, and modules.
+    State Management: Hands-on experience with NgRx or similar state management libraries.
+    Micro Frontends: Experience in designing and implementing micro-frontend architectures.
+    Unit Testing: Proficient in writing unit tests and experience with testing frameworks like Jasmine, Karma, and Protractor.
+    HTML/CSS: Strong skills in HTML5, CSS3, and CSS pre-processors like SASS or LESS.
+    JavaScript/TypeScript: Excellent knowledge of JavaScript and TypeScript.
+    Version Control: Proficient in using Git for version control, with experience in branch management and pull requests.
+    Agile Methodology: Familiarity with Agile/Scrum development processes.
+    Communication: Excellent verbal and written communication skills, with the ability to effectively convey complex technical concepts to non-technical stakeholders.
+    Problem-Solving: Strong analytical and problem-solving skills with attention to detail.
+
+
+    Preferred Qualifications:
+
+    Tooling: Experience with tools such as Webpack, Angular CLI, or similar.
+    CI/CD: Familiarity with CI/CD pipelines and tools like Jenkins, Travis CI, or CircleCI.
+    Bachelor’s Degree: Degree in Computer Science, Engineering, or related field.
+
+
+    Additional Information:
+
+    Location: Smart Village B2116 Nexus Building
+    Employment Type: Full-time
+    Work module: Hybrid (2 days from office)
+    Benefits: Social, Medical insurance & Other
+#endregion
+
+#region [1]  job4 
+
+#endregion

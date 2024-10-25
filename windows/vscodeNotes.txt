@@ -1,0 +1,266 @@
+#region [1] vscode [setting of tabBar|extension list]
+ #region [1] setting
+   tabSizing [min|max]=>fixed max 50
+   showIcons
+   showTabs
+ #endregion
+
+ #region [2] extensions names => code --list-extensions > extensions.txt => at once =>cat extensions.txt | xargs -n 1 code --install-extension =>
+  code --install-extension aaron-bond.better-comments
+  code --install-extension aeschli.vscode-css-formatter
+  code --install-extension akhail.save-typing
+  code --install-extension albymor.increment-selection
+  code --install-extension angular.ng-template
+  code --install-extension baincd.diff-lang-folding
+  code --install-extension bracketpaircolordlw.bracket-pair-color-dlw
+  code --install-extension bradlc.vscode-tailwindcss
+  code --install-extension christian-kohler.npm-intellisense
+  code --install-extension christian-kohler.path-intellisense        
+  code --install-extension csstools.postcss
+  code --install-extension damphat.firebase-json
+  code --install-extension dsznajder.es7-react-js-snippets
+  code --install-extension eamodio.gitlens
+  code --install-extension fabiospampinato.vscode-highlight
+  code --install-extension formulahendry.auto-close-tag
+  code --install-extension formulahendry.auto-complete-tag
+  code --install-extension formulahendry.auto-rename-tag
+  code --install-extension formulahendry.code-runner
+  code --install-extension glenn2223.live-sass
+  code --install-extension hasanakg.firebase-snippets
+  code --install-extension heybourn.headwind
+  code --install-extension hossaini.bootstrap-intellisense
+  code --install-extension jiapeiyao.tab-group
+  code --install-extension joy-yu.css-snippets
+  code --install-extension lukegeneva.auto-collapse-explorer
+  code --install-extension maptz.regionfolder
+  code --install-extension meezilla.json
+  code --install-extension mihelcic.colored-regions
+  code --install-extension mikael.angular-beastcode
+  code --install-extension mrmlnc.vscode-autoprefixer
+  code --install-extension mrmlnc.vscode-stylefmt
+  code --install-extension ms-python.debugpy
+  code --install-extension ms-python.python
+  code --install-extension ms-python.vscode-pylance
+  code --install-extension ms-vscode.js-debug-nightly
+  code --install-extension ms-vscode.vscode-typescript-next
+  code --install-extension ms-vsliveshare.vsliveshare
+  code --install-extension namangarg.bootstrap5-snippets-helper
+  code --install-extension oderwat.indent-rainbow
+  code --install-extension orepor.color-tabs-vscode-ext
+  code --install-extension pierrecza-vscode.increment-numbers-selection
+  code --install-extension piotrpalarz.vscode-gitignore-generator
+  code --install-extension pranaygp.vscode-css-peek
+  code --install-extension ritwickdey.liveserver
+  code --install-extension rodrigovallades.es7-react-js-snippets
+  code --install-extension roonie007.hide-files
+  code --install-extension rsbondi.highlight-words
+  code --install-extension shan.code-settings-sync
+  code --install-extension sidthesloth.html5-boilerplate
+  code --install-extension solnurkarim.html-to-css-autocompletion
+  code --install-extension steoates.autoimport
+  code --install-extension stivo.tailwind-fold
+  code --install-extension streetsidesoftware.code-spell-checker
+  code --install-extension tintinweb.vscode-inline-bookmarks
+  code --install-extension tomwhite007.rename-angular-component
+  code --install-extension vdanchenkov.tailwind-class-sorter
+  code --install-extension voldemortensen.rainbow-tags
+  code --install-extension vscode-icons-team.vscode-icons
+  code --install-extension vunguyentuan.vscode-postcss
+  code --install-extension wayou.vscode-todo-highlight
+  code --install-extension zignd.html-css-class-completion
+ #endregion
+
+ #region [3] edge extension open every extension page and get id from url
+ 
+    $extensions = @(
+        "ggnepcoiimddpmjaoejhdfppjbcnfaom",
+        "Extension2ID",
+        "Extension3ID"
+    )
+    # Loop through the list of extension IDs and install each one
+    foreach ($extension in $extensions) {
+        # Use Start-Process to open the Edge extensions management page with the extension ID parameter
+        Start-Process msedge.exe -ArgumentList "msedge://extensions/?id=$extension"
+        # Add a delay to give Edge time to open the page before proceeding
+        Start-Sleep -Seconds 5
+    }
+ #endregion
+  Start-Process msedge.exe -ArgumentList "msedge://extensions/?id=kbfnbcaeplbcioakkpcpgfkobkghlhen"
+#endregion
+
+#region [1] json ctrl+shift +p =>open user setting json
+  {
+      "highlight.regexes": {
+          "((?:<!-- *)?(?:#|// @|//|./\\*+|<!--|--|\\* @|{!|{{!--|{{!) *TODO(?:\\s*\\([^)]+\\))?:?)((?!\\w)(?: *-->| *\\*/| *!}| *--}}| *}}|(?= *(?:[^:]//|/\\*+|<!--|@|--|{!|{{!--|{{!))|(?: +[^\\n@]*?)(?= *(?:[^:]//|/\\*+|<!--|@|--(?!>)|{!|{{!--|{{!))|(?: +[^@\\n]+)?))": {
+              "filterFileRegex": ".*(?<!CHANGELOG.md)$",
+              "decorations": [
+                  {
+                      "overviewRulerColor": "#077b14",
+                      "backgroundColor": "#077b14",
+                      "color": "#fff",
+                      "fontWeight": "bold"
+                  },
+                  {
+                      "backgroundColor": "#077b14",
+                      "color": "#fff"
+                  }
+              ]
+          },
+          "((?:<!-- *)?(?:#|// @|//|./\\*+|<!--|--|\\* @|{!|{{!--|{{!) *(?:use)(?:\\s*\\([^)]+\\))?:?)((?!\\w)(?: *-->| *\\*/| *!}| *--}}| *}}|(?= *(?:[^:]//|/\\*+|<!--|@|--|{!|{{!--|{{!))|(?: +[^\\n@]*?)(?= *(?:[^:]//|/\\*+|<!--|@|--(?!>)|{!|{{!--|{{!))|(?: +[^@\\n]+)?))": {
+              "filterFileRegex": ".*(?<!CHANGELOG.md)$",
+              "decorations": [
+                  {
+                      "overviewRulerColor": "#cc0000",
+                      "backgroundColor": "#cc0000",
+                      "color": "#fff",
+                      "fontWeight": "bold"
+                  },
+                  {
+                      "backgroundColor": "#cc0000",
+                      "color": "#fff"
+                  }
+              ]
+          },
+          "((?:<!-- *)?(?:#|// @|//|./\\*+|<!--|--|\\* @|{!|{{!--|{{!) *(?:main)(?:\\s*\\([^)]+\\))?:?)((?!\\w)(?: *-->| *\\*/| *!}| *--}}| *}}|(?= *(?:[^:]//|/\\*+|<!--|@|--|{!|{{!--|{{!))|(?: +[^\\n@]*?)(?= *(?:[^:]//|/\\*+|<!--|@|--(?!>)|{!|{{!--|{{!))|(?: +[^@\\n]+)?))": {
+              "filterFileRegex": ".*(?<!CHANGELOG.md)$",
+              "decorations": [
+                  {
+                      "overviewRulerColor": "#00ccff",
+                      "backgroundColor": "#00ccff",
+                      "color": "#fff",
+                      "fontWeight": "bold"
+                  },
+                  {
+                      "backgroundColor": "#00ccff",
+                      "color": "#fff"
+                  }
+              ]
+          },
+          "((?:<!-- *)?(?:#|// @|//|./\\*+|<!--|--|\\* @|{!|{{!--|{{!) *(?:func)(?:\\s*\\([^)]+\\))?:?)((?!\\w)(?: *-->| *\\*/| *!}| *--}}| *}}|(?= *(?:[^:]//|/\\*+|<!--|@|--|{!|{{!--|{{!))|(?: +[^\\n@]*?)(?= *(?:[^:]//|/\\*+|<!--|@|--(?!>)|{!|{{!--|{{!))|(?: +[^@\\n]+)?))": {
+              "filterFileRegex": ".*(?<!CHANGELOG.md)$",
+              "decorations": [
+                  {
+                      "overviewRulerColor": "#31008b",
+                      "backgroundColor": "#31008b",
+                      "color": "#fff",
+                      "fontWeight": "bold"
+                  },
+                  {
+                      "backgroundColor": "#31008b",
+                      "color": "#fff"
+                  }
+              ]
+          },
+          "((?:<!-- *)?(?:#|// @|//|./\\*+|<!--|--|\\* @|{!|{{!--|{{!) *(?:add)(?:\\s*\\([^)]+\\))?:?)((?!\\w)(?: *-->| *\\*/| *!}| *--}}| *}}|(?= *(?:[^:]//|/\\*+|<!--|@|--|{!|{{!--|{{!))|(?: +[^\\n@]*?)(?= *(?:[^:]//|/\\*+|<!--|@|--(?!>)|{!|{{!--|{{!))|(?: +[^@\\n]+)?))": {
+              "filterFileRegex": ".*(?<!CHANGELOG.md)$",
+              "decorations": [
+                  {
+                      "overviewRulerColor": "#00828b",
+                      "backgroundColor": "#00828b",
+                      "color": "#fff",
+                      "fontWeight": "bold"
+                  },
+                  {
+                      "backgroundColor": "#00828b",
+                      "color": "#fff"
+                  }
+              ]
+          },
+          "((?:<!-- *)?(?:#|// @|//|./\\*+|<!--|--|\\* @|{!|{{!--|{{!) *(?:show)(?:\\s*\\([^)]+\\))?:?)((?!\\w)(?: *-->| *\\*/| *!}| *--}}| *}}|(?= *(?:[^:]//|/\\*+|<!--|@|--|{!|{{!--|{{!))|(?: +[^\\n@]*?)(?= *(?:[^:]//|/\\*+|<!--|@|--(?!>)|{!|{{!--|{{!))|(?: +[^@\\n]+)?))": {
+              "filterFileRegex": ".*(?<!CHANGELOG.md)$",
+              "decorations": [
+                  {
+                      "overviewRulerColor": "#8b008b",
+                      "backgroundColor": "#8b008b",
+                      "color": "#fff",
+                      "fontWeight": "bold"
+                  },
+                  {
+                      "backgroundColor": "#8b008b",
+                      "color": "#fff"
+                  }
+              ]
+          },
+          "((?:<!-- *)?(?:#|// @|//|./\\*+|<!--|--|\\* @|{!|{{!--|{{!) *(?:idea)(?:\\s*\\([^)]+\\))?:?)((?!\\w)(?: *-->| *\\*/| *!}| *--}}| *}}|(?= *(?:[^:]//|/\\*+|<!--|@|--|{!|{{!--|{{!))|(?: +[^\\n@]*?)(?= *(?:[^:]//|/\\*+|<!--|@|--(?!>)|{!|{{!--|{{!))|(?: +[^@\\n]+)?))": {
+              "filterFileRegex": ".*(?<!CHANGELOG.md)$",
+              "decorations": [
+                  {
+                      "overviewRulerColor": "#cc7700",
+                      "backgroundColor": "#cc7700",
+                      "color": "#fff",
+                      "fontWeight": "bold"
+                  },
+                  {
+                      "backgroundColor": "#cc7700",
+                      "color": "#fff"
+                  }
+              ]
+          },
+          "((?:<!-- *)?(?:#|// @|//|./\\*+|<!--|--|\\* @|{!|{{!--|{{!) *(?:hint)(?:\\s*\\([^)]+\\))?:?)((?!\\w)(?: *-->| *\\*/| *!}| *--}}| *}}|(?= *(?:[^:]//|/\\*+|<!--|@|--|{!|{{!--|{{!))|(?: +[^\\n@]*?)(?= *(?:[^:]//|/\\*+|<!--|@|--(?!>)|{!|{{!--|{{!))|(?: +[^@\\n]+)?))": {
+              "filterFileRegex": ".*(?<!CHANGELOG.md)$",
+              "decorations": [
+                  {
+                      "overviewRulerColor": "#cc00cc",
+                      "backgroundColor": "#cc00cc",
+                      "color": "#fff",
+                      "fontWeight": "bold"
+                  },
+                  {
+                      "backgroundColor": "#cc00cc",
+                      "color": "#fff"
+                  }
+              ]
+          },
+          "((?:<!-- *)?(?:#|// @|//|./\\*+|<!--|--|\\* @|{!|{{!--|{{!) *(?:hint2)(?:\\s*\\([^)]+\\))?:?)((?!\\w)(?: *-->| *\\*/| *!}| *--}}| *}}|(?= *(?:[^:]//|/\\*+|<!--|@|--|{!|{{!--|{{!))|(?: +[^\\n@]*?)(?= *(?:[^:]//|/\\*+|<!--|@|--(?!>)|{!|{{!--|{{!))|(?: +[^@\\n]+)?))": {
+              "filterFileRegex": ".*(?<!CHANGELOG.md)$",
+              "decorations": [
+                  {
+                      "overviewRulerColor": "#8b008b",
+                      "backgroundColor": "#8b008b",
+                      "color": "#fff",
+                      "fontWeight": "bold"
+                  },
+                  {
+                      "backgroundColor": "#8b008b",
+                      "color": "#fff"
+                  }
+              ]
+          }
+      },
+      "cSpell.userWords": [
+          "endregion",
+          "primeng"
+      ],
+      "coloredRegions.namedColors": {
+          "1": "#042138",
+          "2": "#073358",
+          "3": "#09406d",
+          "4": "#0b4e85",
+          "5": "#0e5ea0",
+          "6": "#137ace",
+          "7": "#183dc",
+          "8": "#320746",
+          "9": "#480b64",
+          "10": "#560c78",
+          "11": "#630e8a",
+          "12": "#70109c",
+          "13": "#8013b2",
+          "14": "#10560b",
+          "15": "#12630c",
+          "16": "#136f0d",
+          "17": "#1a9012",
+          "18": "#1fa416",
+          "19": "#480808",
+          "20": "#5b0a0a",
+      },
+      "editor.minimap.enabled": false,
+      "workbench.iconTheme": "vscode-icons",
+      "workbench.editor.tabSizingFixedMaxWidth": 50,
+      "workbench.editor.tabSizing": "fixed",
+      "editor.stickyScroll.enabled": false
+  }
+#endregion
+
+#region [1] git download  
+    winget install --id Git.Git -e --source winget
+#endregion

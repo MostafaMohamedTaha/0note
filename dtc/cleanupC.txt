@@ -1,0 +1,33 @@
+# Define the specific time interval in minutes for running the cleanup
+#day=timeSpecific=60*24=1440
+#2day=timeSpecific=60*24*2=2880
+#7day=timeSpecific=60*24*7=10080
+#30day=timeSpecific=60*24*30=43200
+$specificTime = .1  # Replace with your desired time interval in minutes
+
+# Function to perform Windows Update cleanup
+function Perform-WindowsUpdateCleanup {
+    Write-Output "Starting Windows Update Cleanup..."
+
+    # Run Disk Cleanup with the necessary options to clean up Windows Update files
+    Cleanmgr /sagerun:1 /verylowdisk /cleanup:1
+
+    Write-Output "Windows Update Cleanup completed."
+}
+
+# Infinite loop to run the cleanup at specified intervals
+while ($true) {
+    # Call the function to perform Windows Update cleanup
+    Perform-WindowsUpdateCleanup
+
+    # Wait for the specified time interval before running the cleanup again
+    Write-Output "Next cleanup will be performed in $specificTime minutes."
+    Start-Sleep -Seconds ($specificTime * 60)  # Convert minutes to seconds
+}
+
+#region [1] if needed
+    
+    Set-ExecutionPolicy RemoteSigned
+    cd C:\
+    .\cleanup.ps1
+#endregion

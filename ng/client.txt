@@ -1,0 +1,571 @@
+#region [1] layout
+ #region [1] packages
+  //hint2 dep[bootstrap|xng-breadcrumb|uuid|ngx-toastr|ngx-spinner|ngx-bootstrap|font-awesome|bootswatch] 
+  //hint2 devDep[codelyzer|protractor]
+ #endregion
+
+ #region [2] angular package
+  //hint2 [project/serve/options/sslKey&&sslCert]
+  //hint [all styles in styles.scss]
+  {
+    "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
+    "cli": {
+      "analytics": false
+    },
+    "version": 1,
+    "newProjectRoot": "projects",
+    "projects": {
+      "client": {
+        "projectType": "application",
+        "schematics": {
+          "@schematics/angular:component": {
+            "style": "scss"
+          }
+        },
+        "root": "",
+        "sourceRoot": "src",
+        "prefix": "app",
+        "architect": {
+          "build": {
+            "builder": "@angular-devkit/build-angular:browser",
+            "options": {
+              "outputPath": "../API/wwwroot",
+              "index": "src/index.html",
+              "main": "src/main.ts",
+              "polyfills": "src/polyfills.ts",
+              "tsConfig": "tsconfig.app.json",
+              "aot": true,
+              "assets": [
+                "src/favicon.ico",
+                "src/assets"
+              ],
+              "styles": [ //todo edit here in style css
+                "src/styles.scss"
+              ],
+              "scripts": []
+            },
+            "configurations": {
+              "production": {
+                "fileReplacements": [
+                  {
+                    "replace": "src/environments/environment.ts",
+                    "with": "src/environments/environment.prod.ts"
+                  }
+                ],
+                "optimization": true,
+                "outputHashing": "all",
+                "sourceMap": false,
+                "namedChunks": false,
+                "extractLicenses": true,
+                "vendorChunk": false,
+                "buildOptimizer": true,
+                "budgets": [ //todo edit here
+                  {
+                    "type": "initial",
+                    "maximumWarning": "2mb",
+                    "maximumError": "5mb"
+                  },
+                  {
+                    "type": "anyComponentStyle",
+                    "maximumWarning": "6kb",
+                    "maximumError": "10kb"
+                  }
+                ]
+              }
+            }
+          },
+          "serve": {
+            "builder": "@angular-devkit/build-angular:dev-server",
+            "options": { //todo ssl
+              "browserTarget": "client:build",
+              "sslKey": "./ssl/server.key",
+              "sslCert": "./ssl/server.crt",
+              "ssl": true
+            },
+            "configurations": {
+              "production": {
+                "browserTarget": "client:build:production"
+              }
+            }
+          },
+          "extract-i18n": {
+            "builder": "@angular-devkit/build-angular:extract-i18n",
+            "options": {
+              "browserTarget": "client:build"
+            }
+          },
+          "test": {
+            "builder": "@angular-devkit/build-angular:karma",
+            "options": {
+              "main": "src/test.ts",
+              "polyfills": "src/polyfills.ts",
+              "tsConfig": "tsconfig.spec.json",
+              "karmaConfig": "karma.conf.js",
+              "assets": [
+                "src/favicon.ico",
+                "src/assets"
+              ],
+              "styles": [
+                "src/styles.scss"
+              ],
+              "scripts": []
+            }
+          },
+          "lint": {
+            "builder": "@angular-devkit/build-angular:tslint",
+            "options": {
+              "tsConfig": [
+                "tsconfig.app.json",
+                "tsconfig.spec.json",
+                "e2e/tsconfig.json"
+              ],
+              "exclude": [
+                "**/node_modules/**"
+              ]
+            }
+          },
+          "e2e": {
+            "builder": "@angular-devkit/build-angular:protractor",
+            "options": {
+              "protractorConfig": "e2e/protractor.conf.js",
+              "devServerTarget": "client:serve"
+            },
+            "configurations": {
+              "production": {
+                "devServerTarget": "client:serve:production"
+              }
+            }
+          }
+        }
+      }
+    },
+    "defaultProject": "client"
+  }
+ #endregion
+
+ #region [3] server.crt|server.key
+  how to make from download
+ #endregion
+
+ #region [4] environments 
+  ng g environments
+  export const environment = {
+    production: false,
+    apiUrl: 'https://localhost:5001/api/'
+  };
+ #endregion
+
+ #region [5] assets/images
+  images here
+ #endregion
+
+ #region [6] styles.scss 
+  @import "../node_modules/bootstrap/dist/css/bootstrap.min.css";
+  @import "../node_modules/ngx-bootstrap/datepicker/bs-datepicker.css";
+  @import "../node_modules/bootswatch/dist/united/bootstrap.min.css";
+  @import "../node_modules/font-awesome/css/font-awesome.min.css";
+  @import "../node_modules/ngx-toastr/toastr.css";
+
+  .xng-breadcrumb-root {
+      padding: 8px 16px;
+      display: inline;
+      border-radius: 0;
+  }
+
+  label.xng-breadcrumb-trail {
+      margin-bottom: 0;
+      color: orange;
+  }
+
+  .xng-breadcrumb-separator {
+      padding: 0 0;
+  }
+
+  .StripeElement {
+      height: 3.125em;
+  }
+ #endregion
+
+ #region [7] index.html
+  <!doctype html>
+  <html lang="en">
+
+   <head>
+       <meta charset="utf-8">
+       <title>Talabt</title>
+       <base href="/">
+       <meta name="viewport" content="width=device-width, initial-scale=1">
+       <link rel="icon" type="image/x-icon" href="favicon.ico">
+   </head>
+
+   <body>
+       <app-root></app-root>
+       <script src="https://js.stripe.com/v3/"></script>
+   </body>
+  </html>
+ #endregion
+
+ #region [8] app 
+  #region [1] moduleRouting
+   //todo ng g m auth --route auth --module app.module //todo ng g c auth/component/login --module auth
+  #endregion
+  //todo app[module|routing]
+  //hint2 account[login|register|module|service|routing]
+  //show home[module]
+  //use core[guards|interceptors[error|jwt|loading]|navbar|notFound|headerSection|serverError|services|testErrors|module]
+
+  //hint shop[details|items|module|service|routing]
+  //hint basket[module|service|routing]
+  //func orders[details|module|service|routing]
+  //add checkout[address|delivery|payment|review|success|module|service|routing]
+  //idea shared[components[basketSummary|orderTotals|pager|pagingHeader|stepper|textInput]
+  //idea       ,modules[address|basket|brand|deliveryMethod|order|pagination|product|productType|shopParams|user],module]
+ #endregion
+#endregion
+
+#region [1] app component 
+ #region [1] module
+  @NgModule({
+    declarations: [
+      AppComponent
+    ],
+    imports: [
+      BrowserModule,
+      AppRoutingModule,
+      BrowserAnimationsModule,
+      HttpClientModule,
+      CoreModule, //todo [BreadcrumbModule,SharedModule,ToastrModule]
+      HomeModule, //todo [SharedModule]
+      NgxSpinnerModule
+    ],
+    providers: [
+      { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
+      { provide: HTTP_INTERCEPTORS, useClass: LoadingInterceptor, multi: true },
+      { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
+    ],
+    bootstrap: [AppComponent]
+  })
+  export class AppModule { }
+ #endregion
+
+ #region [2] component for cache [basket|account]
+  export class AppComponent implements OnInit {
+    title = 'SkiNet';
+
+    constructor(private basketService: BasketService, private accountService: AccountService) { }
+
+    ngOnInit(): void {
+      this.loadBasket();
+      this.loadCurrentUser();
+    }
+
+    loadCurrentUser() {
+      const token = localStorage.getItem('token');
+      this.accountService.loadCurrentUser(token).subscribe(() => {
+        console.log('loaded user');
+      }, error => {
+        console.log(error);
+      })
+    }
+
+    loadBasket() {
+      const basketId = localStorage.getItem('basket_id');
+      if (basketId) {
+        this.basketService.getBasket(basketId).subscribe(() => {
+          console.log('initialised basket');
+        }, error => {
+          console.log(error);
+        })
+      }
+    }
+  }
+ #endregion
+
+ #region [3] html 
+  <ngx-spinner>
+      <h3>Loading...</h3>
+  </ngx-spinner>
+
+  <app-nav-bar></app-nav-bar>
+  //todo breadcrumb
+  <app-section-header></app-section-header>
+
+  <div>
+      <router-outlet></router-outlet>
+  </div>
+ #endregion
+
+ #region [4] routing
+  const routes: Routes = [
+    { path: '', component: HomeComponent, data: { breadcrumb: 'Home' } },
+    { path: 'test-error', component: TestErrorComponent, data: { breadcrumb: 'Test Errors' } },
+    { path: 'server-error', component: ServerErrorComponent, data: { breadcrumb: 'Server Error' } },
+    { path: 'not-found', component: NotFoundComponent, data: { breadcrumb: 'Not found' } },
+    {
+      path: 'shop', loadChildren: () => import('./shop/shop.module').then(mod => mod.ShopModule),
+      data: { breadcrumb: 'Shop' } //todo app > src > ...
+    },
+    {
+      path: 'basket', loadChildren: () => import('./basket/basket.module').then(mod => mod.BasketModule),
+      data: { breadcrumb: 'Basket' }
+    },
+    {
+      path: 'checkout', 
+      canActivate: [AuthGuard],
+      loadChildren: () => import('./checkout/checkout.module').then(mod => mod.CheckoutModule),
+      data: { breadcrumb: 'Checkout' }
+    },
+    {
+      path: 'orders', 
+      canActivate: [AuthGuard],
+      loadChildren: () => import('./orders/orders.module').then(mod => mod.OrdersModule),
+      data: { breadcrumb: 'Orders' }
+    },
+    {
+      path: 'account', loadChildren: () => import('./account/account.module').then(mod => mod.AccountModule),
+      data: { breadcrumb: {skip: true} }
+    },
+    { path: '**', redirectTo: 'not-found', pathMatch: 'full' }
+  ];
+
+  @NgModule({
+    imports: [RouterModule.forRoot(routes)], //todo don't forget
+    exports: [RouterModule]
+  })
+ #endregion
+#endregion
+
+#region [1] account [union =>model>service=>[ts|routing]=>html]
+ #region [1] module [app/shared/models/user.ts]
+  export interface IUser {
+      email: string;
+      displayName: string;
+      token: string;
+  }
+ #endregion
+
+ #region [2] service [app/account]
+  export class AccountService {
+    baseUrl = environment.apiUrl;
+    private currentUserSource = new ReplaySubject<IUser>(1); //todo get data from begin [local storage]
+    currentUser$ = this.currentUserSource.asObservable();
+
+    constructor(private http: HttpClient, private router: Router) { }
+
+    loadCurrentUser(token: string) {
+      if (token == null) {
+        this.currentUserSource.next(null);
+        return of(null);
+      }
+
+      let headers = new HttpHeaders();
+      headers = headers.set('Authorization', `Bearer ${token}`);
+
+      return this.http.get(this.baseUrl + 'account', {headers}).pipe(
+        map((user: IUser) => {
+          if (user) {
+            localStorage.setItem('token', user.token);
+            this.currentUserSource.next(user);
+          }
+        })
+      )
+    }
+
+    login(values: any) {
+      return this.http.post(this.baseUrl + 'accounts/login', values).pipe(
+        map((user: IUser) => {
+          if (user) {
+            localStorage.setItem('token', user.token);
+            this.currentUserSource.next(user);
+          }
+        })
+      )
+    }
+
+    register(values: any) {
+      return this.http.post(this.baseUrl + 'accounts/register', values).pipe(
+        map((user: IUser) => {
+          if (user) {
+            localStorage.setItem('token', user.token);
+            this.currentUserSource.next(user);
+          }
+        })
+      )
+    }
+
+    logout() {
+      localStorage.removeItem('token');
+      this.currentUserSource.next(null);
+      this.router.navigateByUrl('/');
+    }
+
+    checkEmailExists(email: string) {
+      return this.http.get(this.baseUrl + 'accounts/emailexists?email=' + email);
+    }
+
+    getUserAddress() {
+      return this.http.get<IAddress>(this.baseUrl + 'accounts/address');
+    }
+
+    updateUserAddress(address: IAddress) {
+      return this.http.put<IAddress>(this.baseUrl + 'accounts/address', address);
+    }
+  }
+ #endregion
+
+ #region [3] module [shared]
+  @NgModule({
+    declarations: [LoginComponent, RegisterComponent],
+    imports: [
+      CommonModule,
+      AccountRoutingModule,
+      SharedModule
+    ]
+  })
+  export class AccountModule { }
+ #endregion
+
+ #region [4] routes 
+  const routes: Routes = [
+    {path: 'login', component: LoginComponent},
+    {path: 'register', component: RegisterComponent}
+  ]
+
+  @NgModule({
+    declarations: [],
+    imports: [
+      RouterModule.forChild(routes)
+    ],
+    exports: [RouterModule]
+  })
+  export class AccountRoutingModule { }
+ #endregion
+
+ #region [5] login
+  #region [1] ts [AccountService|Router|ActivatedRoute]
+   export class LoginComponent implements OnInit {
+     loginForm!: FormGroup;
+     returnUrl!: string;
+
+     constructor(private accountService: AccountService, private router: Router, private activatedRoute: ActivatedRoute) { }
+
+     ngOnInit(): void {
+       this.returnUrl = this.activatedRoute.snapshot.queryParams.returnUrl || '/shop'; //todo routing
+       this.createLoginForm();
+     }
+     //todo make login form[mail|pass]
+     createLoginForm() {
+       this.loginForm = new FormGroup({
+         email: new FormControl('', [Validators.required, Validators
+           .pattern('^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$')]),
+         password: new FormControl('', Validators.required),
+       })
+     }
+     //todo route|error
+     onSubmit() {
+       this.accountService.login(this.loginForm.value).subscribe(() => {
+         this.router.navigateByUrl(this.returnUrl);
+       }, error => {
+         console.log(error);
+       })
+     }
+   }
+  #endregion
+
+  #region [2] html  
+   <div class="d-flex justify-content-center mt-5">
+       <div class="col-3">
+           <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+               <div class="text-center mb-4">
+                   <h1 class="h3 mb-3 font-weight-normal">Login</h1>
+               </div>
+
+               <app-text-input formControlName="email" [label]="'Email address'"></app-text-input> //todo SharedModule/text-input 
+               <app-text-input formControlName="password" [label]="'Password'" [type]="'password'"></app-text-input>
+
+               <button [disabled]="loginForm.invalid" class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+           </form>
+       </div>
+   </div>
+  #endregion
+ #endregion
+
+ #region [6] register
+  #region [1] ts [FormBuilder|AccountService|Router]
+   export class RegisterComponent implements OnInit {
+     registerForm: FormGroup;
+     errors: string[];
+
+     constructor(private fb: FormBuilder, private accountService: AccountService, private router: Router) { }
+
+     ngOnInit(): void {
+       this.createRegisterForm();
+     }
+     //todo form validate[name|email|password]
+     createRegisterForm() {
+       this.registerForm = this.fb.group({
+         displayName: [null, [Validators.required]],
+         email: [null, 
+           [Validators.required, Validators
+           .pattern('^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$')],
+           [this.validateEmailNotTaken()]
+         ],
+         password: [null, Validators.required]
+       });
+     }
+     //todo res service |error
+     onSubmit() {
+       this.accountService.register(this.registerForm.value).subscribe(response => {
+         this.router.navigateByUrl('/shop');
+       }, error => {
+         console.log(error);
+         this.errors = error.errors;
+       })
+     }
+
+     validateEmailNotTaken(): AsyncValidatorFn {
+       return control => {
+        //todo timer from rxjs
+         return timer(500).pipe(
+           switchMap(() => {
+             if (!control.value) {
+               return of(null);
+             }
+             //todo form service check exist
+             return this.accountService.checkEmailExists(control.value).pipe(
+               map(res => {
+                  return res ? {emailExists: true} : null;
+               })
+             );
+           })
+         )
+       }
+     }
+   }
+  #endregion
+
+  #region [2] html
+   <div class="d-flex justify-content-center mt-5">
+       <div class="col-3">
+           <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+               <div class="text-center mb-4">
+                   <h1 class="h3 mb-3 font-weight-normal">Register</h1>
+               </div>
+
+               <app-text-input formControlName="displayName" [label]="'Display Name'"></app-text-input>
+               <app-text-input formControlName="email" [label]="'Email address'"></app-text-input>
+               <app-text-input formControlName="password" [label]="'Password'" [type]="'password'"></app-text-input>
+
+               <ul class="text-danger list-unstyled" *ngIf="errors">
+                   <li *ngFor="let error of errors">
+                       {{error}}
+                   </li>
+               </ul>
+
+               <button  class="btn btn-lg btn-primary btn-block" type="submit">Register</button>
+           </form>
+       </div>
+   </div>
+  #endregion
+ #endregion
+#endregion

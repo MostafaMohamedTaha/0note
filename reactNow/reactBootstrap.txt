@@ -1,0 +1,60 @@
+#region [1]  react install with bootstrap
+    npm create vite@latest shop1 -- --template react
+    cd shop1
+    npm install
+    #region [1]  bootstrap
+     npm install react-bootstrap bootstrap
+        #region [1]  css
+            import 'bootstrap/dist/css/bootstrap.min.css';
+        #endregion
+        #region [2]  js in index.html
+            <script src="https://cdn.jsdelivr.net/npm/react/umd/react.production.min.js" crossorigin></script>
+            <script
+            src="https://cdn.jsdelivr.net/npm/react-dom/umd/react-dom.production.min.js"
+            crossorigin></script>
+            <script
+            src="https://cdn.jsdelivr.net/npm/react-bootstrap@next/dist/react-bootstrap.min.js"
+            crossorigin></script>
+            <script>var Alert = ReactBootstrap.Alert;</script>
+        #endregion
+    #endregion
+#endregion
+
+#region [1]  components
+    #region [1]  navbar [navbar bootstrap]
+        import Container from 'react-bootstrap/Container';
+        import Nav from 'react-bootstrap/Nav';
+        import Navbar from 'react-bootstrap/Navbar';
+        import NavDropdown from 'react-bootstrap/NavDropdown';
+
+        function BasicExample() {
+        return (
+            <Navbar expand="lg" className="bg-body-tertiary">
+            <Container>
+                <Navbar.Brand href="#home">React-Bootstrap</Navbar.Brand>
+                <Navbar.Toggle aria-controls="basic-navbar-nav" />
+                <Navbar.Collapse id="basic-navbar-nav">
+                <Nav className="me-auto">
+                    <Nav.Link href="#home">Home</Nav.Link>
+                    <Nav.Link href="#link">Link</Nav.Link>
+                    <NavDropdown title="Dropdown" id="basic-nav-dropdown">
+                    <NavDropdown.Item href="#action/3.1">Action</NavDropdown.Item>
+                    <NavDropdown.Item href="#action/3.2">
+                        Another action
+                    </NavDropdown.Item>
+                    <NavDropdown.Item href="#action/3.3">Something</NavDropdown.Item>
+                    <NavDropdown.Divider />
+                    <NavDropdown.Item href="#action/3.4">
+                        Separated link
+                    </NavDropdown.Item>
+                    </NavDropdown>
+                </Nav>
+                </Navbar.Collapse>
+            </Container>
+            </Navbar>
+        );
+        }
+
+        export default BasicExample;
+    #endregion
+#endregion

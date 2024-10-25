@@ -1,0 +1,1165 @@
+#region [1] install react vite flowbite
+ #region [1] install
+   npm create vite@latest shop1 -- --template react
+   cd shop1
+   npm install
+   npm run dev
+ #endregion
+
+ #region [2] flowbite
+  #region [1] install
+   npm install -D tailwindcss postcss autoprefixer
+   npx tailwindcss init -p
+   npm install flowbite flowbite-react
+   npm i flowbite
+  #endregion
+
+  #region [2] tailwindcss.config 
+    const flowbite = require("flowbite-react/tailwind");
+
+    module.exports = {
+      content: [
+        './src/**/*.{js,jsx,ts,tsx}',
+        './node_modules/flowbite-react/lib/esm/**/*.js',
+        flowbite.content(),
+      ],
+      theme: {
+        extend: {},
+      },
+      plugins: [
+        require('flowbite/plugin'),
+        flowbite.plugin(),
+      ]
+    }
+  #endregion
+
+  #region [3] index.css 
+   @tailwind base;
+   @tailwind components;
+   @tailwind utilities;
+  #endregion
+ #endregion
+
+ #region [3] package.json 
+  "scripts": {
+    "dev": "vite --host --open",
+    "build": "vite build",
+    "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
+    "preview": "vite preview"
+  },
+ #endregion
+
+ #region [4] app.jsx import 
+    import 'flowbite'
+ #endregion
+ import {BrowserRouter,Routes,Route,Link, useParams,Outlet} from 'react-router-dom'
+ npm i -D react-router-dom
+#endregion
+
+#region [1] react hooks
+ #region [1] useState() //use make var changes with another function setter observe |count with counter setter on click
+  #region [1] use set function outer
+   import { useState } from 'react' //add
+    function App() {
+      const [counter,setCounter]=useState(0); //main make initial value 0
+      function CounterFn(){ //func edit here
+        setCounter( counter+1)
+      }
+      return(
+        <>
+          <section className='flex justify-center text-red-400 bg-slate-600 p-2 text-2xl'>
+            <button onClick={CounterFn}></button> //show edit here
+            {counter} //show edit here
+          </section>
+        </>
+      )
+    }
+  #endregion
+
+  #region [2] use set inline function
+   import { useState } from 'react' //add
+    function App() {
+      const [counter,setCounter]=useState(0); //main make initial value 0
+      return (
+        <>
+          <section className='flex justify-center text-red-400 bg-slate-600 p-2 text-2xl'>
+            <button onClick={()=>setCounter( counter+1)}></button> //show edit here //func edit here
+            {counter} //show edit here
+          </section>
+
+        </>
+      )
+    }
+  #endregion
+
+  #region [3] use set outer handler
+   import { useState } from 'react' //add
+    function App() {
+      const [counter,setCounter]=useState(0); //main make initial value 0
+      const counterHandler=()=>setCounter(counter+1)
+      return (
+        <>
+          <section className='flex justify-center text-red-400 bg-slate-600 p-2 text-2xl'>
+            <button onClick={()=>{return counterHandler}}></button> //show edit here //func rerender every time
+            <button onClick={counterHandler}></button> //show edit here //func render one time
+            {counter} //show edit here
+          </section>
+        </>
+      )
+    }
+  #endregion
+ #endregion
+
+ #region [2] useEffect //use handle side effect (change document.title|document.style|input.current.focus()) |use state can not change any thing in document
+  //use use didMount+didUpdate
+  #region [1] effect title
+   function App() {
+     const [counter,setCounter]=useState(0); 
+     const[title,setTitle]=useState('react23')
+     const[color,setColor]=useState('#000')
+     const counterHandler=()=>  setCounter( counter+1)
+     const titleHandler=()=>  setTitle( 'react'+ (counter+1)) //func change var on click not making any change to document
+     const colorHandler=()=>  {
+       setColor( '#00'+ (counter+1))
+       console.log(color)
+     }
+     const handle=()=>{
+       counterHandler()
+       titleHandler()
+       colorHandler()
+     }
+     useEffect(()=>{ //hint2 can make more than use effect
+      document.title=title //main change document every time i change title counter
+      return  ()=>{
+      console.log('cleanup')
+      }
+      },[title,counter])
+      useEffect(()=>{
+       document.body.style.backgroundColor = color
+        return  ()=>{
+         console.log('color up') 
+         //hint effect can be changes here if states here changes //hint2 if states [] void effect will not handle change
+        }
+       },[title,counter])
+     return (
+       <>
+         <section className='grid justify-center'>
+            <button className='flex justify-center text-red-400 bg-slate-600 p-2 text-2xl' onClick={handle}>
+             {counter}
+            </button> 
+             <span className='flex justify-center text-gray-400 bg-sky-600 p-2 text-2xl'>
+                 {counter} 
+             </span>
+             <span className='flex justify-center text-gray-400 bg-sky-600 p-2 text-2xl'>
+                 {title} 
+             </span>
+         </section>
+       </>
+     )
+   }
+  #endregion
+ #endregion
+
+ #region [3] useRef //use as viewChild get a reference of element that have this ref const
+  #region [1] implement
+   function App() {
+     const [counter,setCounter]=useState(0); 
+     const[title,setTitle]=useState('react23')
+     const[color,setColor]=useState('#000')
+     const inputRef=useRef() //main take instance of input
+
+     const counterHandler=()=>  setCounter( counter+1)
+     const titleHandler=()=>  setTitle( 'react version is :'+ (counter+1))
+     const colorHandler=()=>  {
+       setColor( '#00'+ (counter+1))
+       console.log(color)
+     }
+     const handle=()=>{
+       counterHandler()
+       titleHandler()
+       colorHandler()
+     }
+     useEffect(()=>{
+       document.title=title
+       return  ()=>{
+         console.log('cleanup')
+       }
+     },[title,counter])
+     useEffect(()=>{
+       document.body.style.backgroundColor = color
+       inputRef.current.focus() //func make focus to input while title and color changes [use effect is working]
+       return  ()=>{
+         console.log('color up')
+       }
+     },[title,counter])
+     return (
+       <>
+         <section className='grid justify-center mt-3'>
+           <button className='flex justify-center text-gray-100 bg-slate-600 p-2 text-2xl' onClick={handle}>
+             Add</button> 
+             <span className='flex justify-center text-gray-100 bg-sky-600 p-2 text-2xl'>
+                 counter = {counter} 
+             </span>
+             <span className='flex justify-center text-gray-100 bg-sky-600 p-2 text-2xl'>
+                 {title} 
+             </span>
+             <input type="text" ref={inputRef} /> //show focus while handle color and title
+         </section>
+
+       </>
+     )
+   }
+  #endregion
+  #region [2] implement example //hint ref could be bool if state change it will change
+   function App() {
+     const [counter,setCounter]=useState(0); 
+     const[title,setTitle]=useState('react23')
+     const[color,setColor]=useState('#000')
+     const inputRef=useRef()
+     const maxCounter=useRef()
+
+     
+    const counterHandler=()=>{
+      if(!maxCounter.current){
+        if(counter>10){
+          maxCounter.current=true
+        }else{
+          titleHandler()
+          setCounter( x=>x+(+inputRef.current.value||0))
+        }
+      }else{
+        console.log('max counter')
+      }
+    }
+    const titleHandler=()=>  setTitle( 'react version is :'+( +inputRef.current.value +counter))
+       const colorHandler=()=>  {
+       setColor( '#00'+ (counter+1))
+       console.log(color)
+     }
+     const handle=()=>{
+       counterHandler()
+       // titleHandler()
+       colorHandler()
+     }
+     useEffect(()=>{
+       document.title=title
+       return  ()=>{
+         console.log('cleanup')
+       }
+     },[title,counter])
+     useEffect(()=>{
+       document.body.style.backgroundColor = color
+       inputRef.current.focus()
+       return  ()=>{
+         console.log('color up')
+       }
+     },[title,counter])
+     return (
+       <>
+         <section className='grid justify-center mt-3'>
+           <button className='flex justify-center text-gray-100 bg-slate-600 p-2 text-2xl' onClick={handle}>
+             Add</button> 
+             <span className='flex justify-center text-gray-100 bg-sky-600 p-2 text-2xl'>
+                 counter = {counter} 
+             </span>
+             <span className='flex justify-center text-gray-100 bg-sky-600 p-2 text-2xl'>
+                 {title} 
+             </span>
+             <input type="text" ref={inputRef} />
+         </section>
+
+       </>
+     )
+   }
+  #endregion
+ #endregion
+
+ #region [4] useCallBack //use call back function as observe not rerender every time call func make recreation make it one create
+  //use memo component can't rerender
+    #region [1] btn with memo
+      import React, { memo, useRef } from 'react'
+
+      const Button = memo(({ counter, label }) => { //main memo is make component will not rerender but counter in app will rerender
+        const renderRef = useRef(0)
+        console.log(renderRef.current++)
+        return (
+          <button className='p-2 bg-gray-600 border-2 rounded-2' onClick={counter}>
+            {label}
+          </button>
+        )
+      })
+
+      export default Button
+    #endregion
+
+    #region [2] useCallBack with btn 
+      function App() {
+        const [counter,setCounter]=useState(0); 
+        const[title,setTitle]=useState('react23')
+        const[color,setColor]=useState('#000')
+        const inputRef=useRef()
+        const maxCounter=useRef(false)
+
+        const counterHandler=()=>{
+          if(!maxCounter.current){
+            if(counter>10){
+              maxCounter.current=true
+            }else{
+              titleHandler()
+              setCounter( x=>x+(+inputRef.current.value||0))
+            }
+          }else{
+            console.log('max counter')
+          }
+        }
+        const titleHandler=()=>  setTitle( 'react version is :'+( +inputRef.current.value +counter))
+        const colorHandler=()=>  {
+          setColor( '#00'+ (setCounter+1))
+          console.log(color)
+        }
+        const handle=()=>{
+          counterHandler()
+          // titleHandler()
+          colorHandler()
+        }
+        useEffect(()=>{
+          document.title=title
+          return  ()=>{
+            console.log('cleanup')
+          }
+        },[title])
+        useEffect(()=>{
+          document.body.style.backgroundColor = color
+          inputRef.current.focus()
+          return  ()=>{
+            console.log('color up')
+          }
+        },[title])
+        const onClickFunc=useCallback(()=>setCounter(x=>x+1),[setCounter]) //hint2 call back ,[setCounter] | counter is changing so make it setcounter
+        return (
+          <>
+            <section className='grid justify-center mt-3'>
+              {/* <button className='flex justify-center text-gray-100 bg-slate-600 p-2 text-2xl' onClick={handle}>
+                Add</button>  */}
+                <span className='flex justify-center text-gray-100 bg-sky-600 p-2 text-2xl'>
+                    counter = {counter} 
+                </span>
+                <span className='flex justify-center text-gray-100 bg-sky-600 p-2 text-2xl'>
+                    {title} 
+                </span>
+                <Button counter={onClickFunc} label={"Count Up"} /> //hint make {label |counter } from button component
+                <input type="text" ref={inputRef} />
+            </section>
+          </>
+        )
+      }
+    #endregion
+
+    #region [3] map list of keys //main bind 2 component //hint parent(params){use params in func} //hint2 child html <params/> =>func
+      
+      #region [1] btn update
+        const Button = memo(({ counter, label,n }) => { //hint2 add n param
+          const renderRef = useRef(1)
+          console.log(renderRef.current++)
+          return (
+            <button className='p-2 bg-gray-600 border-2 rounded-2 text-white' onClick={()=>counter(n)}> //hint func have n param 
+              {label}
+            </button>
+          )
+        })
+
+        export default Button
+      #endregion
+
+      #region [2] update app
+        function App() {
+          const [counter, setCounter] = useState(0);
+          const [title, setTitle] = useState('react23')
+          const [color, setColor] = useState('#fff')
+          const inputRef = useRef()
+          const maxCounter = useRef(false)
+          const listOfCount = [1, 3, 5, 10]
+          const counterHandler = () => {
+            if (!maxCounter.current) {
+              if (counter > 10) {
+                maxCounter.current = true
+              } else {
+                titleHandler()
+                setCounter(x => x + (+inputRef.current.value || 0))
+              }
+            } else {
+              console.log('max counter')
+            }
+          }
+          const titleHandler = () => setTitle('react version is :' + (+inputRef.current.value + counter))
+          const colorHandler = () => {
+            setColor('#00' + (setCounter + 1))
+            console.log(color)
+          }
+          const handle = () => {
+            counterHandler()
+            // titleHandler()
+            colorHandler()
+          }
+
+          useEffect(() => {
+            document.title = title
+            return () => {
+              console.log('cleanup')
+            }
+          }, [title])
+          useEffect(() => {
+            document.body.style.backgroundColor = color
+            inputRef.current.focus()
+            return () => {
+              console.log('color up')
+            }
+          }, [title])
+          n=>a(n)
+          const onClickFunc = useCallback((n) => setCounter(x => x + n), [setCounter]) //main change n param call back
+          return (
+            <>
+              <section className='grid justify-center mt-3'>
+                {/* <button className='flex justify-center text-gray-100 bg-slate-600 p-2 text-2xl' onClick={handle}>
+                  Add</button>  */}
+                <span className='flex justify-center text-gray-100 bg-sky-600 p-2 text-2xl'>
+                  counter = {counter}
+                </span>
+                <span className='flex justify-center text-gray-100 bg-sky-600 p-2 text-2xl'>
+                  {title}
+                </span>
+                <Button counter={onClickFunc} label={"Count Up"} n={1} />
+                <input type="text" ref={inputRef} />
+                <div className='flex justify-center text-gray-600'>
+                  {listOfCount.map(x=>(
+                    <Button counter={onClickFunc} n={x} label={x} key={x}/> //main n value take list value //hint counter take onClickFunc
+                  ))} 
+                </div>
+              </section>
+            </>
+          )
+        }
+      #endregion
+    #endregion
+ #endregion
+  //main useLayoutEffect //use only use this when make layout style change 
+
+  #region [5] useReducer //use make complex state the same
+    #region [1] IDEA
+      //main a='a' [func(state,action[useState]) {action.type==a =>stateName logic} 
+      //hint a='a' [func(state,action[useState]) {action.type==a =>state.stateName logic} 
+      //hint2 a='a' [func(state,action[useState]) {action.type==a =>state.stateName logic,action.payload} 
+      //main | [stateName,dispatch{useStateImplement}]=useReducer(func,initialValue)]
+      //hint | [state,dispatch{useStateImplement}]=useReducer(func,{state.stateName=initialValue})]
+      //main | <dispatch({type:a})
+      //hint | <dispatch({type:a,payload:3}) //use payload value of state
+    #endregion
+
+    #region [1] update use reducer 
+      function App() {
+        const [counter, setCounter] = useState(0);
+        const [title, setTitle] = useState('react23')
+        const [color, setColor] = useState('#fff')
+        const inputRef = useRef()
+        const maxCounter = useRef(false)
+        const listOfCount = [1, 3, 5, 10]
+        const increment="INCREMENT" //todo edit here
+        const decrement="DECREMENT"
+        const countFunc=(state,action)=>{ //use func (state[state name like counter],action [action use state funcion])
+          switch(action.type){
+            case increment:
+              return {count1:state.count1+action.payload}
+            case decrement:
+              return {count1:state.count1-action.payload}
+            default:
+              return state
+          }
+        }
+        const [state,dispatch]=useReducer(countFunc,{count1:0}) //use reduce [state[state only],dispatch[send]]=func,initial
+        const counterHandler = () => {
+          if (!maxCounter.current) {
+            if (counter > 10) {
+              maxCounter.current = true
+            } else {
+              titleHandler()
+              setCounter(x => x + (+inputRef.current.value || 0))
+            }
+          } else {
+            console.log('max counter')
+          }
+        }
+        const titleHandler = () => setTitle('react version is :' + (+inputRef.current.value + counter))
+        const colorHandler = () => {
+          setColor('#00' + (setCounter + 1))
+          console.log(color)
+        }
+        const handle = () => {
+          counterHandler()
+          // titleHandler()
+          colorHandler()
+        }
+
+        useEffect(() => {
+          document.title = title
+          return () => {
+            console.log('cleanup')
+          }
+        }, [title])
+        useEffect(() => {
+          document.body.style.backgroundColor = color
+          inputRef.current.focus()
+          return () => {
+            console.log('color up')
+          }
+        }, [title])
+        const onClickFunc = useCallback((n) => setCounter((x) => x + n), [setCounter])
+        return (
+          <>
+            <section className='grid justify-center mt-3'>
+              {/* <button className='flex justify-center text-gray-100 bg-slate-600 p-2 text-2xl' onClick={handle}>
+                Add</button>  */}
+              <span className='flex justify-center text-gray-100 bg-sky-600 p-2 text-2xl'>
+                counter = {counter}
+              </span>
+              <span className='flex justify-center text-gray-100 bg-sky-600 p-2 text-2xl'>
+                {title}
+              </span>
+              <Button counter={onClickFunc} label={"Count Up"} n={1} />
+              <input type="text" ref={inputRef} />
+              <div className='flex justify-center text-gray-600'>
+                {listOfCount.map(x=>(
+                  <Button counter={onClickFunc} n={x} label={x} key={x}/>
+                ))}
+              </div>
+              <Button label="increment" counter={()=>dispatch({type:increment,payload:3})} /> //use dispatch({type,payload})
+              {state.count1}
+              <Button label="decrement" counter={()=>dispatch({type:decrement,payload:3})} />
+            </section>
+          </>
+        )
+      }
+    #endregion
+  #endregion
+
+  #region [6] useMemo //use as call back performance const a=useMemo(()=>(</>),[]) =>return {a}
+    function App() {
+      const [counter, setCounter] = useState(0);
+      const [title, setTitle] = useState('react23')
+      const [color, setColor] = useState('#fff')
+      const inputRef = useRef()
+      const maxCounter = useRef(false)
+      const listOfCount = [1, 3, 5, 10]
+      const increment="INCREMENT"
+      const decrement="DECREMENT"
+      const countFunc=(state,action)=>{
+        switch(action.type){
+          case increment:
+            return {count1:state.count1+action.payload}
+          case decrement:
+            return {count1:state.count1-action.payload}
+          default:
+            return state
+        }
+      }
+      
+      const [state,dispatch]=useReducer(countFunc,{count1:0})
+      const counterHandler = () => {
+        if (!maxCounter.current) {
+          if (counter > 10) {
+            maxCounter.current = true
+          } else {
+            titleHandler()
+            setCounter(x => x + (+inputRef.current.value || 0))
+          }
+        } else {
+          console.log('max counter')
+        }
+      }
+      const titleHandler = () => setTitle('react version is :' + (+inputRef.current.value + counter))
+      const colorHandler = () => {
+        setColor('#00' + (setCounter + 1))
+        console.log(color)
+      }
+      const handle = () => {
+        counterHandler()
+        // titleHandler()
+        colorHandler()
+      }
+
+      useEffect(() => {
+        document.title = title
+        return () => {
+          console.log('cleanup')
+        }
+      }, [title])
+      useEffect(() => {
+        document.body.style.backgroundColor = color
+        inputRef.current.focus()
+        return () => {
+          console.log('color up')
+        }
+      }, [title])
+      const onClickFunc = useCallback((n) => setCounter((x) => x + n), [setCounter])
+      const buttonMemo=useMemo(()=>(<Button counter={onClickFunc} label={"Count Up"} n={5} />),[]) //todo edit here
+      return (
+        <>
+          <section className='grid justify-center mt-3'>
+            {/* <button className='flex justify-center text-gray-100 bg-slate-600 p-2 text-2xl' onClick={handle}>
+              Add</button>  */}
+            <span className='flex justify-center text-gray-100 bg-sky-600 p-2 text-2xl'>
+              counter = {counter}
+            </span>
+            <span className='flex justify-center text-gray-100 bg-sky-600 p-2 text-2xl'>
+              {title}
+            </span>
+            <Button counter={onClickFunc} label={"Count Up"} n={1} />
+            <input type="text" ref={inputRef} />
+            <div className='flex justify-center text-gray-600'>
+              {listOfCount.map(x=>(
+                <Button counter={onClickFunc} n={x} label={x} key={x}/>
+              ))}
+            </div> 
+            {buttonMemo} //todo edit here
+            <Button label="increment" counter={()=>dispatch({type:increment,payload:3})} />
+            {state.count1}
+            <Button label="decrement" counter={()=>dispatch({type:decrement,payload:3})} />
+          </section>
+        </>
+      )
+    }
+  #endregion
+
+  #region [7] useContext //use change text context[text flow mean]
+    //main  Context provides a way to pass data through the component tree without having to pass props down manually at every level.
+
+    #region [1] make context
+      const ThemeContext = React.createContext('light'); //todo createContext have provider to get value
+      export default ThemeContext;
+    #endregion
+
+    #region [2] theme provider 
+      import ThemeContext from './ThemeContext';
+      const ThemeProvider = ({ children }) => {
+        const [theme, setTheme] = useState('light');
+
+        const handleToggleTheme = () => {
+          setTheme((prevTheme) => (prevTheme === 'light' ? 'dark' : 'light'));
+        };
+
+        return (
+          <ThemeContext.Provider value={{ theme, handleToggleTheme }}> //todo here is provider have [ThemeProvider(prop){state|toggle|.provider value}]
+            {children}
+          </ThemeContext.Provider>
+        );
+      };
+      export default ThemeProvider;
+    #endregion
+
+    #region [3] other component 
+      import ThemeContext from './ThemeContext';
+      const SomeComponent = () => {
+        const { theme, handleToggleTheme } = useContext(ThemeContext); //todo useContext={theme, handleToggleTheme}
+
+        return (
+          <div style={{ background: theme === 'light' ? '#fff' : '#333', color: theme === 'light' ? '#333' : '#fff' }}> 
+            <button onClick={handleToggleTheme}>Toggle Theme</button> 
+            <p>Current Theme: {theme}</p>
+          </div>
+        );
+      };
+      export default SomeComponent;
+    #endregion
+  #endregion
+#endregion
+
+#region [1] react course
+  #region [1] start //use [style|props|PropTypes]
+    //main return any component in () //main [states] //main {context}
+    #region [1] component style
+      const Button = memo(({ counter, label,n }) => {
+        const renderRef = useRef(1)
+        console.log(renderRef.current++)
+        const styles={
+          color:'white',
+          backgroundColor:'red',
+          padding:'10px 20px',
+          border:'none',
+          cursor:"pointer"
+        }
+
+        return (
+          <>
+            <button className='p-2 bg-gray-600 border-2 rounded-2 text-white' onClick={()=>counter(n)}>
+              {label}
+            </button>
+            <button style={styles}>a</button>
+          </>
+        )
+      })
+
+      export default Button
+    #endregion
+
+    #region [2] function with props  
+      #region [1] old method 
+        const Student = (props) => {
+          return (
+            <div className='grid justify-center'>
+              name:{props.name} <br/>
+              age:{props.age} <br/>
+              isStudent:{props.isStudent?"yes":"no"}
+            </div>
+          )
+        }
+
+        export default Student
+      #endregion
+      //main inside app <Student name={"a"} age={30} isStudent={true}/>
+      #region [2] bracket way {} 
+        const Student = ({name,age,isStudent}) => {
+          return (
+            <div className='grid justify-center'>
+              name:{name} <br/>
+              age:{age} <br/>
+              isStudent:{isStudent?"yes":"no"}
+            </div>
+          )
+        }
+
+        export default Student
+      #endregion
+    #endregion
+
+    #region [1] validation //use rafcp
+      import React from 'react'
+      import PropTypes from 'prop-types'
+
+      const TestN = ({ a }) => {
+        return (
+          <div>
+            value :{a}
+          </div>
+        )
+      }
+
+      TestN.propTypes = {
+        a: PropTypes.string
+      }
+      TestN.defaultProps = {
+        a: "PropTypes.string"
+      }
+      export default TestN
+
+      //main take string here or default value
+      <TestN /> //use defaultProps
+    #endregion
+  #endregion
+
+  #region [2] array
+    #region [1] array data inside component [not recommended]
+      const List = () => {
+        const fruit = [
+          { id: 1, name: 'a', category: 123  },
+          { id: 2, name: 'b', category:23  },
+          { id: 3, name: 'c', category: 231 },
+          { id: 4, name: 'd', category: 456},
+          { id: 5, name: 'f', category: 44}
+        ]
+        // fruit.sort((a,b)=>a.name.localeCompare(b.name))
+        // fruit.sort((a,b)=>b.name.localeCompare(a.name))
+        // fruit.sort((a,b)=>a.category-b.category)
+        // fruit.sort((a, b) => b.category - a.category)
+        const filterFruit=fruit.filter(x=>x.category<100)
+        return (
+          <div className='grid justify-center'>
+            {fruit.map(x => (<li key={x.id}>{x.name}:<b>{x.category}</b></li>))}
+            <div className="flex gap-4">
+              {filterFruit.map(x => (<li key={x.id}>{x.name}:<b>{x.category}</b></li>))}
+            </div>
+          </div>
+        )
+      }
+      List.propTypes = {
+        fruit: PropTypes.string
+      }
+      export default List
+    #endregion
+
+    #region [2] array data outside component
+      const List = ({items,category}) => {
+        return (
+          <div className='flex justify-center gap-3'>
+            {category}:[{items.map(x => (<li key={x.id}>{x.name}:<b>{x.category}</b> | </li>))}]
+          </div>
+        )
+      }
+      List.propTypes = {
+        category:PropTypes.string,
+        items:PropTypes.arrayOf(PropTypes.shape({
+          id:PropTypes.number,
+          name:PropTypes.string,
+          category:PropTypes.string,
+
+        }))
+      }
+      export default List
+      {fruit.length>0?<List items={fruit} category="fruit"/>:null}
+      {vegetable.length>0?<List items={vegetable} category="vegetable"/>:null}
+    #endregion
+  #endregion
+
+  #region [3] event //use [useState for [input value| multi inputs value|list(array) of data]]
+    #region [1] event input
+      const EventButton = () => {
+      const handleClick=(e)=>{
+        e.target.textContent="mos"
+        e.target.style.backgroundColor="#000"
+        e.target.style.color="#fff"
+      }
+      const [input,setInput]=useState('')
+      const handleInput=(e)=>setInput(e.target.value) //main handle set Input
+        return (
+        <>
+          <div onClick={(e)=>handleClick(e)} className='flex justify-center border-2 px-2 py-1 mx-auto w-[200px] cursor-pointer my-2'>
+            click here
+          </div>
+          <div className='grid justify-center px-2 py-1 mx-auto cursor-pointer my-2'>
+            <input type="text" value={input} onChange={handleInput} />
+            {input}
+          </div>
+        </>
+        )
+      }
+      export default EventButton
+    #endregion
+
+    #region [2] multi input
+      const MultiInput = () => {
+      const [car,setCar]=useState({
+        year:2012,
+        make:"ford",
+        model:"mustang"
+      })
+      const handleYear=e=>setCar(x=>({...x,year:e.target.value}))
+      const handleMake=e=>setCar(x=>({...x,make:e.target.value}))
+      const handleModel=e=>setCar(x=>({...x,model:e.target.value}))
+        return (
+          <div className='grid justify-center mx-auto'>
+            {car.year} | {car.make} | {car.model}
+            <input type="text" onChange={handleYear} value={car.year} />
+            <input type="text" onChange={handleMake} value={car.make} />
+            <input type="text" onChange={handleModel} value={car.model} />
+          </div>
+        )
+      }
+      export default MultiInput
+    #endregion
+  #endregion
+
+  #region [4] state //use [add|remove|moveUp|down|map] //hint course have[ref|context|effect]
+    const ToDoList = props => {
+        const [task, setTask] = useState(["A","b","c"])
+        const [newTask, setNewTask] = useState('')
+        const handleNewTaskInput = (event) => {
+            setNewTask(event.target.value)
+        }
+        const addTask = () => {
+            if (newTask.trim() != '') {
+                setTask(x => [...x, newTask])
+                setNewTask('')
+            }
+        }
+        const removeTask = (i) => {
+            const updateTask = task.filter((_, index) => index != i)
+            setTask(updateTask)
+        }
+        function moveUpTask(index){
+            if (index > 0) {
+                setTask(x => {
+                    const updatedTask = [...x];
+                    [updatedTask[index], updatedTask[index - 1]] = [updatedTask[index - 1], updatedTask[index]];
+                    return updatedTask;
+                });
+            }
+        }
+        function moveDownTask(index){
+            if (index < task.length - 1) {
+                setTask(x => {
+                    const updatedTask = [...x];
+                    [updatedTask[index], updatedTask[index + 1]] = [updatedTask[index + 1], updatedTask[index]];
+                    return updatedTask;
+                });
+            }
+        }
+        return (
+            <div>
+                <div className='flex justify-center gap-2'>
+                    <input type="text" name="task" id="task" onChange={handleNewTaskInput} value={newTask} className='my-1 bg-gray-50 mx-1 border-1 rounded-xl px-2 py-1' />
+                    <button onClick={addTask} className='my-1 text-white bg-green-400 mx-1 border-1 rounded-xl px-2 py-1'>add new task</button>
+                </div>
+                <ol>
+                    {task.map((x, index) =>
+                        <li key={index} className='flex justify-center gap-2'>
+                            <span className=' mx-3 px-2 py-1'>
+                                {x}
+                            </span>
+                            <button className='my-1 text-white bg-red-600 mx-1 border-1 rounded-2xl px-2 py-1' onClick={() => removeTask(index)}>delete</button>
+                            <button className='my-1 text-white bg-green-600 mx-1 border-1 rounded-2xl px-2 py-1' onClick={() => moveUpTask(index)}>^</button>
+                            <button className='my-1 text-white bg-purple-600 mx-1 border-1 rounded-2xl px-2 py-1' onClick={() => moveDownTask(index)}>v</button>
+                        </li>
+                    )}
+                </ol>
+            </div>
+        )
+    }
+  #endregion
+#endregion
+
+#region [1] hooks2
+  #region [1] effect 
+    import React, { useEffect, useState } from 'react'
+
+    const TimeComp = () => {
+        const [time,setTime]=useState(new Date())
+        useEffect(()=>{
+            const intervalId=setInterval(()=>(
+                setTime(new Date())
+            ),1000)
+            return()=>{
+                clearInterval(intervalId)
+            }
+        },[time])
+        const handleTime=()=>{
+            let hours=time.getHours()
+            let minute=time.getMinutes()
+            let second=time.getSeconds()
+            let midi=hours>=12?'PM':'AM'
+            hours=hours%12||12
+            return `${handleZero(hours)} : ${handleZero(minute)} : ${handleZero(second)} ${midi}`
+        }
+        const handleZero=n=>(n<10?'0':'')+n
+        return (
+            <div>
+                <div className="flex justify-center text-3xl">{handleTime()}</div>
+                asdf
+            </div>
+        )
+    }
+
+    export default TimeComp
+  #endregion
+
+  #region [1] use context  
+    #region [1] before context 
+      //use p,c1,c2,c3 p[state],{c1,c2}[props]|c3[last prop]
+      const CParent1 = ({user}) => {
+      const [user,setUser]=useState("context")
+      return (
+          <div className='flex justify-center p-3 m-3 border-2 rounded-xl'>
+              parent
+              <CChild2 user={user} />
+          </div>
+          )
+          const CChild2 = ({user}) => {
+            return (
+              <div className='flex justify-center p-3 m-3 border-2 rounded-xl'>
+              c2
+              <CChild3 user={user} />
+          </div>
+            )
+          }
+          const CChild3 = ({user}) => {
+            return (
+              <div className='flex justify-center p-3 m-3 border-2 rounded-xl'>
+              c3
+              {user}
+          </div>
+            )
+          }
+      }
+    #endregion
+
+    #region [2] after context
+      import React, { createContext, useState } from 'react'
+      import CChild1 from './CChild1'
+      export const a=createContext() //todo edit here
+      const CParent1 = () => {
+          const [user,setUser]=useState('context.con')
+          return (
+              <div className='flex justify-center p-3 m-3 border-2 rounded-xl'>
+                  parent
+                  <a.Provider value={user}> //todo edit here
+                      <CChild1 user={user} />
+                  </a.Provider>
+              </div>
+          )
+      }
+      import React, { useContext } from 'react'
+      import { a } from './CParent1' //todo edit here
+
+      const CChild3 = () => {
+        const user=useContext(a) //todo edit here
+        return (
+          <div className='flex justify-center p-3 m-3 border-2 rounded-xl'>
+          c3
+          {user}
+      </div>
+        )
+      }
+    #endregion
+  #endregion
+
+  #region [1] use ref 
+    //todo use ref not make rerender take value and make change in the same render
+    #region [1] simple
+
+      const RefHook = () => {
+          const a=useRef(null)//todo edit here
+          const handleA=()=>{
+              a.current.focus()
+              a.current.style.backgroundColor='red'
+              a.current.style.color='yellow'
+          }
+          const handleAReset=()=>{
+              a.current.blur()
+              a.current.style.backgroundColor='green'
+              a.current.style.color='white'
+          }
+          return (
+              <div>
+                  <input type="text" ref={a} className='border rounded-2xl'/> //todo edit here
+                  <button onClick={handleA} className='p-2 m-2 text-white bg-slate-600 rounded-xl'>ref</button>
+                  <button onClick={handleAReset} className='p-2 m-2 text-white bg-blue-600 rounded-xl'>refReset</button>
+              </div>
+          )
+      }
+    #endregion
+  #endregion
+#endregion
+
+#region [1] react router
+  #region [1] install
+    npm i -D react-router-dom
+  #endregion
+
+  #region [1] routes //use [BrowserRouter|Routes|Route=>Link] //idea react-router-dom
+    import {BrowserRouter as Router,Routes,Route,Link} from 'react-router-dom'
+    function App() {
+      return (
+        <>
+          <Router>
+            <Link to='/' className='m-2  bg-purple-200 rounded-xl p-2'>Home</Link> //todo edit here
+            <Link to='/about' className='m-2 bg-purple-200 rounded-xl p-2'>About</Link>
+            <Link to={`/about/${about.id}`}
+            <Routes >
+              <Route path='/' element={<Home />} />
+              <Route path='/about' element={<About />} />
+              <Route path='/about/:id' element={<About />} />
+            </Routes>
+          </Router>
+        </>
+      )
+    }
+  #endregion
+
+  #region [2] nested routes children
+    #region [1] layout 
+    import {BrowserRouter,Routes,Route,Link, useParams,Outlet} from 'react-router-dom'
+      <>
+        <Outlet/>
+      </>
+      <nav>
+        <Link to='/host'>h</Link>
+        <Link to='/host/a'>ha</Link>
+        <Link to='/host/b'>hb</Link>
+      </nav>
+    #endregion
+
+    #region [2] app component
+      <Routes>
+        <Route element={<Layout/>}>
+          <Route index element={<Home/>}/> //todo edit here path='/'
+          <Route path='a' element={<Hb/>}/>
+          <Route path='b' element={<Hc/>}/>
+          <Route path='c' element={<Hd/>}/>
+          <Route path='/host' element={<H/>}> //todo edit here
+            <Route path='/host/a' element={<Ha/>}/>
+            <Route path='/host/b' element={<Hb/>}/>
+          </Route>
+          <Route path='a'>
+            <Route path='b'/> //todo edit here /a/b
+            <Route path=':id'/> //todo edit here /a/:id
+          </Route>
+        </Route>
+      </Routes>
+    #endregion
+  #endregion
+
+  #region [3] navbar 
+    const activeStyle={
+      color:white,
+      backgroundColor:black
+    }
+    //return
+    <nav>
+      <NavLink to='/'>a</NavLink> //todo edit here
+      <NavLink to='/'>a</NavLink> //todo edit here
+      <NavLink to='/'>a</NavLink> //todo edit here
+      <NavLink to='.'>back</NavLink> //hint go back
+    </nav>
+    <NavLink to='/' end style={({isActive})=>isActive?activeStyle:null}>a</NavLink>
+    <NavLink to='/' style={({isActive})=>isActive?activeStyle:null}>a</NavLink>
+    <NavLink to='/' style={({isActive})=>isActive?activeStyle:null}>a</NavLink>
+  #endregion
+
+  #region [4] link
+    Assuming the current URL is /home/about:
+
+    <Link to='.' />:
+
+    Would result in a link to /home/about.
+    <Link to='..' relative='path' />:
+
+    Would result in a link to /home.
+    <Link to='?' relative='path' />: //Query Parameters [query changed]
+    If the current URL is /home/about?name=John, clicking this link would stay on /home/about but could modify query parameters if specified.
+  #endregion
+
+  #region [5] use outlet context
+    #region [1] for min details in main page 
+      const {cAbout}=useOutletContext()
+      //return
+      {cAbout.a}
+    #endregion 
+
+    #region [2] full details
+      const {cAbout}=useOutletContext()
+      //return
+      {cAbout.a}
+      {cAbout.b}
+      {cAbout.c}
+      {cAbout.d}
+    #endregion
+
+    #region [3] navbar context
+      <Outlet context={{cAbout}}
+    #endregion
+  #endregion
+
+  #region [6] filter useSearchParams     
+    const searchAbout=[
+      {name:a,type:z},
+      {name:b,type:a},
+      {name:c,type:z},
+      {name:d,type:a},
+      {name:e,type:z}
+    ]
+    const [searchParams,setSearchParams]=useSearchParams()
+    const wordStyle=searchAbout.map(x=>(
+      <h1 style={{color:x.type.toLowerCase()==='a'?'blue':'red'}}></h1>
+    ))
+    return
+    <Link to='?type=a'>a</Link>
+    <Link to='.'>clear</Link>
+  #endregion
+#endregion

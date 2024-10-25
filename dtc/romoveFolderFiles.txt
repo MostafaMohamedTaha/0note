@@ -1,0 +1,23 @@
+# Define the path to the folder you want to manage
+$folderPath = "c:\scan1"
+#day=timeSpecific=60*24=1440
+#2day=timeSpecific=60*24*2=2880
+#7day=timeSpecific=60*24*7=10080
+#30day=timeSpecific=60*24*30=43200
+# Define the specific time after which you want to delete the folder contents (in minutes)
+$timeSpecific = 1  # Replace with your desired time in minutes
+
+# Convert minutes to seconds for the timeout command
+$timeoutSeconds = $timeSpecific * 60
+
+# Function to format the folder and delete its contents permanently
+function Format-And-Delete-Folder {
+    # Format the folder (Remove all files and subfolders)
+    Remove-Item -Path $folderPath\* -Recurse -Force -ErrorAction SilentlyContinue
+}
+
+# Start a timer to execute the deletion after specified time
+Start-Sleep -Seconds $timeoutSeconds
+
+# Call the function to format and delete the folder
+Format-And-Delete-Folder

@@ -1,0 +1,2132 @@
+#region [1] install react vite flowbite
+    #region [1] install
+    npm create vite@latest shop1 -- --template react
+    cd shop1
+    npm install
+    npm run dev
+    #endregion
+
+    #region [2] flowbite
+    #region [1] install
+    npm install -D tailwindcss postcss autoprefixer
+    npx tailwindcss init -p
+    npm install flowbite flowbite-react
+    npm i flowbite
+    npm i -D react-router-dom
+    #endregion
+
+    #region [2] tailwindcss.config 
+        const flowbite = require("flowbite-react/tailwind");
+
+        module.exports = {
+        content: [
+            './src/**/*.{js,jsx,ts,tsx}',
+            './node_modules/flowbite-react/lib/esm/**/*.js',
+            flowbite.content(),
+        ],
+        theme: {
+            extend: {},
+        },
+        plugins: [
+            require('flowbite/plugin'),
+            flowbite.plugin(),
+        ]
+        }
+    #endregion
+
+    #region [3] index.css 
+    @tailwind base;
+    @tailwind components;
+    @tailwind utilities;
+    #endregion
+    #endregion
+
+    #region [3] package.json 
+    "scripts": {
+        "dev": "vite --host --open",
+        "build": "vite build",
+        "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
+        "preview": "vite preview"
+    },
+    #endregion
+
+    #region [4] route |navbar |night mode
+        #region [1] app [Home.jsx|Product.jsx|ProductDetails.jsx|Layout.jsx]
+           import {BrowserRouter as Router,Routes,Route,Link, useParams,Outlet} from 'react-router-dom'
+            <Router>
+                <Routes>
+                    <Route path='/' element={<Layout/>}>
+                        <Route index element={<Home />} />
+                        <Route path='product' element={<Products />} />
+                        <Route path='product/:id' element={<ProductDetails />} />
+                    </Route>
+                </Routes>
+            </Router>
+        #endregion
+
+        #region [2] layout [Header.jsx|Footer.jsx|Sidebar.jsx]
+            <div>
+                <Header/>
+                <Outlet />
+                <Footer/>
+            </div>
+        #endregion
+
+        #region [3] navbar and night mode
+            import { Link } from 'react-router-dom'
+            import { DarkThemeToggle, Flowbite } from "flowbite-react";
+            import { Button, Navbar, NavbarBrand, NavbarCollapse, NavbarLink, NavbarToggle } from "flowbite-react";
+            <Navbar fluid rounded>
+                <NavbarBrand href="https://flowbite-react.com">
+                    <img src="https://picsum.photos/2000/1100" className="mr-3 h-6 w-6 rounded-full sm:h-9" alt="Flowbite React Logo" />
+                    <span className="self-center whitespace-nowrap text-xl font-semibold dark:text-white">Flowbite React</span>
+                </NavbarBrand>
+                <div className="flex md:order-2">
+                    <Button>Get started</Button>
+                    <NavbarToggle />
+                </div>
+                <NavbarCollapse>
+                    <Link className='dark:text-gray-400' to='/' active>
+                        Home
+                    </Link>
+                    <Link className='dark:text-gray-400' to='/products'>About</Link>
+                    <Link className='dark:text-gray-400' to='/products'>Services</Link>
+                    <Link className='dark:text-gray-400' to='/products'>Pricing</Link>
+                    <Link className='dark:text-gray-400' to='/products/:id'>Contact</Link>
+                </NavbarCollapse>
+                <Flowbite> 
+                    <DarkThemeToggle />
+                </Flowbite>
+            </Navbar>
+        #endregion
+    #endregion
+
+    #region [5] font awesome install
+        npm i --save @fortawesome/fontawesome-svg-core
+        npm install --save @fortawesome/free-solid-svg-icons
+        npm install --save @fortawesome/react-fontawesome
+
+        import { IconName } from "react-icons/ai";
+    #endregion
+
+    #region [6] arabic english
+        npm install react-i18next i18next --save
+        #region [1] create i18n.js
+            import i18n from "i18next";
+            import { initReactI18next } from "react-i18next";
+
+            // the translations
+            // (tip move them in a JSON file and import them,
+            // or even better, manage them separated from your code: https://react.i18next.com/guides/multiple-translation-files)
+            const resources = {
+            en: {
+                translation: {
+                "Welcome to React": "Welcome to React and react-i18next"
+                }
+            },
+            fr: {
+                translation: {
+                "Welcome to React": "Bienvenue à React et react-i18next"
+                }
+            }
+            };
+
+            i18n
+            .use(initReactI18next) // passes i18n down to react-i18next
+            .init({
+                resources,
+                lng: "en", // language to use, more information here: https://www.i18next.com/overview/configuration-options#languages-namespaces-resources
+                // you can use the i18n.changeLanguage function to change the language manually: https://www.i18next.com/overview/api#changelanguage
+                // if you're using a language detector, do not define the lng option
+
+                interpolation: {
+                escapeValue: false // react already safes from xss
+                }
+            });
+
+            export default i18n;
+        #endregion
+        #region [2] index.js |main.jsx
+            import React, { Component } from "react";
+            import { createRoot } from 'react-dom/client';
+            import './i18n'; //todo edit here
+            import App from './App';
+
+            // append app to dom
+            const root = createRoot(document.getElementById('root'));
+            root.render(
+            <App />
+            );
+        #endregion
+
+        #region [3] hooks
+            import React from 'react';
+
+            // the hook
+            import { useTranslation } from 'react-i18next';
+
+            function MyComponent () {
+            const { t, i18n } = useTranslation();
+            return <h1>{t('Welcome to React')}</h1>
+            }
+        #endregion
+
+        #region [4] header [button|dropdown]
+            #region [1] button
+                import { useTranslation } from 'react-i18next';//todo edit here
+                const { t, i18n } = useTranslation(); //todo edit here
+
+                const lngs={
+                    ar:{name:"arabic"},
+                    en:{name:"english"},
+                }
+
+                <h1>{t('Welcome to React')}</h1>
+                <div className='flex justify-center gap-4'>
+                    {Object.keys(lngs).map(x=>(
+                        <button key={x} onClick={()=>i18n.changeLanguage(x)} disabled={i18n.resolvedLanguage===x} className='bg-black px-3 py-1 rounded-xl text-white'>{lngs[x].name}</button>
+                    ))}
+                </div>
+            #endregion
+
+            #region [2] dropdown
+                #region [1] languageSelector
+                    import React from 'react';
+                    const LanguageSelector = ({ lngs, i18n }) => {
+                        const handleChange = (event) => {
+                            i18n.changeLanguage(event.target.value);
+                        };
+                    useEffect(() => {
+                        const dir = i18n.resolvedLanguage === 'ar' ? 'rtl' : 'ltr';
+                        document.documentElement.setAttribute('dir', dir);
+                        const fontClass = i18n.resolvedLanguage === 'ar' ? 'font-arabic' : 'font-sans';
+                        document.documentElement.classList.remove('font-sans', 'font-arabic');
+                        document.documentElement.classList.add(fontClass);
+                    }, [i18n.resolvedLanguage]);
+                    const isArabic = i18n.resolvedLanguage === 'ar';
+                    const containerClass = isArabic ? 'font-arabic' : 'font-sans';
+                    return (
+                        <div className={`flex justify-center gap-4 ${containerClass}`}>
+                                <select
+                                    onChange={handleChange}
+                                    value={i18n.resolvedLanguage}
+                                    className='bg-black px-3 py-1 rounded-xl text-white'
+                                >
+                                    {Object.keys(lngs).map(x => (
+                                        <option key={x} value={x}>
+                                            {lngs[x].name}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
+                        );
+                    };
+                    export default LanguageSelector;
+                #endregion
+
+                #region [1] header
+                    import { useTranslation } from 'react-i18next';//todo edit here
+                    import LanguageSelector from './LanguageSelector'
+                    const { t, i18n } = useTranslation(); //todo edit here
+
+                    const lngs={
+                        ar:{name:"arabic"},
+                        en:{name:"english"},
+                    }
+                    <h1>{t('Welcome to React')}</h1>
+                    <LanguageSelector lngs={lngs} i18n={i18n} />
+                #endregion
+            #endregion
+        #endregion
+
+        #region [3] add font
+            #region [1] dropdown index.css
+                @import url('https://fonts.googleapis.com/css2?family=Playwrite+US+Trad:wght@100..400&family=Roboto+Slab:wght@100..900&family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap');
+                @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@200..1000&family=Playwrite+US+Trad:wght@100..400&family=Roboto+Slab:wght@100..900&family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap');
+                @tailwind base;
+                @tailwind components;
+                @tailwind utilities;
+            #endregion
+
+            #region [2] tailwind.config
+                theme: {
+                    extend: {
+                        fontFamily: {
+                        sans: ['Roboto Slab','Helvetica', 'Arial', 'sans-serif', 'cursive'], // default
+                        arabic: ['Cairo', 'sans-serif'], // Arabic-specific font
+                        },
+                    },
+                },
+            #endregion
+
+            #region [3] add effect with useEffect language provider
+                const LanguageSelector = ({ lngs, i18n }) => {
+                    const handleChange = (event) => {
+                        i18n.changeLanguage(event.target.value);
+                    };
+                    useEffect(() => {
+                        const dir = i18n.resolvedLanguage === 'ar' ? 'rtl' : 'ltr';
+                        document.documentElement.setAttribute('dir', dir);
+                        const fontClass = i18n.resolvedLanguage === 'ar' ? 'font-arabic' : 'font-sans'; //todo edit here
+                        document.documentElement.classList.remove('font-sans', 'font-arabic');
+                        document.documentElement.classList.add(fontClass);
+                    }, [i18n.resolvedLanguage]);
+                    const isArabic = i18n.resolvedLanguage === 'ar'; //todo edit here
+                    const containerClass = isArabic ? 'font-arabic' : 'font-sans';
+                    return (
+                        <div className={`flex justify-center gap-4 ${containerClass}`}>
+                            <select
+                                onChange={handleChange}
+                                value={i18n.resolvedLanguage}
+                                className='bg-black mt-3 px-3 py-1 rounded-xl text-white'
+                            >
+                                {Object.keys(lngs).map(x => (
+                                    <option key={x} value={x}>
+                                        {lngs[x].name}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
+                    );
+                };
+            #endregion
+        #endregion
+    #endregion
+
+    #region [7] get data from api 
+        #region [1] api context [ProductProvider.jsx|SidebarProvider.jsx|CartProvider.jsx|LanguageProvider.jsx]
+            export const ProductContext=createContext()
+            const ProductProvider = ({children}) => {
+                const [product,setProduct]=useState([])
+                useEffect(()=>{
+                    const fetchProducts=async ()=>{
+                        const res=await fetch('https://fakestoreapi.com/products')
+                        const data=await res.json()
+                        setProduct(data)
+                    }
+                    fetchProducts()
+                },[])
+                return <ProductContext.Provider value={{product}}>{children}</ProductContext.Provider>
+            }
+        #endregion
+
+        #region [2] main.jsx
+            <ProductProvider>
+                <React.StrictMode>
+                <App />
+                </React.StrictMode>
+            </ProductProvider>,
+        #endregion
+
+        #region [3] home page
+            const { product } = useContext(ProductContext);
+            const filterProducts = product.filter(x => {
+                return (
+                    x.category === "men's clothing" || x.category == "women's clothing"
+                )
+            })
+
+            <div className='mx-4 grid grid-cols-5 justify-center gap-3 '>
+                {
+                    filterProducts.map((x) => {
+                        return (
+
+
+                            <div className="grid col-span-1 w-full max-w-sm bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700" key={x.id}>
+                                <div className='flex justify-center'>
+                                    <img className=" h-[300px]" src={x.image} alt="product image" />
+                                </div>
+                                <div className="px-5 pb-5">
+                                    <a href="#">
+                                        <h5 className="h-[100px] text-xl font-semibold tracking-tight text-gray-900 dark:text-white">
+                                            {x.title}
+                                        </h5>
+                                    </a>
+
+                                    <div className="flex items-center justify-between">
+                                        <span className="text-3xl font-bold text-gray-900 dark:text-white">${x.price}</span>
+                                        <a href="#" className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Add to cart</a>
+                                    </div>
+                                </div>
+                            </div>
+
+                        )
+                    })
+                }
+            </div>
+        #endregion
+
+        #region [4] product page
+            <div>
+            <div className='mx-4 grid grid-cols-5 justify-center gap-3 mt-[5em]'>
+                {
+                product.map((x) => {
+                    return (
+                    <div >
+                    <div >
+                        <div className="grid col-span-1 w-full max-w-sm bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 " key={x.id}>
+                        <div className='hover:scale-110 transition duration-300 mt-6 rounded-lg  overflow-hidden group'>
+                            <div className='flex justify-center relative'>
+                            <img className=" h-[300px] rounded-t-lg max-w-[230px]" src={x.images[1]} alt="product image" />
+                            <div className='flex flex-col justify-center gap-1 absolute group-hover:opacity-100 opacity-0 top-0  p-2 bg-red-600 rounded-lg text-white group-hover:right-5 -right-11 duration-300'>
+                                <AiFillPlusCircle className='text-2xl' />
+                                <Link to={`/product/${x.id}`} >
+                                <AiFillEye className='text-2xl px-1 bg-white text-center text-gray-500 rounded-lg' />
+                                </Link>
+                            </div>
+                            </div>
+                            <div className='px-5 pb-5'>
+                            <div>
+                                <div className='text-sm font-semibold tracking-tight text-gray-400 dark:text-white'>{x.category.name}</div>
+                                <h5 className="h-[100px] text-xl font-semibold tracking-tight text-gray-900 dark:text-white">
+                                {x.title}
+                                </h5>
+                            </div>
+                            </div>
+                        </div>
+                        <div className="px-5 pb-5">
+                            <div className="flex items-center justify-between">
+                            <span className="text-3xl font-bold text-gray-900 dark:text-white">${x.price}</span>
+                            <a href="#" className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Add to cart</a>
+                            </div>
+                        </div>
+                        </div>
+                    </div>
+                </div>
+
+                    )
+                })
+                }
+            </div>
+            </div>
+        #endregion
+    #endregion
+#endregion
+
+#region [1] fake api links [product]
+    #region [1] escuelajs 
+
+        https://api.escuelajs.co/api/v1/products
+        https://api.escuelajs.co/api/v1/users
+            {
+                id: 7,
+                title: "Classic Comfort Drawstring Joggers",
+                price: 79,
+                description: "Experience the perfect blend of comfort and style with our Classic Comfort Drawstring Joggers. Designed for a relaxed fit, these joggers feature a soft, stretchable fabric, convenient side pockets, and an adjustable drawstring waist with elegant gold-tipped detailing. Ideal for lounging or running errands, these pants will quickly become your go-to for effortless, casual wear.",
+                images: [
+                "https://i.imgur.com/mp3rUty.jpeg",
+                "https://i.imgur.com/JQRGIc2.jpeg"
+                ],
+                creationAt: "2024-07-13T00:50:52.000Z",
+                updatedAt: "2024-07-13T00:50:52.000Z",
+                category: {
+                    id: 1,
+                    name: "Clothes",
+                    image: "https://i.imgur.com/QkIa5tT.jpeg",
+                    creationAt: "2024-07-13T00:50:52.000Z",
+                    updatedAt: "2024-07-13T00:50:52.000Z"
+                    }
+            },
+    #endregion
+
+    #region [2] fakestoreapi 
+        https://fakestoreapi.com/products
+        {
+            id: 1,
+            title: "Fjallraven - Foldsack No. 1 Backpack, Fits 15 Laptops",
+            price: 109.95,
+            description: "Your perfect pack for everyday use and walks in the forest. Stash your laptop (up to 15 inches) in the padded sleeve, your everyday",
+            category: "men's clothing",
+            image: "https://fakestoreapi.com/img/81fPKd-2AYL._AC_SL1500_.jpg",
+            rating: {
+                rate: 3.9,
+                count: 120
+            }
+        },
+    #endregion
+ https://fake-store-api.mock.beeceptor.com/api/products
+ https://freetestapi.com/api/v1/products
+ https://dummyjson.com/products
+#endregion
+
+#region [1] react shop1
+    #region [1] route |navbar |night mode
+        #region [1] app
+            <BrowserRouter>
+                <Routes>
+                <Route path='/' element={<Layout/>}>
+                    <Route index element={<Home />} />
+                    <Route path='products' element={<Products />} />
+                    <Route path='products/:id' element={<Category />} />
+                </Route>
+                </Routes>
+            </BrowserRouter>
+        #endregion
+
+        #region [2] layout
+            <div>
+                <Header/>
+                <Outlet />
+                <Footer/>
+            </div>
+        #endregion
+
+        #region [3] navbar and night mode
+            import { Link } from 'react-router-dom'
+            import { DarkThemeToggle, Flowbite } from "flowbite-react";
+            import { Button, Navbar, NavbarBrand, NavbarCollapse, NavbarLink, NavbarToggle } from "flowbite-react";
+            <Navbar fluid rounded>
+                <NavbarBrand href="https://flowbite-react.com">
+                    <img src="https://picsum.photos/2000/1100" className="mr-3 h-6 w-6 rounded-full sm:h-9" alt="Flowbite React Logo" />
+                    <span className="self-center whitespace-nowrap text-xl font-semibold dark:text-white">Flowbite React</span>
+                </NavbarBrand>
+                <div className="flex md:order-2">
+                    <Button>Get started</Button>
+                    <NavbarToggle />
+                </div>
+                <NavbarCollapse>
+                    <Link className='dark:text-gray-400' to='/' active>
+                        Home
+                    </Link>
+                    <Link className='dark:text-gray-400' to='/products'>About</Link>
+                    <Link className='dark:text-gray-400' to='/products'>Services</Link>
+                    <Link className='dark:text-gray-400' to='/products'>Pricing</Link>
+                    <Link className='dark:text-gray-400' to='/products/:id'>Contact</Link>
+                </NavbarCollapse>
+                <Flowbite> 
+                    <DarkThemeToggle />
+                </Flowbite>
+            </Navbar>
+        #endregion
+    #endregion
+
+    #region [2] carousel
+        <Carousel slideInterval={5000}>
+            <img src="https://picsum.photos/2000/1100" alt="..." />
+            <img src="https://picsum.photos/2000/1200" alt="..." />
+            <img src="https://picsum.photos/2000/1300" alt="..." />
+            <img src="https://picsum.photos/2000/1400" alt="..." />
+            <img src="https://picsum.photos/2000/1500" alt="..." />
+        </Carousel>
+    #endregion
+
+    #region [3] font awesome install
+        npm i --save @fortawesome/fontawesome-svg-core
+        npm install --save @fortawesome/free-solid-svg-icons
+        npm install --save @fortawesome/react-fontawesome
+    #endregion
+
+    #region [4] arabic english
+        npm install react-i18next i18next --save
+        #region [1] create i18n.js
+            import i18n from "i18next";
+            import { initReactI18next } from "react-i18next";
+
+            // the translations
+            // (tip move them in a JSON file and import them,
+            // or even better, manage them separated from your code: https://react.i18next.com/guides/multiple-translation-files)
+            const resources = {
+            en: {
+                translation: {
+                "Welcome to React": "Welcome to React and react-i18next"
+                }
+            },
+            fr: {
+                translation: {
+                "Welcome to React": "Bienvenue à React et react-i18next"
+                }
+            }
+            };
+
+            i18n
+            .use(initReactI18next) // passes i18n down to react-i18next
+            .init({
+                resources,
+                lng: "en", // language to use, more information here: https://www.i18next.com/overview/configuration-options#languages-namespaces-resources
+                // you can use the i18n.changeLanguage function to change the language manually: https://www.i18next.com/overview/api#changelanguage
+                // if you're using a language detector, do not define the lng option
+
+                interpolation: {
+                escapeValue: false // react already safes from xss
+                }
+            });
+
+            export default i18n;
+        #endregion
+        #region [2] index.js |main.jsx
+            import React, { Component } from "react";
+            import { createRoot } from 'react-dom/client';
+            import './i18n'; //todo edit here
+            import App from './App';
+
+            // append app to dom
+            const root = createRoot(document.getElementById('root'));
+            root.render(
+            <App />
+            );
+        #endregion
+
+        #region [3] hooks
+            import React from 'react';
+
+            // the hook
+            import { useTranslation } from 'react-i18next';
+
+            function MyComponent () {
+            const { t, i18n } = useTranslation();
+            return <h1>{t('Welcome to React')}</h1>
+            }
+        #endregion
+
+        #region [4] header [button|dropdown]
+            #region [1] button
+                import { useTranslation } from 'react-i18next';//todo edit here
+                const { t, i18n } = useTranslation(); //todo edit here
+
+                const lngs={
+                    ar:{name:"arabic"},
+                    en:{name:"english"},
+                }
+
+                <h1>{t('Welcome to React')}</h1>
+                <div className='flex justify-center gap-4'>
+                    {Object.keys(lngs).map(x=>(
+                        <button key={x} onClick={()=>i18n.changeLanguage(x)} disabled={i18n.resolvedLanguage===x} className='bg-black px-3 py-1 rounded-xl text-white'>{lngs[x].name}</button>
+                    ))}
+                </div>
+            #endregion
+
+            #region [2] dropdown
+                #region [1] languageSelector
+                    import React from 'react';
+                    const LanguageSelector = ({ lngs, i18n }) => {
+                        const handleChange = (event) => {
+                            i18n.changeLanguage(event.target.value);
+                        };
+                    useEffect(() => {
+                        const dir = i18n.resolvedLanguage === 'ar' ? 'rtl' : 'ltr';
+                        document.documentElement.setAttribute('dir', dir);
+                        const fontClass = i18n.resolvedLanguage === 'ar' ? 'font-arabic' : 'font-sans';
+                        document.documentElement.classList.remove('font-sans', 'font-arabic');
+                        document.documentElement.classList.add(fontClass);
+                    }, [i18n.resolvedLanguage]);
+                    const isArabic = i18n.resolvedLanguage === 'ar';
+                    const containerClass = isArabic ? 'font-arabic' : 'font-sans';
+                    return (
+                        <div className={`flex justify-center gap-4 ${containerClass}`}>
+                                <select
+                                    onChange={handleChange}
+                                    value={i18n.resolvedLanguage}
+                                    className='bg-black px-3 py-1 rounded-xl text-white'
+                                >
+                                    {Object.keys(lngs).map(x => (
+                                        <option key={x} value={x}>
+                                            {lngs[x].name}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
+                        );
+                    };
+                    export default LanguageSelector;
+                #endregion
+
+                #region [1] header
+                    import { useTranslation } from 'react-i18next';//todo edit here
+                    import LanguageSelector from './LanguageSelector'
+                    const { t, i18n } = useTranslation(); //todo edit here
+
+                    const lngs={
+                        ar:{name:"arabic"},
+                        en:{name:"english"},
+                    }
+                    <h1>{t('Welcome to React')}</h1>
+                    <LanguageSelector lngs={lngs} i18n={i18n} />
+                #endregion
+            #endregion
+        #endregion
+
+        #region [3] add font
+            #region [1] dropdown index.css
+                @import url('https://fonts.googleapis.com/css2?family=Playwrite+US+Trad:wght@100..400&family=Roboto+Slab:wght@100..900&family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap');
+                @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@200..1000&family=Playwrite+US+Trad:wght@100..400&family=Roboto+Slab:wght@100..900&family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap');
+                @tailwind base;
+                @tailwind components;
+                @tailwind utilities;
+            #endregion
+
+            #region [2] tailwind.config
+                theme: {
+                    extend: {
+                        fontFamily: {
+                        sans: ['Roboto Slab','Helvetica', 'Arial', 'sans-serif', 'cursive'], // default
+                        arabic: ['Cairo', 'sans-serif'], // Arabic-specific font
+                        },
+                    },
+                },
+            #endregion
+
+            #region [3] add effect with useEffect language provider
+                const LanguageSelector = ({ lngs, i18n }) => {
+                    const handleChange = (event) => {
+                        i18n.changeLanguage(event.target.value);
+                    };
+                    useEffect(() => {
+                        const dir = i18n.resolvedLanguage === 'ar' ? 'rtl' : 'ltr';
+                        document.documentElement.setAttribute('dir', dir);
+                        const fontClass = i18n.resolvedLanguage === 'ar' ? 'font-arabic' : 'font-sans'; //todo edit here
+                        document.documentElement.classList.remove('font-sans', 'font-arabic');
+                        document.documentElement.classList.add(fontClass);
+                    }, [i18n.resolvedLanguage]);
+                    const isArabic = i18n.resolvedLanguage === 'ar'; //todo edit here
+                    const containerClass = isArabic ? 'font-arabic' : 'font-sans';
+                    return (
+                        <div className={`flex justify-center gap-4 ${containerClass}`}>
+                            <select
+                                onChange={handleChange}
+                                value={i18n.resolvedLanguage}
+                                className='bg-black mt-3 px-3 py-1 rounded-xl text-white'
+                            >
+                                {Object.keys(lngs).map(x => (
+                                    <option key={x} value={x}>
+                                        {lngs[x].name}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
+                    );
+                };
+            #endregion
+        #endregion
+    #endregion
+
+    #region [5] cart api
+        #region [1] api context
+            export const ProductContext=createContext()
+            const ProductProvider = ({children}) => {
+                const [product,setProduct]=useState([])
+                useEffect(()=>{
+                    const fetchProducts=async ()=>{
+                        const res=await fetch('https://fakestoreapi.com/products')
+                        const data=await res.json()
+                        setProduct(data)
+                    }
+                    fetchProducts()
+                },[])
+                return <ProductContext.Provider value={{product}}>{children}</ProductContext.Provider>
+            }
+        #endregion
+
+        #region [2] main.jsx
+            <ProductProvider>
+                <React.StrictMode>
+                <App />
+                </React.StrictMode>
+            </ProductProvider>,
+        #endregion
+
+        #region [3] home page
+            const { product } = useContext(ProductContext);
+            const filterProducts = product.filter(x => {
+                return (
+                    x.category === "men's clothing" || x.category == "women's clothing"
+                )
+            })
+
+            <div className='mx-4 grid grid-cols-5 justify-center gap-3 '>
+                {
+                    filterProducts.map((x) => {
+                        return (
+
+
+                            <div className="grid col-span-1 w-full max-w-sm bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700" key={x.id}>
+                                <div className='flex justify-center'>
+                                    <img className=" h-[300px]" src={x.image} alt="product image" />
+                                </div>
+                                <div className="px-5 pb-5">
+                                    <a href="#">
+                                        <h5 className="h-[100px] text-xl font-semibold tracking-tight text-gray-900 dark:text-white">
+                                            {x.title}
+                                        </h5>
+                                    </a>
+
+                                    <div className="flex items-center justify-between">
+                                        <span className="text-3xl font-bold text-gray-900 dark:text-white">${x.price}</span>
+                                        <a href="#" className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Add to cart</a>
+                                    </div>
+                                </div>
+                            </div>
+
+                        )
+                    })
+                }
+            </div>
+        #endregion
+
+        #region [4] product page
+            <div >
+            <div >
+                <div className="grid col-span-1 w-full max-w-sm bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 " key={id}>
+                <div className='hover:scale-110 transition duration-300 mt-6 rounded-lg  overflow-hidden group'>
+                    <div className='flex justify-center relative'>
+                    <img className=" h-[300px] rounded-t-lg max-w-[230px]" src={image} alt="product image" />
+                    <div className='flex flex-col justify-center gap-1 absolute group-hover:opacity-100 opacity-0 top-0  p-2 bg-red-600 rounded-lg text-white group-hover:right-5 -right-11 duration-300'>
+                        <AiFillPlusCircle className='text-2xl' />
+                        <Link to={`/product/${id}`} >
+                        <AiFillEye className='text-2xl px-1 bg-white text-center text-gray-500 rounded-lg' />
+                        </Link>
+                    </div>
+                    </div>
+                    <div className='px-5 pb-5'>
+                    <div>
+                        <div className='text-sm font-semibold tracking-tight text-gray-400 dark:text-white'>{category}</div>
+                        <h5 className="h-[100px] text-xl font-semibold tracking-tight text-gray-900 dark:text-white">
+                        {title}
+                        </h5>
+                    </div>
+                    </div>
+                </div>
+                <div className="px-5 pb-5">
+                    <div className="flex items-center justify-between">
+                    <span className="text-3xl font-bold text-gray-900 dark:text-white">${price}</span>
+                    <a href="#" className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Add to cart</a>
+                    </div>
+                </div>
+                </div>
+            </div>
+            </div>
+        #endregion
+
+        #region [5] sidebar
+            #region [1] cart provider [cart| addToCart, removeFromCart, clearCart, increaseAmount, decreaseAmount ]
+                export const CartContext = createContext()
+                const CartProvider = ({ children }) => {
+                const [cart, setCart] = useState([])
+                const addToCart = (product, id) => {
+                    const newItem = { ...product, amount: 1 }
+                    // console.log(`item ${id} and title ${product.title}`)
+                    const cartItem = cart.find(x => x.id === id)
+                    if (cartItem) {
+                    const newCart = [...cart].map(x => {
+                        if (x.id === id) {
+                        return { ...x, amount: cartItem.amount + 1 }
+                        } else {
+                        return x
+                        }
+                    })
+                    setCart(newCart)
+                    } else {
+                    setCart([...cart, newItem])
+                    }
+                }
+                const removeFromCart = (id) => {
+                    const newCart = cart.filter(x => x.id !== id)
+                    setCart(newCart)
+                }
+                const clearCart = () => setCart([])
+                const increaseAmount = (id) => {
+                    const item = cart.find(x => x.id === id)
+                    addToCart(item, id)
+                }
+                const decreaseAmount = (id) => {
+                    const item = cart.find(x => x.id === id)
+                    if (item) {
+                    const newCart = cart.map(x => {
+                        if (x.id === id) {
+                        return { ...x, amount: item.amount - 1 }
+                        } else {
+                        return x
+                        }
+                    })
+                    setCart(newCart)
+                    }
+                    if (item.amount < 2) {
+                    removeFromCart(id)
+                    }
+                }
+                return (
+                    <CartContext.Provider value={{ cart, addToCart, removeFromCart, clearCart, increaseAmount, decreaseAmount }}>
+                    {children}
+                    </CartContext.Provider>
+                )
+                }
+            #endregion
+
+            #region [2] sidebar provider [isOpen, setIsOpen, handleClose]
+                export const SidebarContext = createContext()
+                const SidebarProvider = ({ children }) => {
+                    const [isOpen, setIsOpen] = useState(false)
+                    const handleClose = () => {
+                        setIsOpen(false)
+                    }
+                    return (
+                        <SidebarContext.Provider value={{ isOpen, setIsOpen, handleClose }}>
+                            {children}
+                        </SidebarContext.Provider>
+                    )
+                }
+            #endregion
+
+            #region [3] sidebar [isOpen, setIsOpen, handleClose]
+                const Sidebar = () => {
+                    const { isOpen, handleClose } = useContext(SidebarContext)
+                    const { cart,clearCart } = useContext(CartContext)
+
+                    return (
+                        <div className={`${isOpen ? 'right-0' : '-right-full'} w-full bg-white dark:bg-slate-900 dark:text-white fixed top-0 h-full shadow-2xl md:w-[35vw] xl:max-w-[30vw] transition-all duration-300 z-20 px-4 lg:px-[35px]`}>
+                            <div className='flex justify-between items-center py-6 border-b'>
+                                <div className='upper-case text-sm font-semibold'>
+                                    Shopping Bag(0)
+                                </div>
+                                <div onClick={handleClose} className='cursor-pointer w-8 h-8 flex justify-center items-center'>
+                                    <AiOutlineArrowRight className='text-2xl' />
+                                </div>
+                            </div>
+                            <div>
+                                {cart.map(x=>{
+                                    return <CartItem item={x} key={x.id} />
+                                })}
+                            </div>
+                            <div className='flex justify-between py-6 px-2'>
+                                <div>
+                                    Total: $1000
+                                </div>
+                                <div className='cursor-pointer w-8 h-8 flex justify-center items-center'>
+                                    <AiOutlineDelete onClick={clearCart} className='text-2xl text-red-600' />
+                                </div>
+                            </div>
+                        </div>
+                    )
+                }
+            #endregion
+
+            #region [4] cartItem [removeFromCart,increaseAmount,decreaseAmount]
+                const CartItem = ({item}) => {
+                    const {id,title,image,price,amount}=item
+                    const {removeFromCart,increaseAmount,decreaseAmount}=useContext(CartContext)
+                    return (
+                        <div className='flex'>
+                            <div className='w-full min-h-[150px] flex items-center gap-x-4 border-b border-gray-200'>
+                                <Link to={`/product/${id}`}>
+                                    <img src={image} alt={title} className='max-w-[80px] rounded-xl' />
+                                </Link>
+                                <div className='w-full flex flex-col '>
+                                    <div className='flex justify-between'>
+                                        <Link to={`/product/${id}`} className='hover:underline text-sm text-primary font-sans'>
+                                            {title}
+                                        </Link>
+                                        <div onClick={()=>removeFromCart(id)} className='hover:underline text-sm text-primary font-sans'>
+                                            <AiOutlineDelete className='text-red-600 text-2xl'/>
+                                        </div>
+                                    </div>
+                                    <div className='flex flex-col justify-center'>
+                                        <div className='flex items-center justify-center'>
+                                            <AiFillMinusCircle onClick={()=>decreaseAmount(id)}/>
+                                            <div className='mx-2'>{amount}</div>
+                                            <AiFillPlusCircle onClick={()=>increaseAmount(id)}/>
+                                        </div>
+                                        <div className='flex justify-between items-center'>
+                                            <div>Price: ${price}</div>
+                                            <div className='text-xl'>Total: ${parseFloat(price*amount).toFixed(2)}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    )
+                }
+            #endregion
+
+            #region [5] products => addToCart [addToCart]
+                const Products = ({ product }) => {
+                const { id, title, category, description, price, image } = product
+                const {addToCart}=useContext(CartContext) //todo edit here
+                return (
+                    <div >
+                    <div >
+                        <div className="grid col-span-1 w-full max-w-sm bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 " key={id}>
+                        <div className='hover:scale-110 transition duration-300 mt-6 rounded-lg  overflow-hidden group'>
+                            <div className='flex justify-center relative'>
+                            <img className=" h-[300px] rounded-t-lg max-w-[230px]" src={image} alt="product image" />
+                            <div className='flex flex-col justify-center gap-1 absolute group-hover:opacity-100 opacity-0 top-0  p-2 bg-red-600 rounded-lg text-white group-hover:right-5 -right-11 duration-300'>
+                                <button onClick={()=>addToCart(product,id)}> //todo edit here
+                                <AiFillPlusCircle className='text-2xl' />
+                                </button>
+                                <Link to={`/product/${id}`} >
+                                <AiFillEye className='text-2xl px-1 bg-white text-center text-gray-500 rounded-lg' />
+                                </Link>
+                            </div>
+                            </div>
+                            <div className='px-5 pb-5'>
+                            <div>
+                                <div className='text-sm font-semibold tracking-tight text-gray-400 dark:text-white'>{category}</div>
+                                <h5 className="h-[100px] text-xl font-semibold tracking-tight text-gray-900 dark:text-white">
+                                {title}
+                                </h5>
+                            </div>
+                            </div>
+                        </div>
+                        <div className="px-5 pb-5">
+                            <div className="flex items-center justify-between">
+                            <span className="text-3xl font-bold text-gray-900 dark:text-white">${price}</span>
+                            <a href="#" className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Add to cart</a>
+                            </div>
+                        </div>
+                        </div>
+                    </div>
+                    </div>
+                )
+                }
+            #endregion
+
+            #region [6] header [isOpen, setIsOpen ]
+                const Header = () => {
+                    const { t, i18n } = useTranslation(); //todo edit here
+                    const lngs = {
+                        ar: { name: "arabic" },
+                        en: { name: "english" },
+                    }
+                    const { isOpen, setIsOpen } = useContext(SidebarContext) //todo edit here
+                    return (
+                        <div>
+
+                            <Navbar fluid >
+                                <NavbarBrand>
+                                    <img src="https://picsum.photos/2000/1100" className=" h-6 w-6 rounded-full " alt="Flowbite React Logo" />
+                                    <span className="self-center whitespace-nowrap text-xl font-semibold dark:text-white">React</span>
+                                </NavbarBrand>
+                                <NavbarToggle />
+                                <NavbarCollapse>
+                                    <Link className='dark:text-gray-400 mx-2' to='/' >
+                                        Home
+                                    </Link>
+                                    <Link className='dark:text-gray-400' to='/products'>Product</Link>
+                                    <Link className='dark:text-gray-400' to='/products/1'>ProductDetails</Link>
+                                    <Link className='dark:text-gray-400' to='/products/2'>ProductDetails</Link>
+                                    <Link className='dark:text-gray-400' to='/products/:id'>ProductDetails</Link>
+                                </NavbarCollapse>
+                                <div className='flex gap-2'>
+                                    <Flowbite>
+                                        <DarkThemeToggle />
+                                    </Flowbite>
+                                    <button type="button" className="relative inline-flex items-center p-3 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+
+                                        <AiOutlineShoppingCart className='text-xl' />
+                                        <span className="sr-only">Notifications</span>
+                                        <div className="absolute inline-flex items-center justify-center w-6 h-6 text-xs font-bold text-white bg-red-500 border-2 border-white rounded-full -top-2 -end-2 dark:border-gray-900">0</div>
+                                    </button>
+                                    <button type="button" className="relative inline-flex items-center p-3 text-sm font-medium text-center text-white bg-green-700 rounded-lg hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">
+                                        <VscAccount className='text-xl' />
+                                    </button>
+                                    <button onClick={()=>setIsOpen(!isOpen)} className="relative inline-flex items-center p-3 text-sm font-medium text-center text-white bg-sky-700 rounded-lg hover:bg-sky-800 focus:ring-4 focus:outline-none focus:ring-sky-300 dark:bg-sky-600 dark:hover:bg-sky-700 dark:focus:ring-sky-800">
+                                        <AiOutlineShopping className='text-2xl' />
+                                    </button> //todo edit here
+                                </div>
+
+                            </Navbar>
+                            <h1 >{t('Welcome to React')}</h1>
+                            <div className='flex justify-center gap-4'>
+                                {Object.keys(lngs).map(x => (
+                                    <button key={x} onClick={() => i18n.changeLanguage(x)} disabled={i18n.resolvedLanguage === x} className='bg-teal-600 px-3 py-1 rounded-xl text-white'>{lngs[x].name}</button>
+                                ))}
+                            </div>
+
+                            <LanguageSelector lngs={lngs} i18n={i18n} />
+                        </div>
+                    )
+                }
+            #endregion
+
+            #region [7] layout [sidebar]
+                const Layout = () => {
+                    return (
+                        <div className='dark:bg-black dark:text-white'>
+                            <Header />
+                            <Sidebar/>
+                            <Outlet className='dark:bg-black' />
+                            <Footer/>
+                        </div>
+                    )
+                }
+            #endregion
+
+            #region [8] main [SidebarProvider>CartProvider>ProductProvider]
+                ReactDOM.createRoot(document.getElementById('root')).render(
+                <SidebarProvider> //todo edit here
+                    <CartProvider> //todo edit here
+                    <ProductProvider> //todo edit here
+                        <React.StrictMode>
+                        <App />
+                        </React.StrictMode>
+                    </ProductProvider>
+                    </CartProvider>
+                </SidebarProvider>,
+                )
+            #endregion
+        #endregion
+    #endregion
+
+    #region [6] cart count
+        #region [1] CartProvider [amount]
+            export const CartContext = createContext()
+            const CartProvider = ({ children }) => {
+                const [cart, setCart] = useState([])
+                const [cartAmount, setCartAmount] = useState(0)
+                  useEffect(()=>{
+                    if(cart){
+                    const amount=cart.reduce((x,y)=>{
+                        return x+y.amount
+                    },0)
+                    setCartAmount(amount)
+                    }
+                },[cart])
+                const addToCart = (product, id) => {
+                    const newItem = { ...product, amount: 1 }
+                    // console.log(`item ${id} and title ${product.title}`)
+                    const cartItem = cart.find(x => x.id === id)
+                    if (cartItem) {
+                    const newCart = [...cart].map(x => {
+                        if (x.id === id) {
+                        return { ...x, amount: cartItem.amount + 1 }
+                        } else {
+                        return x
+                        }
+                    })
+                    setCart(newCart)
+                    } else {
+                    setCart([...cart, newItem])
+                    }
+                }
+                const removeFromCart = (id) => {
+                    const newCart = cart.filter(x => x.id !== id)
+                    setCart(newCart)
+                }
+                const clearCart = () => setCart([])
+                const increaseAmount = (id) => {
+                    const item = cart.find(x => x.id === id)
+                    addToCart(item, id)
+                }
+                const decreaseAmount = (id) => {
+                    const item = cart.find(x => x.id === id)
+                    if (item) {
+                    const newCart = cart.map(x => {
+                        if (x.id === id) {
+                        return { ...x, amount: item.amount - 1 }
+                        } else {
+                        return x
+                        }
+                    })
+                    setCart(newCart)
+                    }
+                    if (item.amount < 2) {
+                    removeFromCart(id)
+                    }
+                }
+                return (
+                    <CartContext.Provider value={{ cart, addToCart, removeFromCart, clearCart, increaseAmount, decreaseAmount,cartAmount }}> 
+                    {children}
+                    </CartContext.Provider>
+                )
+            }
+        #endregion
+
+        #region [2] header
+            const Header = () => {
+                const { t, i18n } = useTranslation(); //todo edit here
+                const lngs = {
+                    ar: { name: "arabic" },
+                    en: { name: "english" },
+                }
+                const { isOpen, setIsOpen } = useContext(SidebarContext)
+                const { cartAmount } = useContext(CartContext) //todo edit here
+                const [isActive,setIsActive]=useState(false)
+                useEffect(()=>{
+                    window.addEventListener('scroll',()=>{
+                        window.scrollY>60?setIsActive(true):setIsActive(false)
+                    })
+                })
+                return (
+                    <header >
+                        <div className='h-full'>
+                            <Navbar fluid className={`${isActive?'bg-sky-800 text-white':'bg-white '} fixed z-10 top-0  transition-all w-full`}>
+                                <NavbarBrand>
+                                    <img src="https://picsum.photos/2000/1100" className=" h-6 w-6 rounded-full " alt="Flowbite React Logo" />
+                                    <span className="self-center whitespace-nowrap text-xl font-semibold dark:text-white">React</span>
+                                </NavbarBrand>
+                                <NavbarToggle />
+                                <NavbarCollapse>
+                                    <Link className='dark:text-gray-400 mx-2' to='/' >
+                                        Home
+                                    </Link>
+                                    <Link className='dark:text-gray-400' to='/products'>Product</Link>
+                                    <Link className='dark:text-gray-400' to='/products/1'>ProductDetails</Link>
+                                    <Link className='dark:text-gray-400' to='/products/2'>ProductDetails</Link>
+                                    <Link className='dark:text-gray-400' to='/products/:id'>ProductDetails</Link>
+                                </NavbarCollapse>
+                                <div className='flex gap-2'>
+                                    <Flowbite>
+                                        <DarkThemeToggle />
+                                    </Flowbite>
+                                    <button type="button" className="relative inline-flex items-center p-3 text-sm font-medium text-center text-white bg-green-700 rounded-lg hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">
+                                        <VscAccount className='text-xl' />
+                                    </button>
+                                    <button onClick={()=>setIsOpen(!isOpen)} className="max-w-[50px] relative inline-flex items-center p-3 text-sm font-medium text-center text-white bg-sky-700 rounded-lg hover:bg-sky-800 focus:ring-4 focus:outline-none focus:ring-sky-300 dark:bg-sky-600 dark:hover:bg-sky-700 dark:focus:ring-sky-800">
+                                        <AiOutlineShopping className='text-2xl' />
+                                        <div className='bg-red-500 absolute -right-2 -bottom-2 text-[12px] w-[2em] h-[2em] text-white rounded-full flex justify-center items-center border-white border-2'>
+                                            {cartAmount} //todo edit here
+                                        </div>
+                                    </button>
+                                </div>
+
+                            </Navbar>
+                            <h1 >{t('Welcome to React')}</h1>
+                            <div className='flex justify-center gap-4'>
+                                {Object.keys(lngs).map(x => (
+                                    <button key={x} onClick={() => i18n.changeLanguage(x)} disabled={i18n.resolvedLanguage === x} className='bg-teal-600 px-3 py-1 rounded-xl text-white'>{lngs[x].name}</button>
+                                ))}
+                            </div>
+                            <LanguageSelector lngs={lngs} i18n={i18n} />
+                        </div>
+                    </header>
+                )
+            }
+        #endregion
+
+        #region [3] product
+            const Products = ({ product }) => {
+            const { id, title, category, price, image } = product
+            const {addToCart}=useContext(CartContext) //todo edit here
+            return (
+                <div >
+                <div >
+                    <div className="grid col-span-1 w-full max-w-sm bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 " key={id}>
+                    <div className='hover:scale-110 transition duration-300 mt-6 rounded-lg  overflow-hidden group'>
+                        <div className='flex justify-center relative'>
+                        <img className=" h-[300px] rounded-t-lg max-w-[230px]" src={image} alt="product image" />
+                        <div className='flex flex-col justify-center gap-1 absolute group-hover:opacity-100 opacity-0 top-0  p-2 bg-red-600 rounded-lg text-white group-hover:right-5 -right-11 duration-300'>
+                            <button onClick={()=>addToCart(product,id)}>
+                            <AiFillPlusCircle className='text-2xl' />
+                            </button>
+                            <Link to={`/product/${id}`} >
+                            <AiFillEye className='text-2xl px-1 bg-white text-center text-gray-500 rounded-lg' />
+                            </Link>
+                        </div>
+                        </div>
+                        <div className='px-5 pb-5'>
+                        <div>
+                            <div className='text-sm font-semibold tracking-tight text-gray-400 dark:text-white'>{category}</div>
+                            <h5 className="h-[100px] text-xl font-semibold tracking-tight text-gray-900 dark:text-white">
+                            {title}
+                            </h5>
+                        </div>
+                        </div>
+                    </div>
+                    <div className="px-5 pb-5">
+                        <div className="flex items-center justify-between">
+                        <span className="text-3xl font-bold text-gray-900 dark:text-white">${price}</span>
+                        <button className="inline-flex items-center p-3 text-sm font-medium text-center text-white bg-sky-700 rounded-lg hover:bg-sky-800 focus:ring-4 focus:outline-none focus:ring-sky-300 dark:bg-sky-600 dark:hover:bg-sky-700 dark:focus:ring-sky-800">
+                            <AiOutlineShoppingCart className='w-[1.5em] h-[1.5em] ' onClick={()=>addToCart(product,id)}/>
+                        </button>
+                        </div>
+                    </div>
+                    </div>
+                </div>
+                </div>
+            )
+            }
+        #endregion
+    #endregion
+
+    #region [7] total price
+        #region [1] CartProvider
+            const CartProvider = ({ children }) => {
+            const [cart, setCart] = useState([])
+            const [cartAmount, setCartAmount] = useState(0)
+            const [total,setTotal]=useState(0)
+            const addToCart = (product, id) => {
+                const newItem = { ...product, amount: 1 }
+                // console.log(`item ${id} and title ${product.title}`)
+                const cartItem = cart.find(x => x.id === id)
+                if (cartItem) {
+                const newCart = [...cart].map(x => {
+                    if (x.id === id) {
+                    return { ...x, amount: cartItem.amount + 1 }
+                    } else {
+                    return x
+                    }
+                })
+                setCart(newCart)
+                } else {
+                setCart([...cart, newItem])
+                }
+            }
+            const removeFromCart = (id) => {
+                const newCart = cart.filter(x => x.id !== id)
+                setCart(newCart)
+            }
+            const clearCart = () => setCart([])
+            const increaseAmount = (id) => {
+                const item = cart.find(x => x.id === id)
+                addToCart(item, id)
+            }
+            const decreaseAmount = (id) => {
+                const item = cart.find(x => x.id === id)
+                if (item) {
+                const newCart = cart.map(x => {
+                    if (x.id === id) {
+                    return { ...x, amount: item.amount - 1 }
+                    } else {
+                    return x
+                    }
+                })
+                setCart(newCart)
+                }
+                if (item.amount < 2) {
+                removeFromCart(id)
+                }
+            }
+            useEffect(()=>{
+                if(cart){
+                const amount=cart.reduce((x,y)=>{
+                    return x+y.amount
+                },0)
+                setCartAmount(amount)
+                }
+            },[cart])
+            useEffect(()=>{
+                const totalPrice=cart.reduce((x,y)=>{
+                return x+y.price*y.amount
+                },0)
+                setTotal(totalPrice)
+            })
+            return (
+                <CartContext.Provider value={{ cart, addToCart, removeFromCart, clearCart, increaseAmount, decreaseAmount,cartAmount,total }}>
+                {children}
+                </CartContext.Provider>
+            )
+            }
+        #endregion
+
+        #region [2] sidebar
+            const Sidebar = () => {
+                const { isOpen, handleClose } = useContext(SidebarContext)
+                const { cart,clearCart,total } = useContext(CartContext) //todo edit here
+            
+                return (
+                    <div className={`${isOpen ? 'right-0' : '-right-full'} w-full bg-white dark:bg-slate-900 dark:text-white fixed top-0 h-full shadow-2xl md:w-[35vw] xl:max-w-[30vw] transition-all duration-300 z-20 px-4 lg:px-[35px]`}>
+                        <div className='flex justify-between items-center py-6 border-b'>
+                            <div className='upper-case text-sm font-semibold'>
+                                Shopping Bag(0)
+                            </div>
+                            <div onClick={handleClose} className='cursor-pointer w-8 h-8 flex justify-center items-center'>
+                                <AiOutlineArrowRight className='text-2xl' />
+                            </div>
+                        </div>
+                        <div className='h-[500px] overflow-y-auto overflow-x-hidden'>
+                            {cart.map(x=>{
+                                return <CartItem item={x} key={x.id} />
+                            })}
+                        </div>
+                        <div className='flex justify-between py-6 px-2'>
+                            <div>
+                                Total: ${total} //todo edit here
+                            </div>
+                            <div className='cursor-pointer w-8 h-8 flex justify-center items-center'>
+                                <AiOutlineDelete onClick={clearCart} className='text-2xl text-red-600' />
+                            </div>
+                        </div>
+                    </div>
+                )
+            }
+        #endregion
+    #endregion
+
+    #region [8] product details
+        #region [1] ProductDetails   
+            const ProductDetails = () => {
+                const { id } = useParams()
+                const { product } = useContext(ProductContext)
+                const { addToCart } = useContext(CartContext)
+                const productById = product.find(x => x.id === parseInt(id))
+                if (!product) {
+                    return <section className='flex justify-center'>
+                        loading ...
+                    </section>
+                }
+                const { title, price, description, image } = productById
+                return (
+                    <div className='grid lg:grid-cols-2 justify-center'>
+                        <div className='grid lg:col-span-1 mx-auto divide-y-2 m-3'>
+                            <img src={image} alt="" className='rounded-xl size-[20em]' />
+
+                        </div>
+                        <div className='grid lg:col-span-1 items-center divide-y-0'>
+                            <div>
+                                <div className='m-3'>
+                                    {title}
+                                </div>
+                                <div className='m-3'>
+                                    {description}
+                                </div>
+                                <div className='m-4'>
+                                    ${price}
+                                </div>
+                                <div className='flex justify-center border-2 dark:border-white p-2 mx-auto w-[7em] rounded-xl'>
+                                    <button  onClick={() => addToCart(productById, productById.id)}>Add To Cart</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                )
+            }
+        #endregion
+    #endregion
+#endregion
+
+#region [1] react shop 2
+    #region [1] pagination
+        #region [1] provider
+            export const ProductContext = createContext();
+
+            const ProductProvider = ({ children }) => {
+            const [product, setProduct] = useState([]);
+            const [currentPage, setCurrentPage] = useState(1);
+            const [productsPerPage] = useState(10); // You can change this to the desired number of products per page
+            const [totalProducts, setTotalProducts] = useState(0);
+
+            useEffect(() => {
+                const fetchProducts = async () => {
+                const res = await fetch(`https://api.escuelajs.co/api/v1/products?offset=${(currentPage - 1) * productsPerPage}&limit=${productsPerPage}`);
+                const data = await res.json();
+                setProduct(data);
+                setTotalProducts(50); // Assuming the API has a total of 100 products; adjust if you have a different total
+                };
+                fetchProducts();
+            }, [currentPage, productsPerPage]);
+
+            const totalPages = Math.ceil(totalProducts / productsPerPage);
+
+            const nextPage = () => {
+                if (currentPage < totalPages) {
+                setCurrentPage(currentPage + 1);
+                }
+            };
+
+            const prevPage = () => {
+                if (currentPage > 1) {
+                setCurrentPage(currentPage - 1);
+                }
+            };
+
+            const setPage = (pageNumber) => {
+                if (pageNumber >= 1 && pageNumber <= totalPages) {
+                setCurrentPage(pageNumber);
+                }
+            };
+
+            return (
+                <ProductContext.Provider value={{ product, currentPage, totalPages, nextPage, prevPage, setPage }}>
+                {children}
+                </ProductContext.Provider>
+            );
+            };
+
+            export default ProductProvider;
+        #endregion
+
+        #region [2] home page
+            const Home = () => {
+            // const { product } = useContext(ProductContext);
+            const { product, currentPage, totalPages, nextPage, prevPage, setPage } = useContext(ProductContext);
+
+            return (
+                <div>
+                <div className='mx-4 grid grid-cols-5 justify-center gap-3 my-[5em]'>
+                    {
+                    product.map((x) => {
+                        return (
+                        <div className="grid col-span-1 w-full max-w-sm bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 " key={x.id}>
+                            <div className='hover:scale-110 transition duration-300 mt-6 rounded-lg  overflow-hidden group' key={x.id}>
+                            <div className='flex justify-center relative'>
+                                <img className=" h-[300px] rounded-t-lg max-w-[230px]" src={x.images[1]} alt="product image" />
+                                <div className='flex flex-col justify-center gap-1 absolute group-hover:opacity-100 opacity-0 top-0  p-2 bg-red-600 rounded-lg text-white group-hover:right-5 -right-11 duration-300'>
+                                <AiFillPlusCircle className='text-2xl' />
+                                <Link to={`/product/${x.id}`} >
+                                    <AiFillEye className='text-2xl px-1 bg-white text-center text-gray-500 rounded-lg' />
+                                </Link>
+                                </div>
+                            </div>
+                            <div className='px-5 pb-5'>
+                                <div>
+                                <div className='text-sm font-semibold tracking-tight text-gray-400 dark:text-white'>{x.category.name}</div>
+                                <h5 className="h-[100px] text-xl font-semibold tracking-tight text-gray-900 dark:text-white">
+                                    {x.title}
+                                </h5>
+                                </div>
+                            </div>
+                            </div>
+                            <div className="px-5 pb-5">
+                            <div className="flex items-center justify-between">
+                                <span className="text-3xl font-bold text-gray-900 dark:text-white">${x.price}</span>
+                                <a href="#" className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Add to cart</a>
+                            </div>
+                            </div>
+                        </div>
+                        )
+                    })
+
+                    }
+
+                </div>
+
+                <div className='mx-4 flex justify-center gap-3 mb-[5em]'>
+                    <button onClick={prevPage} disabled={currentPage === 1} className='bg-slate-600 text-white px-2 py-1 rounded-lg'>Previous</button>
+                    
+                    {Array.from({ length: totalPages }, (_, index) => (
+                        <button
+                        key={index + 1}
+                        onClick={() => setPage(index + 1)}
+                        disabled={currentPage === index + 1}
+                        className='bg-sky-600 text-white px-2 py-1 rounded-lg'
+                        >
+                        {index + 1}
+                        </button>
+                    ))}
+                    
+                    <button onClick={nextPage} disabled={currentPage === totalPages} className='bg-slate-600 text-white px-2 py-1 rounded-lg'>Next</button>
+                </div>
+                </div>
+            )
+            }
+
+            export default Home
+        #endregion
+    #endregion
+
+    #region [2] rating
+        npm install @mui/material @emotion/react @emotion/styled
+
+        #region [1] home page
+            import Box from '@mui/material/Box';
+            import Rating from '@mui/material/Rating';
+            import Typography from '@mui/material/Typography';
+            const Home = () => {
+            // const { product } = useContext(ProductContext);
+            const { product, currentPage, totalPages, nextPage, prevPage, setPage } = useContext(ProductContext);
+            const [value, setValue] = React.useState(2);
+            return (
+                <div>
+                <div className='mx-4 grid grid-cols-5 justify-center gap-3 my-[5em]'>
+                    {
+                    product.map((x) => {
+                        return (
+                        <div className="grid col-span-1 w-full max-w-sm bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 " key={x.id}>
+                            <div className='hover:scale-110 transition duration-300 mt-6 rounded-lg  overflow-hidden group' key={x.id}>
+                            <div className='flex justify-center relative'>
+                                <img className=" h-[300px] rounded-t-lg max-w-[230px]" src={x.image} alt="product image" />
+                                <div className='flex flex-col justify-center gap-1 absolute group-hover:opacity-100 opacity-0 top-0  p-2 bg-red-600 rounded-lg text-white group-hover:right-5 -right-11 duration-300'>
+                                <AiFillPlusCircle className='text-2xl' />
+                                <Link to={`/product/${x.id}`} >
+                                    <AiFillEye className='text-2xl px-1 bg-white text-center text-gray-500 rounded-lg' />
+                                </Link>
+                                </div>
+                            </div>
+                            <div className='px-5 pb-5'>
+                                <div>
+                                <div className='text-sm font-semibold tracking-tight text-gray-400 dark:text-white'>{x.brand}</div>
+                                <h5 className="h-[100px] text-xl font-semibold tracking-tight text-gray-900 dark:text-white">
+                                    {x.description}
+                                </h5>
+                                </div>
+                            </div>
+
+                            </div>
+                            <div className='grid ml-[1em]'>
+                                <Box
+                                sx={{
+                                    '& > legend': { mt: 2 },
+                                }}
+                                />
+                                <Typography component="legend" className='capitalize'>rating</Typography>
+                                <Rating
+                                name="customized-color"
+                                defaultValue={x.rating}
+                                getLabelText={(value) => `${value} Heart${value !== 1 ? 's' : ''}`}
+                                precision={0.1}
+                                onChange={(value,newValue) => {
+                                    setValue(newValue);
+                                }}
+                                />
+                            </div>
+                            <div className="px-5 pb-5">
+                            <div className="flex items-center justify-between">
+                                <span className="text-3xl font-bold text-gray-900 dark:text-white">${x.price}</span>
+                                <a href="#" className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Add to cart</a>
+                            </div>
+                            </div>
+                        </div>
+                        )
+                    })
+
+                    }
+                </div>
+
+                <div className='mx-4 flex justify-center gap-3 mb-[5em]'>
+                    <button onClick={prevPage} disabled={currentPage === 1} className='bg-slate-600 text-white px-2 py-1 rounded-lg'>Previous</button>
+
+                    {Array.from({ length: totalPages }, (_, index) => (
+                    <button
+                        key={index + 1}
+                        onClick={() => setPage(index + 1)}
+                        disabled={currentPage === index + 1}
+                        className='bg-sky-600 text-white px-2 py-1 rounded-lg'
+                    >
+                        {index + 1}
+                    </button>
+                    ))}
+
+                    <button onClick={nextPage} disabled={currentPage === totalPages} className='bg-slate-600 text-white px-2 py-1 rounded-lg'>Next</button>
+                </div>
+                </div>
+            )
+            }
+
+            export default Home
+        #endregion
+    #endregion
+
+    #region [3] user [login |register]
+        npm install axios
+        npm install react-toastify
+        #region [1] provider
+            import React, { createContext, useState, useEffect } from 'react';
+            import axios from 'axios';
+
+            export const AuthContext = createContext();
+
+            const AuthProvider = ({ children }) => {
+                const [user, setUser] = useState(null);
+                const [loading, setLoading] = useState(true);
+
+                useEffect(() => {
+                    const token = localStorage.getItem('token');
+                    if (token) {
+                        axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+                        axios.get('https://api.escuelajs.co/api/v1/auth/profile')
+                            .then(x => {
+                                setUser(x.data);
+                            })
+                            .catch(() => {
+                                localStorage.removeItem('token');
+                            })
+                            .finally(() => setLoading(false));
+                    } else {
+                        setLoading(false);
+                    }
+                },[user]);
+
+                const login = async (email, password) => {
+                    const response = await axios.post('https://api.escuelajs.co/api/v1/auth/login', { email, password });
+                    const { access_token } = response.data;
+                    localStorage.setItem('token', access_token);
+                    axios.defaults.headers.common['Authorization'] = `Bearer ${access_token}`;
+                    const profile = await axios.get('https://api.escuelajs.co/api/v1/auth/profile');
+                    setUser(profile.data);
+                };
+
+                const logout = () => {
+                    localStorage.removeItem('token');
+                    setUser(null);
+                };
+                return (
+                    <AuthContext.Provider value={{ user, login, logout, loading }} >
+                        {children}
+                    </AuthContext.Provider>
+                );
+            };
+
+            export default AuthProvider;
+        #endregion
+
+        #region [2] login
+            import React, { useContext, useState } from 'react';
+            import { AuthContext } from '../helper/AuthProvider';
+            import { useNavigate, Link } from 'react-router-dom';
+            import LoginButton from './LoginButton';
+            import { toast, ToastContainer } from 'react-toastify';
+            import 'react-toastify/dist/ReactToastify.css';
+
+            const Login = () => {
+                const { login } = useContext(AuthContext);
+                const [email, setEmail] = useState('');
+                const [password, setPassword] = useState('');
+                const navigate = useNavigate();
+
+                const handleLogin = async (e) => {
+                    e.preventDefault();
+                    try {
+                        await login(email, password);
+                        toast.success('Login successful!');
+                        navigate('/');
+                    } catch (error) {
+                        toast.error('Invalid email or password!');
+                    }
+                };
+
+                return (
+                    <div className="flex justify-center items-center min-h-screen bg-gray-100">
+                        <div className="bg-white p-8 rounded shadow-md w-full max-w-md">
+                            <h1 className="text-2xl font-bold mb-6 text-center">Login</h1>
+                            <form onSubmit={handleLogin}>
+                                <div className="mb-4">
+                                    <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="email">
+                                        Email
+                                    </label>
+                                    <input
+                                        type="email"
+                                        id="email"
+                                        value={email}
+                                        onChange={(e) => setEmail(e.target.value)}
+                                        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                        required
+                                    />
+                                </div>
+                                <div className="mb-6">
+                                    <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="password">
+                                        Password
+                                    </label>
+                                    <input
+                                        type="password"
+                                        id="password"
+                                        value={password}
+                                        onChange={(e) => setPassword(e.target.value)}
+                                        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                        required
+                                    />
+                                </div>
+                                <div className="flex items-center justify-between">
+                                    <LoginButton />
+                                    <Link to="/register">
+                                        <button
+                                            type="button"
+                                            className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded ml-4"
+                                        >
+                                            Register
+                                        </button>
+                                    </Link>
+                                </div>
+                            </form>
+                        </div>
+                        <ToastContainer />
+                    </div>
+                );
+            };
+
+            export default Login;
+        #endregion
+
+        #region [3] register
+            import React, { useState } from 'react';
+            import axios from 'axios';
+            import { useNavigate } from 'react-router-dom';
+            import { toast, ToastContainer } from 'react-toastify';
+            import 'react-toastify/dist/ReactToastify.css';
+
+            const Register = () => {
+                const [email, setEmail] = useState('');
+                const [password, setPassword] = useState('');
+                const [name, setName] = useState('');
+                const [confirmPassword, setConfirmPassword] = useState('');
+                const navigate = useNavigate();
+
+                const handleSubmit = async (e) => {
+                    e.preventDefault();
+
+                    if (password !== confirmPassword) {
+                        toast.error('Passwords do not match!');
+                        return;
+                    }
+
+                    try {
+                        await axios.post('https://api.escuelajs.co/api/v1/users/', {
+                            email,
+                            password,
+                            name
+                        });
+                        toast.success('Registration successful!');
+                        navigate('/login');
+                    } catch (error) {
+                        if (error.response && error.response.status === 400) {
+                            toast.error('Email already exists!');
+                        } else {
+                            toast.error('Registration failed!');
+                        }
+                    }
+                };
+
+                return (
+                    <div className="flex justify-center items-center min-h-screen bg-gray-100">
+                        <div className="bg-white p-8 rounded shadow-md w-full max-w-md">
+                            <h1 className="text-2xl font-bold mb-6 text-center">Register</h1>
+                            <form onSubmit={handleSubmit}>
+                                <div className="mb-4">
+                                    <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="name">
+                                        Name
+                                    </label>
+                                    <input
+                                        type="text"
+                                        id="name"
+                                        value={name}
+                                        onChange={(e) => setName(e.target.value)}
+                                        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                        required
+                                    />
+                                </div>
+                                <div className="mb-4">
+                                    <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="email">
+                                        Email
+                                    </label>
+                                    <input
+                                        type="email"
+                                        id="email"
+                                        value={email}
+                                        onChange={(e) => setEmail(e.target.value)}
+                                        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                        required
+                                    />
+                                </div>
+                                <div className="mb-4">
+                                    <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="password">
+                                        Password
+                                    </label>
+                                    <input
+                                        type="password"
+                                        id="password"
+                                        value={password}
+                                        onChange={(e) => setPassword(e.target.value)}
+                                        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                        required
+                                    />
+                                </div>
+                                <div className="mb-6">
+                                    <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="confirm-password">
+                                        Confirm Password
+                                    </label>
+                                    <input
+                                        type="password"
+                                        id="confirm-password"
+                                        value={confirmPassword}
+                                        onChange={(e) => setConfirmPassword(e.target.value)}
+                                        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                        required
+                                    />
+                                </div>
+                                <div className="flex items-center justify-between">
+                                    <button
+                                        type="submit"
+                                        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                                    >
+                                        Register
+                                    </button>
+                                    <button
+                                        type="button"
+                                        onClick={() => navigate('/login')}
+                                        className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                                    >
+                                        Cancel
+                                    </button>
+                                </div>
+                                <ToastContainer />
+                            </form>
+                        </div>
+                    </div>
+                );
+            };
+
+            export default Register;
+        #endregion
+
+        #region [4] login button
+            import React from 'react';
+
+            const LoginButton = () => {
+                return (
+                    <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                        Login
+                    </button>
+                );
+            };
+
+            export default LoginButton;
+        #endregion
+
+        #region [5] protection
+            import React, { useContext } from 'react';
+            import {  Navigate  } from 'react-router-dom';
+            import { AuthContext } from '../helper/AuthProvider';
+
+            const ProtectedRoute = ({ children }) => {
+            const { user, loading } = useContext(AuthContext);
+
+            if (loading) return <div>Loading...</div>;
+
+            return user ? children : <Navigate to="/login" />;
+            };
+
+            export default ProtectedRoute;
+        #endregion
+
+        #region [6] header
+            import React, { useContext } from 'react'
+            import { Link } from 'react-router-dom'
+            import { DarkThemeToggle, Flowbite } from "flowbite-react";
+            import { Button, Navbar, NavbarBrand, NavbarCollapse, NavbarLink, NavbarToggle } from "flowbite-react";
+            import { AiOutlineShoppingCart } from "react-icons/ai";
+            import { AiOutlineUser } from "react-icons/ai";
+            import { AuthContext } from '../helper/AuthProvider';
+            const Header = () => {
+            const { user, logout } = useContext(AuthContext);
+            return (
+                <div>
+                <Navbar fluid className='fixed z-10 top-0 transition-all w-full'>
+                    <NavbarBrand >
+                    <img src="https://picsum.photos/2000/1100" className="mr-3 size-9 rounded-full sm:h-9" alt="Flowbite React Logo" />
+                    </NavbarBrand>
+                    {user?
+                    <div className="flex md:order-2 gap-3">
+                    <h1 className='dark:text-white'>Welcome, {user?.name}</h1>
+                    <button onClick={logout} className='dark:text-white'>Logout</button>
+                    <NavbarToggle />
+                    </div>
+                    :<div className="flex md:order-2 gap-3 dark:text-white">please sign in</div>}
+                    <NavbarCollapse>
+                    <Link className='dark:text-gray-400' to='/' >
+                        Home
+                    </Link>
+                    <Link className='dark:text-gray-400' to='/product/1'>About</Link>
+                    <Link className='dark:text-gray-400' to='/product/2'>Services</Link>
+                    <Link className='dark:text-gray-400' to='/product/3'>Pricing</Link>
+                    <Link className='dark:text-gray-400' to='/product/4'>Contact</Link>
+                    </NavbarCollapse>
+                    <div className='flex gap-2'>
+                    <Flowbite>
+                        <DarkThemeToggle />
+                    </Flowbite>
+
+                    <button className="max-w-[50px] relative inline-flex items-center p-3 text-sm font-medium text-center text-white bg-gray-700 rounded-lg hover:bg-gray-800 focus:ring-4 focus:outline-none focus:ring-gray-300 dark:bg-gray-600 dark:hover:bg-gray-700 dark:focus:ring-gray-800">
+                        <AiOutlineShoppingCart className='text-2xl' />
+                        <div className='bg-red-500 absolute -right-2 -top-2 text-[12px] w-[2em] h-[2em] text-white rounded-full flex justify-center items-center border-white border-2'>
+                        0
+                        </div>
+                    </button>
+                    </div>
+                </Navbar>
+                </div>
+            )
+            }
+
+            export default Header
+        #endregion
+    #endregion
+#endregion
+
+#region [1] signalR full cycle 
+    #region [1] back
+        #region [1] create project
+            new project api=>
+            #region [1] program.cs
+                builder.Services.AddRazorPages();
+                builder.Services.AddSignalR();
+                builder.Services.AddSingleton<SharedDb>(); //todo edit here
+                app.MapRazorPages();
+                app.MapHub<ChatHub>("/Chat");
+            #endregion
+
+            #region [2] models/UserConnection 
+                public class UserConnection
+                {
+                    public string Username { get; set; }
+                    public string ChatRoom { get; set; }
+                }
+            #endregion
+
+            #region [3] models/ChatHub
+                using Microsoft.AspNetCore.SignalR;
+                public class ChatHub : Hub
+                {
+                    public async Task JoinChat(UserConnection conn)
+                    {
+                        await Clients.All.SendAsync(
+                            "ReceiveMessage",
+                            "admin",
+                            $"{conn.Username} has joined");
+                    }
+                    
+                    public async Task JoinSpecificChatRoom(UserConnection conn)
+                    {
+                        await Groups.AddToGroupAsync(Context.ConnectionId,conn.ChatRoom);
+                        await Clients.Group(conn.ChatRoom).SendAsync(
+                            "ReceiveMessage",
+                            "admin",
+                            $"{conn.Username} has joined {conn.ChatRoom}");
+                    }
+                }
+
+                #region [1] add SharedDb
+                    public class ChatHub : Hub
+                    {
+                        private readonly SharedDb _shared; //todo edit here
+                        public ChatHub(SharedDb shared) 
+                        {
+                            _shared = shared;
+                        }
+
+                        public async Task JoinChat(UserConnection conn)
+                        {
+                            await Clients.All.SendAsync(
+                                "ReceiveMessage",
+                                "admin",
+                                $"{conn.Username} has joined");
+                        }
+                        
+                        public async Task JoinSpecificChatRoom(UserConnection conn)
+                        {
+                            await Groups.AddToGroupAsync(Context.ConnectionId,conn.ChatRoom);
+                            _shared.connections[Context.ConnectionId] = conn; //todo edit here
+                            await Clients.Group(conn.ChatRoom).SendAsync(
+                                "ReceiveMessage",
+                                "admin",
+                                $"{conn.Username} has joined {conn.ChatRoom}");
+                        }
+                        public async Task SendMessage(string msg) //todo edit here
+                        {
+                            if(_shared.connections.TryGetValue(Context.ConnectionId, out UserConnection conn))
+                            {
+                                await Clients.Group(conn.ChatRoom).SendAsync("ReceiveSpecificMessage",conn.Username,msg);
+                            }
+                        }
+                    }
+                #endregion
+            #endregion
+
+            #region [4] dataService/SharedDb 
+                using signalRApi1.models;
+                using System.Collections.Concurrent;
+
+                namespace signalRApi1.DataService
+                {
+                    public class SharedDb
+                    {
+                        private readonly ConcurrentDictionary<string, UserConnection> _connection=new ConcurrentDictionary<string, UserConnection> ();
+                        public ConcurrentDictionary<string, UserConnection> connections => _connection;
+                    }
+                }
+            #endregion
+        #endregion
+    #endregion
+
+    #region [1] front 
+        npm install @microsoft/signalr
+        #region [1] /component/pages/WaitingRoom.jsx
+            const WaitingRoom = ({joinChatRoom}) => {
+                const [username, setUsername] = useState()
+                const [chatRoom, setChatRoom] = useState()
+                return (
+                    <div>
+                        <form className="max-w-sm mx-auto mt-[4em]" onSubmit={e=>{
+                            e.preventDefault();
+                            joinChatRoom(username,chatRoom)
+                        }}>
+                            <div className="mb-5">
+                                <label htmlFor="text" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Your text</label>
+                                <input type="text" id="text" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="username" required 
+                                onChange={e=>setUsername(e.target.value)}/>
+                            </div>
+                            <div className="mb-5">
+                                <label htmlFor="text" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Your text</label>
+                                <input type="text" id="text" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="chatRoom" required 
+                                onChange={e=>setChatRoom(e.target.value)}/>
+                            </div>
+                            <button  className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Submit</button>
+                        </form>
+
+                    </div>
+                )
+            }
+
+            export default WaitingRoom
+        #endregion
+
+        #region [2] App 
+            import WaitingRoom from './component/pages/WaitingRoom'
+            import { HubConnectionBuilder, LogLevel } from '@microsoft/signalr'
+            function App() {
+            const [connect, setConnect] = useState()
+            const joinChatRoom = async (username, chatRoom) => {
+                try {
+                //init connection
+                const conn = new HubConnectionBuilder()
+                    .withUrl("https://localhost:7202/chat")
+                    .configureLogging(LogLevel.Information)
+                    .build()
+
+                // set handler
+                conn.on("ReceiveMessage", (username, msg) => {
+                    console.log("msg", msg)
+                })
+                await conn.start()
+                await conn.invoke("JoinSpecificChatRoom", { username, chatRoom })
+                setConnect(conn)
+                } catch (error) {
+                console.log(error)
+                }
+
+            }
+            return (
+                <>
+                <WaitingRoom joinChatRoom={joinChatRoom} />
+                </>
+            )
+            }
+
+            #region [1] update app after AddSingleton
+                function App() {
+                const [connect, setConnect] = useState()
+                const [message, setMessage] = useState() //todo edit here
+                const joinChatRoom = async (username, chatRoom) => {
+                    try {
+                    //init connection
+                    const conn = new HubConnectionBuilder()
+                        .withUrl("https://localhost:7202/chat")
+                        .configureLogging(LogLevel.Information)
+                        .build()
+
+                    // set handler
+                    conn.on("ReceiveMessage", (username, msg) => {
+                        console.log("msg", msg)
+                    })
+                    conn.on("ReceiveSpecificMessage", (username, msg) => { //todo edit here
+                        setMessage(x=>[...x,{username, msg}])
+                    })
+                    await conn.start()
+                    await conn.invoke("JoinSpecificChatRoom", { username, chatRoom })
+                    setConnect(conn)
+                    } catch (error) {
+                    console.log(error)
+                    }
+
+                }
+                return (
+                    <>
+                    <WaitingRoom joinChatRoom={joinChatRoom} />
+                    </>
+                )
+                }
+            #endregion
+        #endregion
+
+        #region [3] /component/pages/ChatRoom.jsx
+
+        #endregion
+    #endregion
+#endregion
