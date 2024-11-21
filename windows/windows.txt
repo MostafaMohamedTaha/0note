@@ -156,4 +156,3 @@
 #region [1] make software portable with winrar
     install location => ctrl a =>add to archive =>  sfx archive [general]=> sfx option [advanced] {setup =>name.exe | modes=>unpack temp & hide all silent | update => override mode =>override all file =>ok}
 #endregion
-

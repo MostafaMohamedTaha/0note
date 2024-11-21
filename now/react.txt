@@ -714,6 +714,7 @@
 
         export default Student
       #endregion
+
       //main inside app <Student name={"a"} age={30} isStudent={true}/>
       #region [2] bracket way {} 
         const Student = ({name,age,isStudent}) => {
@@ -734,16 +735,18 @@
       import React from 'react'
       import PropTypes from 'prop-types'
 
-      const TestN = ({ a }) => {
+      const TestN = ({ a ,b}) => {
         return (
           <div>
             value :{a}
+            value :{b}
           </div>
         )
       }
 
       TestN.propTypes = {
         a: PropTypes.string
+        b: PropTypes.number
       }
       TestN.defaultProps = {
         a: "PropTypes.string"
