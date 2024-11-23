@@ -1,53 +1,53 @@
 #region [1] install react vite flowbite
     #region [1] install
-    npm create vite@latest shop1 -- --template react
-    cd shop1
-    npm install
-    npm run dev
+        npm create vite@latest shop1 -- --template react
+        cd shop1
+        npm install
+        npm run dev
     #endregion
 
     #region [2] flowbite
-    #region [1] install
-    npm install -D tailwindcss postcss autoprefixer
-    npx tailwindcss init -p
-    npm install flowbite flowbite-react
-    npm i flowbite
-    npm i -D react-router-dom
-    #endregion
+        #region [1] install
+            npm install -D tailwindcss postcss autoprefixer
+            npx tailwindcss init -p
+            npm install flowbite flowbite-react
+            npm i flowbite
+            npm i -D react-router-dom
+        #endregion
 
-    #region [2] tailwindcss.config 
-        const flowbite = require("flowbite-react/tailwind");
+        #region [2] tailwindcss.config 
+            const flowbite = require("flowbite-react/tailwind");
 
-        module.exports = {
-        content: [
-            './src/**/*.{js,jsx,ts,tsx}',
-            './node_modules/flowbite-react/lib/esm/**/*.js',
-            flowbite.content(),
-        ],
-        theme: {
-            extend: {},
-        },
-        plugins: [
-            require('flowbite/plugin'),
-            flowbite.plugin(),
-        ]
-        }
-    #endregion
+            module.exports = {
+            content: [
+                './src/**/*.{js,jsx,ts,tsx}',
+                './node_modules/flowbite-react/lib/esm/**/*.js',
+                flowbite.content(),
+            ],
+            theme: {
+                extend: {},
+            },
+            plugins: [
+                require('flowbite/plugin'),
+                flowbite.plugin(),
+            ]
+            }
+        #endregion
 
-    #region [3] index.css 
-    @tailwind base;
-    @tailwind components;
-    @tailwind utilities;
-    #endregion
-    #endregion
+        #region [3] index.css 
+            @tailwind base;
+            @tailwind components;
+            @tailwind utilities;
+            #endregion
+        #endregion
 
     #region [3] package.json 
-    "scripts": {
-        "dev": "vite --host --open",
-        "build": "vite build",
-        "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
-        "preview": "vite preview"
-    },
+        "scripts": {
+            "dev": "vite --host --open",
+            "build": "vite build",
+            "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
+            "preview": "vite preview"
+        },
     #endregion
 
     #region [4] route |navbar |night mode
@@ -501,14 +501,16 @@
         #endregion
     #endregion
 
-    #region [2] carousel
-        <Carousel slideInterval={5000}>
-            <img src="https://picsum.photos/2000/1100" alt="..." />
-            <img src="https://picsum.photos/2000/1200" alt="..." />
-            <img src="https://picsum.photos/2000/1300" alt="..." />
-            <img src="https://picsum.photos/2000/1400" alt="..." />
-            <img src="https://picsum.photos/2000/1500" alt="..." />
-        </Carousel>
+    #region [2] carousel //hint have no high must give it 
+        <div className='mt-[400px] mx-4 h-56 sm:h-64 xl:h-80 2xl:h-96'>
+            <Carousel slideInterval={5000}>
+                <img src="https://picsum.photos/2000/1000" alt="" />
+                <img src="https://picsum.photos/2000/1000" alt="" />
+                <img src="https://picsum.photos/2000/1000" alt="" />
+                <img src="https://picsum.photos/2000/1000" alt="" />
+                <img src="https://picsum.photos/2000/1000" alt="" />
+            </Carousel>
+        </div>
     #endregion
 
     #region [3] font awesome install
@@ -1931,6 +1933,304 @@
     #endregion
 #endregion
 
+#region [1] todoList
+    #region [1] crud
+        #region [1] crud code 
+            function App() {
+                const [todoList, setTodoList] = useState([
+                    'pray', 'make my task for one', 'make one', 'go to gym', 'go to work', 'read quran', 'some entertainment'
+                ])
+                let localData=(newList)=>{ //hint local[stringify({list:new})]
+                    localStorage.setItem('todoList',JSON.stringify({todoList:newList}))
+                    
+                }
+                let handleTodoListAdd = (newTask) => { //hint add[...list,localStorage,setList(new)]
+                    const newTodo = [...todoList, newTask]
+                    localData(newTodo)
+                    setTodoList(newTodo)
+                }
+                let handleTodoListDelete = (index) => { //hint delete[(x),filter(_,index),return x!=index,local ,set()]
+                    const newTodo = todoList.filter((x, xIndex) => {
+                    return xIndex != index
+                    })
+                    localData(newTodo)
+                    setTodoList(newTodo)
+                }
+                const handleTodoListUpdate = (index, newTask) => { //hint update[(index,new),map((x,xIndex)),xIndex==index?new:x,local,set]
+                    const updatedTodoList = todoList.map((task, taskIndex) =>
+                        taskIndex === index ? newTask : task
+                    );
+                    setTodoList(updatedTodoList);
+                    localData(updatedTodoList);
+                };
+                useEffect(() => { //hint local[getItem,parse(list),list]
+                    if (!localStorage) return 
+                    let localStorageCache = localStorage.getItem('todoList')
+                    if (!localStorageCache) return
+
+                    localStorageCache = JSON.parse(localStorageCache).todoList
+                    setTodoList(localStorageCache)
+                },[])
+                return (
+                    <>
+                    <div className='font-press2 text-2xl justify-center grid '>
+                        <TodoInput handleTodoListAdd={handleTodoListAdd} /> //hint2 add=add first child
+                        <TodoList className="m-2" todos={todoList} handleTodoListDelete={handleTodoListDelete} handleTodoListUpdate={handleTodoListUpdate} /> //hint2 update,delete=update,delete first child then second child
+                    </div>
+                    </>
+                )
+            }
+        #endregion
+
+        #region [2] first child input
+            const TodoInput = ({handleTodoListAdd}) => {
+                const [todoValue,setTodoValue]=useState('')
+                return (
+                    <div className='flex items-center'>
+                        <input type="text" className='m-2 rounded-xl' placeholder='todo ...' value={todoValue} onChange={(e)=>{setTodoValue(e.target.value)}}/> //hint get value target
+                        <button className='bg-blue-600 px-6 py-1 text-white m-2 rounded-xl' onClick={()=>{ handleTodoListAdd(todoValue)}}>add</button> //hint set value from parent
+                    </div>
+                )
+            }
+        #endregion
+
+        #region [3] first child list //hint [map,update,delete{parent to card(key,index)}]
+            const TodoList = ({todos,handleTodoListDelete,handleTodoListUpdate}) => {
+
+                return (
+                    <div>
+                        <div>
+                            {todos.map((x, xIndex) => {
+                                return (
+                                    <TodoCard key={xIndex} index={xIndex} handleTodoListDelete={handleTodoListDelete} handleTodoListUpdate={handleTodoListUpdate}>
+                                        <p>
+                                            {x}
+                                        </p>
+                                    </TodoCard>
+                                )
+                            })}
+                        </div>
+                    </div>
+                )
+            }
+        #endregion
+
+        #region [4] second grand child card //hint [children,update,delete(child of list),index,new]
+            const TodoCard = ({ children,handleTodoListDelete,index,handleTodoListUpdate,task }) => {
+                if (!children) return null; //func validate
+                return (
+                    <div>
+                        <div className="max-w-md mx-auto relative">
+                            <div className="block w-full p-4 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                                {children}
+                            </div>
+                            <button className="text-white absolute mx-[50px] end-2.5 bottom-2.5 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" onClick={()=>handleTodoListUpdate(index, prompt(`Enter updated task ${index}:`, task))}>
+                                <FaRegEdit /> //func index,task prompt could be toastr ()
+                            </button>
+                            <button className="text-white absolute end-2.5 bottom-2.5 bg-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800" onClick={()=>handleTodoListDelete(index)}>
+                                <RiDeleteBin6Fill />
+                            </button>
+                        </div>
+                    </div>
+                )
+            }
+        #endregion
+    #endregion
+
+    #region [1] font 
+        #region [1] tailwind config
+            theme: {
+                extend: {
+                fontFamily: {
+                    sevillana: ['"Sevillana"', "cursive"], // default
+                    press2: ['"Press Start 2P"', "cursive"], // default
+                    arabic: ['Cairo', 'sans-serif'], // Arabic-specific font
+                    },
+                },
+            }
+        #endregion
+
+        #region [1] index.css
+            @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Sevillana&display=swap');
+            @tailwind base;
+            @tailwind components;
+            @tailwind utilities;
+            body{
+                background-color: silver;
+            }
+        #endregion
+
+        #region [1] app .jsx 
+            <div className='font-press2 text-2xl justify-center grid '>
+                <TodoInput handleTodoListAdd={handleTodoListAdd} />
+                <TodoList className="m-2" todos={todoList} handleTodoListDelete={handleTodoListDelete} handleTodoListUpdate={handleTodoListUpdate} />
+            </div>
+        #endregion
+    #endregion
+#endregion
+
+#region [1] nasa mars
+    #region [1] sidebar //hint api[open|close|env]
+        const Sidebar1 = () => {
+            const [isOpen, setIsOpen] = useState(true);
+
+            const handleClose = () => setIsOpen(false);
+            const [data, setData] = useState(null)
+
+            useEffect(() => {
+                async function fetchDataFromApi() {
+                    const Nasa_key = import.meta.env.VITE_NASA_API_KEY
+                    const url = `https://api.nasa.gov/planetary/apod` + `?api_key=${Nasa_key}`
+                    try {
+                        const res = await fetch(url)
+                        const apiData = await res.json()
+                        setData(apiData)
+                        console.log(apiData)
+                    } catch (err) {
+                        console.log(err.message)
+                    }
+                }
+                fetchDataFromApi()
+            }, [])
+            return (
+                <div>
+                    <div className="flex min-h-[10vh] items-center justify-center">
+                        <Button onClick={() => setIsOpen(true)}>Show Mars Data</Button>
+                    </div>
+                    {
+                        data ?
+                            (<Drawer open={isOpen} onClose={handleClose}>
+                                <Drawer.Header title={data.title} titleIcon={() => <></>} />
+                                <Drawer.Items>
+                                    <Sidebar
+                                        aria-label="Sidebar with multi-level dropdown example"
+                                        className="[&>div]:bg-transparent [&>div]:p-0"
+                                    >
+                                        <div className="flex h-full flex-col justify-between py-2">
+                                            <div>
+                                                <form className="pb-3 md:hidden">
+                                                    <TextInput icon={HiSearch} type="search" placeholder="Search" required size={32} />
+                                                </form>
+                                                <Sidebar.Items>
+                                                    <Sidebar.ItemGroup>
+                                                        <Sidebar.Item >
+                                                            Copyright :{data.copyright}
+                                                        </Sidebar.Item>
+                                                        <Sidebar.Item  >
+                                                            Date: {data.date}
+                                                        </Sidebar.Item>
+                                                        <Sidebar.Item  >
+                                                            <img src={data.hdurl} alt="" />
+                                                        </Sidebar.Item>
+
+
+                                                        <Sidebar.ItemGroup className='dark:text-white'>
+                                                            <p className='flex justify-center capitalize text-2xl'>explanation</p>
+                                                            {data.explanation}
+                                                        </Sidebar.ItemGroup>
+
+
+                                                    </Sidebar.ItemGroup>
+                                                    <div className='flex justify-center'>
+                                                        <Button onClick={() => setIsOpen(false)} >x</Button>
+                                                    </div>
+                                                </Sidebar.Items>
+                                            </div>
+                                        </div>
+                                    </Sidebar>
+                                </Drawer.Items>
+
+                            </Drawer>) :
+                            <Drawer open={isOpen} onClose={handleClose}>
+                                <Drawer.Header title="MENU" titleIcon={() => <></>} />
+                                <Drawer.Items>
+                                    <Sidebar
+                                        aria-label="Sidebar with multi-level dropdown example"
+                                        className="[&>div]:bg-transparent [&>div]:p-0"
+                                    >
+                                        <div className="flex h-full flex-col justify-between py-2">
+                                            <div>
+                                                <form className="pb-3 md:hidden">
+                                                    <TextInput icon={HiSearch} type="search" placeholder="Search" required size={32} />
+                                                </form>
+                                                <Sidebar.Items>
+                                                    <Sidebar.ItemGroup>
+                                                        <Sidebar.Item href="/" icon={HiChartPie}>
+                                                            Dashboard
+                                                        </Sidebar.Item>
+                                                        <Sidebar.Item href="/e-commerce/products" icon={HiShoppingBag}>
+                                                            Products
+                                                        </Sidebar.Item>
+                                                        <Sidebar.Item href="/users/list" icon={HiUsers}>
+                                                            Users list
+                                                        </Sidebar.Item>
+                                                        <Sidebar.Item href="/authentication/sign-in" icon={HiLogin}>
+                                                            Sign in
+                                                        </Sidebar.Item>
+                                                        <Sidebar.Item href="/authentication/sign-up" icon={HiPencil}>
+                                                            Sign up
+                                                        </Sidebar.Item>
+                                                    </Sidebar.ItemGroup>
+                                                    <Sidebar.ItemGroup>
+                                                        <Sidebar.Item href="https://github.com/themesberg/flowbite-react/" icon={HiClipboard}>
+                                                            Docs
+                                                        </Sidebar.Item>
+                                                        <Sidebar.Item href="https://flowbite-react.com/" icon={HiCollection}>
+                                                            Components
+                                                        </Sidebar.Item>
+                                                        <Sidebar.Item href="https://github.com/themesberg/flowbite-react/issues" icon={HiInformationCircle}>
+                                                            Help
+                                                        </Sidebar.Item>
+                                                    </Sidebar.ItemGroup>
+                                                </Sidebar.Items>
+                                            </div>
+                                        </div>
+                                    </Sidebar>
+                                </Drawer.Items>
+                            </Drawer>
+                    }
+
+
+                </div>
+            )
+        }
+    #endregion
+
+    #region [2] env outside src //hint2 make .env outside src folder 
+        VITE_NASA_API_KEY=Lr6C4T90j7TDxok1aREfbL0ccpUwLiUfkTP8QguH
+        # from this site sign up then generate key then take it from mail
+    #endregion
+
+    #region [3] carousel //idea carousel have no height and you should import images 
+        import { Carousel } from "flowbite-react";
+        import a from '../assets/147F0066-DE0F-4F8F-BD377DBC9B172E20_source.png'
+        import b from '../assets/ASY-SK1123_03.jpg'
+        import c from '../assets/GettyImages-1235805996.jpg'
+        import d from '../assets/GY9JBbrzsGsz2psUv6pgdV.jpg'
+        import e from '../assets/mars-landing.jpg'
+
+        const Project1 = () => {
+            return (
+                <div className='my-4 mx-4 h-56 sm:h-64 xl:h-80 2xl:h-96 '>
+                    <Carousel slideInterval={5000}>
+                        <img src={a} alt="" />
+                        <img src={b} alt="" />
+                        <img src={c} alt="" />
+                        <img src={d} alt="" />
+                        <img src={e} alt="" />
+                        
+
+                    </Carousel>
+                </div>
+            )
+        }
+    #endregion
+#endregion
+
+#region [1] gym
+
+#endregion
+
 #region [1] signalR full cycle 
     #region [1] back
         #region [1] create project
@@ -2130,4 +2430,13 @@
 
         #endregion
     #endregion
+#endregion
+
+#region [1] NETLIFY
+    COMMAND 
+    npm run dev
+    directory
+    dist
+    or 
+    make build in cli npm run dev and upload manually then make any keys of env
 #endregion
